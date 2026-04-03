@@ -11,7 +11,8 @@ p {
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  width: 80%;
+  width: calc(var(--body-offset, 0px) + 80%);
+  max-width: 80vw;
   overflow-x: auto;
 }
 
