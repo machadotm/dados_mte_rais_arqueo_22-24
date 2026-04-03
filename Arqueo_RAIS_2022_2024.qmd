@@ -939,7 +939,7 @@ titulo_html <- tags$div(
 browsable(tagList(titulo_html, grafico))
 ```
 
-## Análise Remuneratória de Dezembro dos Vínculos Ativos em 31/12
+## Análise Remuneratória de Dezembro dos Vínculos Ativos
 
 Para fins de análise dos valores remuneratórios de dezembro, procedeu-se numa correção dos números armazenados na coluna `Vl.Rem.Dezembro.Nom`, posto que alguns apresentavam ora excesso de dígitos ora ausência do marcador decimal. A detecção dos valores inexatos aconteceu a partir da comparação com as informações da coluna `Faixa.Rem.Dez..SM`, que descreve em qual faixa de salário mínimo a remuneração se insere. Assim, foi possível identificar quais cifras estavam em desconformidade com a faixa de salário mínimo, de modo a realizar a correção pela inserção do marcador decimal ou remoção dos dois últimos algarismos da remuneração.
 
@@ -1525,29 +1525,48 @@ htmltools::browsable(
       )
     ),
 
-    htmltools::tags$script('
-      document.addEventListener("DOMContentLoaded", function() {
-        var container = document.getElementById("tabelas-container");
+htmltools::tags$script('
+  document.addEventListener("DOMContentLoaded", function() {
+    var container = document.getElementById("tabelas-container");
 
-        // Tenta os seletores mais comuns do TOC no Quarto
-        var toc = document.getElementById("TOC") ||
-                  document.querySelector(".sidebar-navigation") ||
-                  document.querySelector("nav[role=doc-toc]") ||
-                  document.querySelector(".toc-active");
+    // Seletores para documento simples E website do Quarto/GitHub Pages
+    var toc = document.getElementById("TOC") ||
+              document.querySelector("#quarto-sidebar") ||
+              document.querySelector(".sidebar-navigation") ||
+              document.querySelector("nav[role=doc-toc]") ||
+              document.querySelector("#quarto-margin-sidebar");
 
-        if (!container || !toc) return;
+    if (!container || !toc) return;
 
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            toc.style.visibility = entry.isIntersecting ? "hidden" : "visible";
-          });
-        }, { threshold: 0.01 });
+    // Guarda os estilos originais para restaurar depois
+    var larguraOriginal  = toc.style.width;
+    var paddingOriginal  = toc.style.padding;
+    var opacityOriginal  = toc.style.opacity;
+    var overflowOriginal = toc.style.overflow;
 
-        observer.observe(container);
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          // Recolhe completamente sem deixar espaço em branco
+          toc.style.width    = "0px";
+          toc.style.padding  = "0";
+          toc.style.opacity  = "0";
+          toc.style.overflow = "hidden";
+          toc.style.transition = "all 0.3s ease";
+        } else {
+          // Restaura os estilos originais
+          toc.style.width    = larguraOriginal;
+          toc.style.padding  = paddingOriginal;
+          toc.style.opacity  = opacityOriginal;
+          toc.style.overflow = overflowOriginal;
+          toc.style.transition = "all 0.3s ease";
+        }
       });
-    ')
-  )
-)
+    }, { threshold: 0.01 });
+
+    observer.observe(container);
+  });
+')
 ```
 
 ### Distribuição por Sexo
