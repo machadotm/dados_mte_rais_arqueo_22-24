@@ -1499,63 +1499,24 @@ html_2022 <- gt::as_raw_html(tab.resumo_salario.2022)
 html_2023 <- gt::as_raw_html(tab.resumo_salario.2023)
 html_2024 <- gt::as_raw_html(tab.resumo_salario.2024)
 
-htmltools::browsable(
-  htmltools::tagList(
+htmltools::tags$script(HTML('
+  document.addEventListener("DOMContentLoaded", function() {
+    var container = document.getElementById("tabelas-container");
+    var toc = document.getElementById("TOC") ||
+              document.querySelector(".sidebar-navigation") ||
+              document.querySelector("nav[role=doc-toc]");
 
-    htmltools::tags$div(
-      id = "tabelas-container",
-      style = "
-        width: 80vw;
-        position: relative;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 0 1rem;
-        box-sizing: border-box;
-      ",
-      htmltools::tags$div(
-        style = "
-          display: flex;
-          gap: 20px;
-          align-items: flex-start;
-          min-width: 900px;
-        ",
-        htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2022)),
-        htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2023)),
-        htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2024))
-      )
-    ),
+    if (!container || !toc) return;
 
-    htmltools::tags$script('
-      document.addEventListener("DOMContentLoaded", function() {
-        var container = document.getElementById("tabelas-container");
-        // Seleciona o TOC – aumente os seletores conforme necessário
-        var toc = document.querySelector("#TOC, .sidebar, .toc, nav[role='doc-toc']");
-        var mainContent = document.querySelector(".page-columns, .main-content, body .quarto-content");
-
-        if (!container || !toc) return;
-
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              // Esconde o TOC e ajusta o conteúdo
-              toc.style.display = "none";
-              if (mainContent) mainContent.style.marginLeft = "0";
-              // Opcional: força largura total do container das tabelas
-              container.style.width = "100%";
-            } else {
-              // Restaura TOC e margem
-              toc.style.display = "";
-              if (mainContent) mainContent.style.marginLeft = "";
-              container.style.width = "80vw";
-            }
-          });
-        }, { threshold: 0.1 });
-
-        observer.observe(container);
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        toc.style.visibility = entry.isIntersecting ? "hidden" : "visible";
       });
-    ')
-  )
-)
+    }, { threshold: 0.01 });
+
+    observer.observe(container);
+  });
+'))
 ```
 
 ### Distribuição por Sexo

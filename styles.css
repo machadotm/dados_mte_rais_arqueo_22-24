@@ -5,3 +5,18 @@ p {
 .titulo-grafico p {
   text-align: center;
 }
+
+/* Tabelas lado a lado — ocupa coluna body + margem direita do grid */
+.tabelas-side-by-side {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: calc(var(--body-offset, 0px) + 100%);
+  max-width: 100vw;
+  overflow-x: auto;
+}
+
+.tabelas-side-by-side > div {
+  flex: 1 1 0;
+  min-width: 260px;
+}
