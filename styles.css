@@ -6,17 +6,22 @@ p {
   text-align: center;
 }
 
-/* Classe aplicada pelo JS quando as tabelas estão visíveis */
-.toc-oculto #quarto-sidebar,
-.toc-oculto #quarto-margin-sidebar,
-.toc-oculto .sidebar-navigation {
+/* Quando a classe toc-oculto está ativa no main */
+main.toc-oculto {
+  grid-template-columns: 1fr !important;
+}
+
+main.toc-oculto #quarto-sidebar,
+main.toc-oculto #quarto-margin-sidebar,
+main.toc-oculto .sidebar-navigation,
+main.toc-oculto nav[role="doc-toc"] {
   display: none !important;
 }
 
-.toc-oculto #quarto-content,
-.toc-oculto .quarto-grid,
-.toc-oculto #quarto-document-content {
+/* Faz o corpo principal ocupar toda a largura quando sidebar some */
+main.toc-oculto .page-columns > *,
+main.toc-oculto #quarto-content > *,
+main.toc-oculto > .page-full {
   grid-column: 1 / -1 !important;
   max-width: 100% !important;
-  width: 100% !important;
 }
