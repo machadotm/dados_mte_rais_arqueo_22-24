@@ -1501,12 +1501,15 @@ html_2024 <- gt::as_raw_html(tab.resumo_salario.2024)
 
 htmltools::browsable(
   htmltools::tagList(
+
     htmltools::tags$div(
       id = "tabelas-container",
       style = "
-        width: 100%;
-        overflow-x: auto;
-        padding: 0;
+        width: 80vw;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0 1rem;
         box-sizing: border-box;
       ",
       htmltools::tags$div(
@@ -1514,7 +1517,7 @@ htmltools::browsable(
           display: flex;
           gap: 20px;
           align-items: flex-start;
-          min-width: 700px;
+          min-width: 900px;
         ",
         htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2022)),
         htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2023)),
@@ -1525,69 +1528,22 @@ htmltools::browsable(
     htmltools::tags$script('
       document.addEventListener("DOMContentLoaded", function() {
         var container = document.getElementById("tabelas-container");
-        if (!container) return;
 
+        // Tenta os seletores mais comuns do TOC no Quarto
         var toc = document.getElementById("TOC") ||
-                  document.querySelector("#quarto-sidebar") ||
-                  document.querySelector("#quarto-margin-sidebar") ||
+                  document.querySelector(".sidebar-navigation") ||
                   document.querySelector("nav[role=doc-toc]") ||
-                  document.querySelector(".sidebar-navigation");
+                  document.querySelector(".toc-active");
 
-        if (!toc) return;
+        if (!container || !toc) return;
 
-        // Guarda posição e dimensões originais UMA única vez
-        var tocOriginalStyle = {
-          position : toc.style.position  || "",
-          left     : toc.style.left      || "",
-          width    : toc.style.width     || "",
-          overflow : toc.style.overflow  || ""
-        };
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            toc.style.visibility = entry.isIntersecting ? "hidden" : "visible";
+          });
+        }, { threshold: 0.01 });
 
-        var oculto = false;
-
-        function ocultarToc() {
-          if (oculto) return;
-          oculto = true;
-          toc.style.position = "fixed";
-          toc.style.left     = "-9999px";
-          toc.style.width    = "0";
-          toc.style.overflow = "hidden";
-        }
-
-        function restaurarToc() {
-          if (!oculto) return;
-          oculto = false;
-          toc.style.position = tocOriginalStyle.position;
-          toc.style.left     = tocOriginalStyle.left;
-          toc.style.width    = tocOriginalStyle.width;
-          toc.style.overflow = tocOriginalStyle.overflow;
-        }
-
-        // Usa scroll em vez de IntersectionObserver para evitar loop
-        function verificar() {
-          var rect = container.getBoundingClientRect();
-          var visivel = rect.top < window.innerHeight && rect.bottom > 0;
-          if (visivel) {
-            ocultarToc();
-          } else {
-            restaurarToc();
-          }
-        }
-
-        // Checa no scroll com throttle para evitar tremedeira
-        var aguardando = false;
-        window.addEventListener("scroll", function() {
-          if (!aguardando) {
-            aguardando = true;
-            requestAnimationFrame(function() {
-              verificar();
-              aguardando = false;
-            });
-          }
-        });
-
-        // Checa também no carregamento inicial
-        verificar();
+        observer.observe(container);
       });
     ')
   )
