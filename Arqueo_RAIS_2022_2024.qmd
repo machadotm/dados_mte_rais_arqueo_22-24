@@ -1528,20 +1528,28 @@ htmltools::browsable(
     htmltools::tags$script('
       document.addEventListener("DOMContentLoaded", function() {
         var container = document.getElementById("tabelas-container");
-
-        // Tenta os seletores mais comuns do TOC no Quarto
-        var toc = document.getElementById("TOC") ||
-                  document.querySelector(".sidebar-navigation") ||
-                  document.querySelector("nav[role=doc-toc]") ||
-                  document.querySelector(".toc-active");
+        // Seleciona o TOC – aumente os seletores conforme necessário
+        var toc = document.querySelector("#TOC, .sidebar, .toc, nav[role='doc-toc']");
+        var mainContent = document.querySelector(".page-columns, .main-content, body .quarto-content");
 
         if (!container || !toc) return;
 
         var observer = new IntersectionObserver(function(entries) {
           entries.forEach(function(entry) {
-            toc.style.visibility = entry.isIntersecting ? "hidden" : "visible";
+            if (entry.isIntersecting) {
+              // Esconde o TOC e ajusta o conteúdo
+              toc.style.display = "none";
+              if (mainContent) mainContent.style.marginLeft = "0";
+              // Opcional: força largura total do container das tabelas
+              container.style.width = "100%";
+            } else {
+              // Restaura TOC e margem
+              toc.style.display = "";
+              if (mainContent) mainContent.style.marginLeft = "";
+              container.style.width = "80vw";
+            }
           });
-        }, { threshold: 0.01 });
+        }, { threshold: 0.1 });
 
         observer.observe(container);
       });
