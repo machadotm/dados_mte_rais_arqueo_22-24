@@ -1,0 +1,18 @@
+project:
+  type: website
+  output-dir: docs
+
+format: 
+  html:
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    toc-title: "Índice"
+    toc-location: left
+    code-fold: true
+    embed-resources: true
+    number-sections: true
+    highlight-style: github
+    code-summary: "Mostrar código executado"
+    grid:
+      body-width: 900px 

@@ -1,0 +1,1820 @@
+---
+title: "O Mercado de Trabalho dos Arqueólogos - Parte 1"
+subtitle: "Análise dos Dados da RAIS 2022 a 2024"
+author: "Seu Nome"
+date: last-modified
+format: 
+  html:
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    toc-title: "Índice"
+    toc-location: left
+    code-fold: true
+    embed-resources: true
+    number-sections: true
+    highlight-style: github
+    code-summary: "Mostrar código executado"
+    grid:
+      body-width: 900px 
+execute: 
+  echo: true
+  eval: true
+  message: false 
+  warning: false
+editor: visual
+language:
+  crossref-fig-title: "Figura"
+  crossref-tbl-title: "Tabela"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+# Carregar pacotes necessários
+library(httr)
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(ggplot2) 
+library(echarts4r)
+library(scales)
+library(ggiraph)
+library(gt)
+library(gridExtra)
+library(DT)
+library(jsonlite)
+library(htmltools)
+```
+
+## Introdução
+
+Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) para os anos de 2022 a 2024, relativo à ocupação de arqueólogo. Os dados, aqui manipulados e consolidados para a geração de gráficos e tabelas, foram obtidos a partir dos registros tratados disponibilizados no [GitHub](https://github.com/machadotm/Novos_Dados_MTE_Arqueo "Link para acesso aos dados brutos e tratados"){target="_blank"}.
+
+A RAIS é uma das base de dados do governo sobre o mercado de trabalho formal no Brasil, cujo sistema é alimentado obrigatoriamente pelos estabelecimentos com ou sem empregados. Seus registros contemplam tanto as declarações de trabalhadores regidos por CLT (Consolidação das Leis do Trabalho) quanto dos servidores públicos. A divulgação das informações coletados é realizada anualmente, contendo dados detalhados do ano-base de referência de todos os trabalhadores com vínculo empregatício formal. O último ano-base divulgado é de 2024.
+
+Importante destacar que as análises aqui discorridas não tem a pretensão de fazer comparação ou mesmo uma continuidade das observações abordadas no artigo de [Machado e Mageste](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}, que investigaram os dados da RAIS para o intervalo temporal de 1994 a 2021. Essa quebra histórica atende a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados de 2022 e anos subsequentes não devem ser comparados com os registros anteriores a 2022. O MTE divulgou uma [nota técnica](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais/rais-2022/nota-tecnica-rais-2022.pdf "Link para acesso a nota técnica sobre os dados da RAIS 2022. Essa nota técnica apresenta os resultados das declarações trabalhistas daquele ano e informa a existência de quebra histórica nos dados da RAIS"){target="_blank"} detalhando as causas dessa quebra histórica, que foi resultado da transição metodológica na captação dos registros trabalhista, implementada, gradualmente, desde 2018 e concluída em 2022. Assim, um cronograma foi estabelecido para a migração ao novo sistema de envio das declarações trabalhistas, passando do tradicional GD-RAIS, alimentado anualmente, para o sistema unificado do [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"){target="_blank"}, de periodicidade mensal e contínuo, sendo o ano-base 2022 o último ano dessa transição, além de apresentar registros híbridos provenientes dos dois sistemas.
+
+Neste artigo pretende-se analisar diferentes variáveis e o comportamento dessas informações ao longo do intervalo temporal, que inclui:
+
+-   quantitativo de registros declarados e os tipos de vínculos em 31/12
+-   distribuição dos vínculos ativos em 31/12 por:
+    -   região
+    -   estados
+    -   vínculo empregatício
+    -   natureza jurídica do empregador
+    -   escolaridade dos arqueólogos
+    -   intervalo por grupos de:
+        -   idades
+        -   horas trabalhadas
+        -   tempo de emprego
+    -   sexo
+    -   cor/raça
+    -   média salarial e resumo estatísticos das remunerações
+-   distribuição dos vínculos desligados em 31/12 por:
+    -   motivo do desligamento
+    -   sexo
+
+Os gráficos e tabelas foram feitos na linguagem de programação R. Em relação aos gráficos, eles foram criados em formato dinâmico e interativo. Assim, é possível passar o cursor do mouse para visualizar informações contidas nas barras e linhas, bem como remover registros específicos de forma a deixar apenas dados relevantes no painel de visualização.
+
+::::: columns
+::: {.column width="50%"}
+![Exemplo de interação em gráfico [dinâmico 1](https://pic1.zhimg.com/v2-a6d90f9da067aa0caaa266e63b64e1a4_b.gif "Link de acesso ao gif 1"){target="_blank"}](https://pic1.zhimg.com/v2-a6d90f9da067aa0caaa266e63b64e1a4_b.gif){#fig-gif1}
+:::
+
+::: {.column width="50%"}
+![Exemplo de interação em gráfico [dinâmico 2](https://pic2.zhimg.com/v2-355a0328399c8c4b8529be44b3cb9ced_b.gif "Link de acesso ao gif 2"){target="_blank"}](https://pic2.zhimg.com/v2-355a0328399c8c4b8529be44b3cb9ced_b.gif){#fig-gif2}
+:::
+:::::
+
+## Carregando e Processando Dados
+
+Conforme já relatado no item anterior, os dados foram obtidos na conta do GitHub de um dos autores deste trabalho. Os registros foram manipulados e consolidados para a geração de gráficos e tabelas. Nesse sentido, de forma a deixar transparente os procedimentos na manipulação desses dados, será mostrado o código processado no ambiente de programação R. Desse modo, em cada gráfico e tabela gerado conterá um botão no canto superior esquerdo identificado como "Mostrar código executado". Ao clicar nesse botão será exibido o script R.
+
+Ainda sobre esse ponto de exibição de código, vale destacar que a escrita deste artigo foi realizada no [Quarto](https://quarto.org/ "Link para acesso ao Quarto"){target="_blank"}, uma ferramenta de publicação técnica de código aberto que possibilita executar códigos na forma de documentos, apresentações, relatórios, e-books, dashboards, blogs e websites, utilizando linguagens de programação R, Python, Julia e Observable (JavaScript).
+
+A tabela interativa abaixo exibe todas as declarações, em formato legível, da profissão de arqueólogo das RAIS 2022 a 2024.
+
+```{r carregando dados}
+#| label: tabela-geral
+#| tbl-cap: "Tabela geral do conjunto de dados da RAIS 2022 a 2024"
+#| column: page
+#| fig-width: 12
+#| fig-height: 6
+
+# 2022
+url <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2022/RAIS/Dados_Tratados_RAIS_2022.xlsx"
+tmp <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url, write_disk(tmp))))
+Arqueo.RAIS.2022 <- read_excel(tmp)
+
+# 2023
+url2 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2023/RAIS/Dados_Tratados_RAIS_2023.xlsx"
+tmp2 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url2, write_disk(tmp2))))
+Arqueo.RAIS.2023 <- read_excel(tmp2)
+
+# Ajustes 2023
+Arqueo.RAIS.2023$Ano <- as.numeric(Arqueo.RAIS.2023$Ano)
+Arqueo.RAIS.2023$Mês.Desligamento <- as.character(Arqueo.RAIS.2023$Mês.Desligamento)
+Arqueo.RAIS.2023$Vl.Rem.Dezembro..SM <- as.numeric(Arqueo.RAIS.2023$Vl.Rem.Dezembro..SM)
+Arqueo.RAIS.2023$Vl.Rem.Média.Nom <- as.numeric(Arqueo.RAIS.2023$Vl.Rem.Média.Nom)
+Arqueo.RAIS.2023$Vl.Rem.Média..SM <- as.numeric(Arqueo.RAIS.2023$Vl.Rem.Média..SM)
+Arqueo.RAIS.2023$Tempo.Emprego <- as.numeric(Arqueo.RAIS.2023$Tempo.Emprego)
+Arqueo.RAIS.2023$Vl.Rem.Junho.SC <- as.numeric(Arqueo.RAIS.2023$Vl.Rem.Junho.SC)
+
+Causa.Afast.DF1 <- data.frame(
+  categorias = c("ACI TRB TIP", "ACI TRB TJT", "DOEN REL TR", "DOEN NREL TR", "LIC MATERNID", "SERV MILITAR", "LIC SEM VENC",
+                 "LIC COM VENC", "SUSP TEMP DE TRAB", "ACID DOENC TRAB", "SEM AFASTAMENTOS", "IGNORADO"),
+  Causa.Afastamento.1 = c(10, 20, 30, 40, 50, 60, 70, 80, 85, 90, 999, -1)
+)
+
+Arqueo.RAIS.2023 <- left_join(Arqueo.RAIS.2023, Causa.Afast.DF1, by = "Causa.Afastamento.1") %>%
+  mutate(Causa.Afastamento.1 = categorias) %>%
+  select(-categorias)
+
+Causa.Afast.DF2 <- data.frame(
+  categorias = c("ACI TRB TIP", "ACI TRB TJT", "DOEN REL TR", "DOEN NREL TR", "LIC MATERNID", "SERV MILITAR", "LIC SEM VENC",
+                 "LIC COM VENC", "SUSP TEMP DE TRAB", "ACID DOENC TRAB", "SEM AFASTAMENTOS", "IGNORADO"),
+  Causa.Afastamento.2 = c(10, 20, 30, 40, 50, 60, 70, 80, 85, 90, 999, -1)
+)
+
+Arqueo.RAIS.2023 <- left_join(Arqueo.RAIS.2023, Causa.Afast.DF2, by = "Causa.Afastamento.2") %>%
+  mutate(Causa.Afastamento.2 = categorias) %>%
+  select(-categorias)
+
+# 2024
+url3 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2024/RAIS/Dados_Tratados_RAIS_2024.xlsx"
+tmp3 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url3, write_disk(tmp3))))
+Arqueo.RAIS.2024 <- read_excel(tmp3)
+
+Arqueo.RAIS.2024$Mês.Desligamento <- as.character(Arqueo.RAIS.2024$Mês.Desligamento)
+Arqueo.RAIS.2024$Vl.Rem.Dezembro..SM <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Dezembro..SM)
+Arqueo.RAIS.2024$Vl.Rem.Média.Nom <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Média.Nom)
+Arqueo.RAIS.2024$Vl.Rem.Média..SM <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Média..SM)
+Arqueo.RAIS.2024$Tempo.Emprego <- as.numeric(Arqueo.RAIS.2024$Tempo.Emprego)
+Arqueo.RAIS.2024$Vl.Rem.Maio.SC <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Maio.SC)
+Arqueo.RAIS.2024$Vl.Rem.Junho.SC <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Junho.SC)
+Arqueo.RAIS.2024$Vl.Rem.Setembro.SC <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Setembro.SC)
+Arqueo.RAIS.2024$Vl.Rem.Outubro.SC <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Outubro.SC)
+
+Arqueo.RAIS.2024 <- left_join(Arqueo.RAIS.2024, Causa.Afast.DF1, by = "Causa.Afastamento.1") %>%
+  mutate(Causa.Afastamento.1 = categorias) %>%
+  select(-categorias)
+
+Arqueo.RAIS.2024 <- left_join(Arqueo.RAIS.2024, Causa.Afast.DF2, by = "Causa.Afastamento.2") %>%
+  mutate(Causa.Afastamento.2 = categorias) %>%
+  select(-categorias)
+
+# Juntar todos os anos
+junta <- full_join(Arqueo.RAIS.2022, Arqueo.RAIS.2023, by = NULL)
+Arqueo.RAIS.2022_2024 <- full_join(junta, Arqueo.RAIS.2024, by = NULL)
+
+# Remover objetos temporários
+rm(tmp, tmp2, tmp3, junta, url, url2, url3, Causa.Afast.DF1, Causa.Afast.DF2)
+
+# Converte todas as colunas de texto para fator
+rais_tabela <- Arqueo.RAIS.2022_2024 %>%
+  mutate(across(where(is.character), as.factor)) |> 
+  mutate(Ano = as.factor(Ano))
+
+#| column: page
+DT::datatable(rais_tabela, filter = 'top', options = list(
+  pageLength = 5, autoWidth = TRUE,  
+  columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
+  scrollX = TRUE ))
+```
+
+## Dados Gerais
+
+As declarações trabalhistas da profissão de arqueólogo mostram uma trajetória de crescimento constante no período analisado, talvez um indicativo de que as mudanças implementadas pelo eSocial trouxe uma melhor cobertura na captação dos dados.
+
+```{r total de vínculos}
+#| label: fig-vinculos
+#| fig-cap: "Quantitativo geral de declarações"
+
+geral.anual <- Arqueo.RAIS.2022_2024 %>%
+  group_by(Ano) %>%
+  summarise(total = n()) |> 
+  mutate(Ano = as.factor(Ano))
+
+# Gráfico interativo com echarts4r
+geral.anual %>%
+  e_charts(Ano) %>%
+  e_bar(total, name = "Vínculos") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].value[0];
+        var total = params[0].value[1];
+        return 'Ano: ' + ano + '<br/>Vínculos: ' + total;
+      }
+    ")
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Total de Vínculos Declarados",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_y_axis(
+    min = 0, 
+    splitLine = list(show = TRUE),
+    axisLabel = list(fontSize = 11),
+    scale = TRUE,
+    axisLine = list(show = TRUE)
+  ) %>%
+  e_grid(containLabel = TRUE) %>%
+  e_legend(show = FALSE) |> 
+  e_color("#E74C3C")
+  
+```
+
+Ao segmentar os registros por tipo de vínculo em 31/12, nota-se a expressiva permanência dos vínculos ativos ao final de cada ano, com uma taxa de crescimento acumulada no período em torno de 26,53%. Para as declarações do tipo desligado, o comportamento dos dados revela uma certa estabilidade, sem grandes oscilações e mantendo uma proporção relativamente baixa comparado ao outro grupo.
+
+```{r vínculos ativos em 31/12}
+#| label: fig-vinculos-ativos
+#| fig-cap: "Declarações por modalidades de vínculos em 31/12"
+
+vinculos_31.12 <- Arqueo.RAIS.2022_2024 %>%
+  group_by(Ano, Ind.Vínculo.Ativo.31.12) %>%
+  summarise(quant.tipo.vinculo = n(), .groups = "drop") %>%
+  mutate(Ind.Vínculo.Ativo.31.12 = dplyr::recode(Ind.Vínculo.Ativo.31.12,
+                                                  SIM = "ATIVOS",
+                                                  NÃO = "DESLIGADOS")) %>%
+  mutate(Ind.Vínculo.Ativo.31.12 = factor(Ind.Vínculo.Ativo.31.12, 
+                                          levels = c("ATIVOS", "DESLIGADOS"))) %>%
+  arrange(Ano, Ind.Vínculo.Ativo.31.12) |> 
+  mutate(Ano = as.factor(Ano))
+
+vinculos_31.12 %>%
+  group_by(Ind.Vínculo.Ativo.31.12) %>%
+  e_charts(Ano, timeline = FALSE) %>%
+  e_bar(quant.tipo.vinculo, stack = FALSE) %>%
+  e_flip_coords() %>%
+  e_y_axis(inverse = TRUE, axisLabel = list(fontSize = 9)) %>%
+  e_x_axis(
+    axisLabel = list(fontSize = 9),
+    splitLine = list(show = FALSE), axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Tipo de Vínculos em 31/12",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#1874CD", "#FF4040")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "5%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[0] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+```
+
+## Análise dos Dados por Vínculos Ativos em 31/12
+
+Os próximos gráficos são gerados a partir das declarações com vínculos ativos em 31/12. Esse procedimento possibilita analisar os dados dos arqueólogos que permaneceram em seus postos de trabalho até o final de cada ano. Assim, a filtragem dos registros será dada pela coluna `Ind.Vínculo.Ativo.31.12 == "SIM"`, em que o `SIM` representa os vínculos ativos.
+
+### Distribuição por Regiões
+
+A começar pela distribuição dos vínculos ativos por região, as maiores concentrações estão localizadas na região sudeste, seguido do nordeste. O norte obteve o menor número de declarações trabalhistas. As demais regiões apresentam pequenas oscilações nos registros analisados.
+
+```{r regiões}
+#| label: fig-regiao
+#| fig-cap: "Declarações ativas por região"
+
+Regiao <- Arqueo.RAIS.2022_2024 %>% 
+  filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>% 
+  mutate(regioes = UF.Estabelecimento) %>% 
+  mutate(regioes = recode(regioes,
+                          AC = "NORTE", AM = "NORTE", AP = "NORTE", PA = "NORTE", 
+                          RO = "NORTE", RR = "NORTE", TO = "NORTE",
+                          MA = "NORDESTE", PI = "NORDESTE", CE = "NORDESTE", 
+                          RN = "NORDESTE", PB = "NORDESTE", PE = "NORDESTE", 
+                          AL = "NORDESTE", SE = "NORDESTE", BA = "NORDESTE",
+                          GO = "CENTRO-OESTE", DF = "CENTRO-OESTE", MT = "CENTRO-OESTE", 
+                          MS = "CENTRO-OESTE",
+                          MG = "SUDESTE", SP = "SUDESTE", RJ = "SUDESTE", ES = "SUDESTE",
+                          PR = "SUL", SC = "SUL", RS = "SUL")) %>% 
+  mutate(regioes = factor(regioes, 
+                          levels = c("NORTE", "NORDESTE", "CENTRO-OESTE",
+                                     "SUDESTE", "SUL"))) %>% 
+  group_by(Ano, regioes) %>% 
+  summarise(quant.regioes = n(), .groups = "drop") |> 
+  mutate(Ano = as.factor(Ano))
+
+Regiao |>
+  group_by(regioes) |>
+  e_charts(Ano) |>
+  e_bar(quant.regioes) |>
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Distribuição dos Vínculos Ativos por Região",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    ")
+  )
+```
+
+### Distribuição por Estados
+
+Ao desagregar as informações regionais por estados, observa-se que a cobertura do mercado de trabalho formal não contempla todas as unidades federativas. Estados da região norte são os mais afetados pela falta de oportunidade de emprego formal por estabelecimentos localizados naquela região. Por outro lado, as empresas sediadas nos estados de São Paulo, Pernambuco e Santa Catarina são as que apresentaram as maiores concentrações de mão de obra arqueológica.
+
+Nessa conjuntura, o cenário que se visualiza é de uma assimetria na distribuição de oferta de trabalho por estabelecimentos localizados em diferentes regiões do país, desvelando um mercado concentrado nas mãos de poucas empresas que espalham seu estoque de empregados para os diversos cantos do país.
+
+```{r estados}
+#| label: fig-estados
+#| fig-cap: "Declarações ativas por estados"
+#| column: page
+#| fig-width: 12
+#| fig-height: 6
+
+estados <- Arqueo.RAIS.2022_2024 %>% 
+dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>% 
+group_by(Ano, UF.Estabelecimento) %>% 
+  summarise(quant.uf= n(), .groups = "drop") |> 
+  mutate(Ano = as.factor(Ano))
+
+grafico <- estados |>
+  group_by(UF.Estabelecimento) |>
+  e_charts(Ano) |>
+  e_bar(quant.uf) |>
+  e_facet(rows = 4, cols = 6, legend_pos = "bottom", legend_space = 12) |>
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+# Título externo ao gráfico
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Estados",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+
+```
+
+### Tipo de Vínculo Empregatício
+
+Para os tipos de vínculos empregatícios, há pouquíssimos arqueólogos trabalhando em repartições públicas, que, em termos proporcionais, representam 16% das declarações ativas. Ainda assim, é digno de nota o modesto crescimento observado nesse setor, o que leva a supor que houve algum tipo de movimentação política para a contratação de arqueólogos. Entretanto, é de conhecimento da categoria que no período analisado não houve um concurso público significativo que pudesse refletir os números mostrados no gráfico abaixo. A resposta para isso pode estar no painel seguinte.
+
+```{r vínculo empregatício}
+#| label: fig-empregaticio
+#| fig-cap: "Declarações ativas por modalidades de contratação"
+
+vinculos_empregaticio <- Arqueo.RAIS.2022_2024 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>% 
+  mutate(Tipo.Vínculo = dplyr::recode(Tipo.Vínculo,
+                                      "CLT R/PJ IND" = "CELETISTA",
+                                      "CLT U/PF IND" = "CELETISTA",
+                                      "CLT U/PJ DET" = "CELETISTA",
+                                      "CLT U/PJ IND" = "CELETISTA",
+                                      "CONT LEI EST" = "ESTATUTÁRIO",
+                                      "CONT LEI MUN" = "ESTATUTÁRIO",
+                                      "CONT PRZ DET" = "CELETISTA",
+                                      "ESTAT N/EFET" = "ESTATUTÁRIO",
+                                      "ESTAT RGPS" = "ESTATUTÁRIO",
+                                      "ESTATUTARIO" = "ESTATUTÁRIO",
+                                      "TEMPORARIO" = "CELETISTA")) %>% 
+  group_by(Ano, Tipo.Vínculo) %>%
+  summarise(quant.tipo.vinculo= n(), .groups = "drop") %>% 
+  mutate(Tipo.Vínculo = factor(Tipo.Vínculo, 
+                                          levels = c("CELETISTA", "ESTATUTÁRIO"))) %>% 
+  arrange(Ano, Tipo.Vínculo) |> 
+  mutate(Ano = as.factor(Ano))
+
+vinculos_empregaticio %>%
+  group_by(Tipo.Vínculo) %>%
+  e_charts(Ano, timeline = FALSE) %>%
+  e_bar(quant.tipo.vinculo, stack = FALSE) %>%
+  e_flip_coords() %>%
+  e_y_axis(inverse = TRUE, axisLabel = list(fontSize = 9)) %>%
+  e_x_axis(
+    axisLabel = list(fontSize = 9),
+    splitLine = list(show = FALSE), axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Distribuição dos Vínculos Ativos por Tipo de Vínculo Empregatício",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#4682B4", "#FF8C00")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "5%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[0] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+```
+
+### Natureza Jurídica do Empregador
+
+Se no gráfico anterior apontou para um aumento progressivo nos vínculos estatutários, aqui podemos visualizar que o setor público estadual foi o responsável por aqueles números observados. Mas ainda permanece a incógnita da existência desses dados que não refletem com a realidade vivenciada. Seriam declarações inconsistentes ou contratações temporárias sem a necessidade de seleção editalícia? Por se tratar de setor público, a continuidade do aumento ao longo do período descarta a possibilidade de erro na entrega dos registros trabalhistas. O que pode ter ocorrido é que há estados que autorizam a contratação de servidores temporários sem a necessidade de processo seletivo por edital. Essa hipótese nos leva ao entendimento de que a modalidade de admissão temporária sem edital é a mais vantajosa para atender a crescente demanda de exigências do licenciamento ambiental.
+
+Quanto aos demais grupos de empregadores, as entidades empresarias lideram nas contratações de mão de obra da categoria, enquanto o restante dos setores mantiveram a permanência dos arqueólogos em seus estabelecimentos.
+
+```{r natureza jurídica}
+#| label: fig-juridico
+#| fig-cap: "Declarações ativas por natureza jurídica do contratante"
+
+natureza_juridica <- Arqueo.RAIS.2022_2024 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  mutate(Natureza.Jurídica = dplyr::recode(Natureza.Jurídica,
+                                      "AUTARQ EST" = "Setor Público Estadual",
+                                      "AUTARQ FED" = "Setor Público Federal",
+                                      "CONS EMPRES" = "Entidades Empresariais",
+                                      "FRM MER IND" = "Entidades Empresariais",
+                                      "FUNDAC FED" = "Setor Público Federal",
+                                      "FUNDAC MUN" = "Setor Público Municipal",
+                                      "MUNICIPIO" = "Setor Público Municipal",
+                                      "ORG AUT FED" = "Setor Público Federal",
+                                      "OUT FUND PR" = "Entidades sem Fins Lucrativos",
+                                      "OUTR ORG" = "Entidades sem Fins Lucrativos",
+                                      "POD EXEC ES" = "Setor Público Estadual",
+                                      "POD EXEC FE" ="Setor Público Federal",
+                                      "POD EXEC MU" = "Setor Público Municipal",
+                                      "POD LEG MUN" = "Setor Público Municipal",
+                                      "SA ABERTA" = "Entidades Empresariais",
+                                      "SA FECH" = "Entidades Empresariais",
+                                      "SERV SOC AU" = "Entidades sem Fins Lucrativos",
+                                      "SOC MISTA" = "Entidades Empresariais",
+                                      "SOC QT LTDA" = "Entidades Empresariais",
+                                      "SOC SIMP LTD" = "Entidades Empresariais",
+                                      "SOC SIMP PUR" = "Entidades Empresariais",
+                                      "{ñ class}" = "Não identificado", 
+                                      .missing = "Não identificado")) %>% 
+  group_by(Ano, Natureza.Jurídica) %>%
+  summarise(quant.nat.jur= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Natureza.Jurídica, quant.nat.jur) %>% 
+  mutate(Natureza.Jurídica = factor(Natureza.Jurídica, 
+                             levels = c("Setor Público Federal", "Setor Público Estadual",
+                                        "Setor Público Municipal", "Entidades Empresariais",
+                                        "Entidades sem Fins Lucrativos", "Não identificado"))) |> 
+  mutate(Ano = as.factor(Ano))
+
+
+grafico <- natureza_juridica |>
+  group_by(Natureza.Jurídica) |>
+  e_charts(Ano) |>
+  e_bar(quant.nat.jur) |>
+  e_facet(rows = 2, cols=3, legend_pos = "bottom", legend_space = 12) |> 
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Natureza Jurídica do Empregador",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+```
+
+### Escolaridade dos Arqueólogos
+
+Os dados revelam que o mercado de trabalho formal não é tão atrativo para os arqueólogos com título de pós-graduação. Os graduados são os mais requisitados, representando mais de 70% das declarações de vínculos ativo. Para o ano de 2022, houve o envio de informações de escolaridade incompatível com o que determina a legislação para ser considerado arqueólogo. Esses dados foram reunidos em *Registros inconsistentes*, que engloba declarações contendo nível de analfabeto até superior incompleto.
+
+Nesse cenário visualizado, evidencia-se que a categoria *Registros inconsistentes* ocasionou uma sub-representação nos demais grupos, posto que não refletem seu real quantitativo para aquele ano. Um fator que pode ter contribuído para esse equívoco de preenchimento estar na transição do envio das declarações do GD-RAIS para o eSocial, em que os estabelecimentos ainda estavam se adaptando ao novo sistema.
+
+```{r escolaridade}
+#| label: fig-escolaridade
+#| fig-cap: "Declarações ativas por escolaridade"
+
+escolaridade <- Arqueo.RAIS.2022_2024 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>%
+  mutate(
+    Escolaridade.Após.2005 = dplyr::recode(
+      Escolaridade.Após.2005,
+      "ANALFABETO" = "Registros inconsistentes",
+      "DOUTORADO" = "Doutorado",
+      "FUND COMPL" = "Registros inconsistentes",
+      "MEDIO COMPL" = "Registros inconsistentes",
+      "MEDIO INCOMP" = "Registros inconsistentes",
+      "MESTRADO" = "Mestrado",
+      "SUP. COMP" = "Graduação",
+      "SUP. INCOMP" = "Registros inconsistentes"
+    )
+  ) %>%
+  group_by(Ano, Escolaridade.Após.2005) %>%
+  summarise(quant.escolaridade = n(), .groups = "drop") %>%
+  mutate(
+    Ano = factor(Ano, levels = c(2022, 2023, 2024)),
+    Escolaridade.Após.2005 = factor(
+      Escolaridade.Após.2005,
+      levels = c("Graduação", "Mestrado", "Doutorado", "Registros inconsistentes")
+    )
+  ) |> 
+  mutate(Ano = as.character(Ano))
+
+escolaridade %>%
+  group_by(Escolaridade.Após.2005) %>%
+  e_charts(Ano) %>%
+  e_line(quant.escolaridade, 
+         smooth = FALSE, 
+         symbol = "circle", 
+         symbolSize = 8,
+         lineStyle = list(width = 0.9)) %>%
+  e_x_axis(
+    type = "category", 
+    axisLabel = list(fontSize = 10),
+    axisTick = list(alignWithLabel = TRUE)
+  ) %>%
+  e_y_axis(
+    axisLabel = list(fontSize = 11),
+    splitLine = list(show = TRUE),
+    axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Distribuição dos Vínculos Ativos por Escolaridade",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3")) %>%  
+  e_grid(containLabel = TRUE, left = "10%", right = "15%") %>%  
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    "),
+      axisPointer = list(
+      type = "cross"
+    )
+  )
+```
+
+### Faixa Etária
+
+A maioria das faixas etárias apresentaram aumento nos registros trabalhistas, sendo a faixa de 30 a 39 anos a que lidera nas contratações da categoria. A partir dessa faixa, o quadro mostra uma tendência de possível abandono ou mudança de carreira ou de cargo conforme avança a idade do profissional.
+
+```{r faixa etária}
+#| label: fig-etario
+#| fig-cap: "Declarações ativas por faixa etária"
+
+faixa.etaria <- Arqueo.RAIS.2022_2024 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  group_by(Ano, Faixa.Etária) %>%
+  summarise(quant.etaria= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Faixa.Etária, quant.etaria) %>% 
+  mutate(Ano = as.character(Ano))
+
+faixa.etaria %>%
+  group_by(Faixa.Etária) %>%
+  e_charts(Ano) %>%
+  e_line(quant.etaria, 
+         smooth = FALSE, 
+         symbol = "circle", 
+         symbolSize = 8,
+         lineStyle = list(width = 0.9)) %>%
+  e_x_axis(
+    type = "category", 
+    axisLabel = list(fontSize = 10),
+    axisTick = list(alignWithLabel = TRUE)
+  ) %>%
+  e_y_axis(
+    axisLabel = list(fontSize = 11),
+    splitLine = list(show = TRUE),
+    axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Distribuição dos Vínculos Ativos por Faixa Etária",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FFB90F", "#CDCD00")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "15%") %>%  
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    "),
+      axisPointer = list(
+      type = "cross"
+    )
+  )
+```
+
+### Faixa Horária Contratual
+
+A maior parte dos arqueólogos trabalha na faixa de 41 a 44 horas semanais, uma jornada que inclui até os finais de semana como parte do contrato de trabalho.
+
+A persistência no preenchimento de informações acima de 44 horas semanais revela a existência de trabalhadores submetidos a condições de superexploração da força de trabalho, aliado a uma situação incompatível com o estabelecido pelas normas constitucionais. No outro extremo, uma parcela significativa de arqueólogos possuem jornadas de trabalho abaixo de 30 horas, indicativo de que foram contratados por condições especiais mediadas por acordos com o empregador.
+
+```{r faixa hora contratual}
+#| label: fig-hora
+#| fig-cap: "Declarações ativas por faixa horária contratual"
+
+faixa.horario <- Arqueo.RAIS.2022_2024 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  mutate(Faixa.Hora.Contrat = recode(Faixa.Hora.Contrat,
+                                     "{ñ class}" = "Não informado",
+                                     .default = Faixa.Hora.Contrat)) %>% 
+  group_by(Ano, Faixa.Hora.Contrat) %>%
+  summarise(quant.horario= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Faixa.Hora.Contrat, quant.horario) %>% 
+  mutate(Faixa.Hora.Contrat = factor(Faixa.Hora.Contrat, 
+                                         levels = c("Até 12 horas", "13 a 15 horas",
+                                                    "16 a 20 horas", "21 a 30 horas",
+                                                    "31 a 40 horas", "41 a 44 horas",
+                                                    "Acima de 44 horas", "Não informado"))) |> 
+  mutate(Ano = as.factor(Ano))
+
+grafico <- faixa.horario |>
+  group_by(Faixa.Hora.Contrat) |>
+  e_charts(Ano) |>
+  e_bar(quant.horario) |>
+  e_facet(rows = 3, cols=3, legend_pos = "bottom", legend_space = 12) |> 
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Faixa Horária Contratual",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+```
+
+### Faixa por Tempo de Emprego
+
+Um contigente de arqueólogos com mais de cinco anos em seus postos de trabalho mantêm uma perpectiva de estabilidade sem registro de decréscimo. Isso aponta que os estabelecimentos das duas faixas temporais (acima de 60 meses) apresentam condições laborais para a permanência dos trabalhadores.
+
+Os demais grupos registram oscilações no comportamento dos dados para cada ano analisado, sugerindo uma sensibilidade de rotatividade nas contratações de mão de obra. Isso pode ser reflexo do tempo de duração dos projetos arqueológicos executados no escopo do licenciamento ambiental.
+
+```{r tempo emprego}
+#| label: fig-tempo
+#| fig-cap: "Declarações ativas por faixa de tempo de emprego"
+
+tempo.emp <- Arqueo.RAIS.2022_2024 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  mutate(Faixa.Tempo.Emprego = recode(Faixa.Tempo.Emprego,
+                                     "12,0 a 23,9 meses" = "12 a 23 meses",
+                                     "120,0 meses ou mais" = "120 meses ou mais",
+                                     "24,0 a 35,9 meses" = "24 a 35 meses",
+                                     "3,0 a 5,9 meses" = "3 a 5 meses",
+                                     "36,0 a 59,9 meses" = "36 a 59 meses",
+                                     "6,0 a 11,9 meses" = "6 a 11 meses",
+                                     "60,0 a 119,9 meses" = "60 a 119 meses",
+                                     "Ate 2,9 meses" = "Até 2 meses")) %>% 
+  group_by(Ano, Faixa.Tempo.Emprego) %>%
+  summarise(quant.emp= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Faixa.Tempo.Emprego, quant.emp) %>% 
+  mutate(Faixa.Tempo.Emprego = factor(Faixa.Tempo.Emprego, 
+                                     levels = c("Até 2 meses", "3 a 5 meses",
+                                                "6 a 11 meses", "12 a 23 meses",
+                                                "24 a 35 meses", "36 a 59 meses",
+                                                "60 a 119 meses", "120 meses ou mais"))) |> 
+  mutate(Ano = as.factor(Ano))
+
+grafico <- tempo.emp |>
+  group_by(Faixa.Tempo.Emprego) |>
+  e_charts(Ano) |>
+  e_bar(quant.emp) |>
+  e_facet(rows = 3, cols=3, legend_pos = "bottom", legend_space = 12) |> 
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Faixa Tempo de Emprego",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+```
+
+### Distribuição por Sexo
+
+Não há uma distribuição equilibrada dos vínculos ativos por sexo. Os homens são dominantes no mercado de trabalho formal. Ambas as categorias apresentam tendências de crescimento constante.
+
+```{r distribuição por sexo}
+#| label: fig-ativo-sexo
+#| fig-cap: "Declarações ativas por sexo"
+
+sexo <- Arqueo.RAIS.2022_2024 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") |> 
+  group_by(Ano, Sexo) %>%
+  summarise(quant.sexo= n(), .groups = "drop") |> 
+  mutate(Sexo = factor(Sexo, 
+                           levels = c("MASCULINO", "FEMININO"))) %>% 
+  arrange(Ano, Sexo) |> 
+  mutate(Ano = as.factor(Ano))
+
+sexo %>%
+  group_by(Sexo) %>%
+  e_charts(Ano, timeline = FALSE) %>%
+  e_bar(quant.sexo, stack = FALSE) %>%
+  e_flip_coords() %>%
+  e_y_axis(inverse = TRUE, axisLabel = list(fontSize = 9)) %>%
+  e_x_axis(    
+    axisLabel = list(fontSize = 9),
+    splitLine = list(show = FALSE), axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Distribuição dos Vínculos Ativos por Sexo",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#00868B", "#D55E00")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "5%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[0] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+```
+
+### Distribuição por Cor e Raça
+
+No quesito de cor e raça, a maioria dos arqueólogos se declararam como pardos, seguidos de brancos. Os pretos, indígenas e amarelos têm participação pequena no mercado de trabalho formal.
+
+O cenário mostra uma tendência de decréscimo nas informações não declaradas, o que aponta melhorias de cobertura implementadas pelo eSocial.
+
+```{r cor/raça}
+#| label: fig-cor-raca
+#| fig-cap: "Declarações ativas por cor e raça"
+
+#| fig-cap: "Gráfico teste"
+raca.cor <- Arqueo.RAIS.2022_2024 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  mutate(Raça.Cor = recode(Raça.Cor,
+                                      "INDIGENA" = "Indígena",
+                                      "BRANCA" = "Branca",
+                                      "PRETA" = "Preta",
+                                      "AMARELA" = "Amarela",
+                                      "PARDA" = "Parda",
+                                      "NAO IDENT" = "Não declarado",
+                                      "IGNORADO" = "Não declarado",
+                                      .missing = "Não declarado")) %>% 
+  group_by(Ano, Raça.Cor) %>%
+  summarise(quantidade= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Raça.Cor, quantidade) %>% 
+  mutate(Raça.Cor = factor(Raça.Cor, 
+                                      levels = c("Branca", "Parda",
+                                                 "Preta", "Indígena",
+                                                 "Amarela", "Não declarado"))) |> 
+  mutate(Ano = as.factor(Ano))
+
+grafico <- raca.cor |>
+  group_by(Raça.Cor) |>
+  e_charts(Ano) |>
+  e_bar(quantidade) |>
+  e_facet(rows = 2, cols=3, legend_pos = "bottom", legend_space = 12) |> 
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Cor e Raça",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+```
+
+## Análise Remuneratória de Dezembro dos Vínculos Ativos em 31/12
+
+Para fins de análise dos valores remuneratórios de dezembro, procedeu-se numa correção dos números armazenados na coluna `Vl.Rem.Dezembro.Nom`, posto que alguns apresentavam ora excesso de dígitos ora ausência do marcador decimal. A detecção dos valores inexatos aconteceu a partir da comparação com as informações da coluna `Faixa.Rem.Dez..SM`, que descreve em qual faixa de salário mínimo a remuneração se insere. Assim, foi possível identificar quais cifras estavam em desconformidade com a faixa de salário mínimo, de modo a realizar a correção pela inserção do marcador decimal ou remoção dos dois últimos algarismos da remuneração.
+
+O controle para inserção do marcador decimal ou remoção de dígitos não foi dado pela coluna `Faixa.Rem.Dez..SM` e sim pela `Faixa.Rem.Média..SM` combinado com o valor do salário mínimo de 2024 (R\$ 1.412). Esse procedimento foi o que se mostrou o mais adequado para a correção das remunerações inconsistentes de forma a refletir com suas respectivas faixas de sálario mínimo.
+
+A tabela interativa abaixo mostra os valores antigos e corrigidos da coluna `Vl.Rem.Dezembro.Nom`, bem como a exibição de algumas variáveis para fins comparativos.
+
+```{r correção de valores remuneratórios}
+#| column: page
+#| fig-width: 12
+#| fig-height: 6
+
+remunera_corrigido <- Arqueo.RAIS.2022_2024 %>% # correção das casas decimais na coluna de Vl.Rem.Dezembro.Nom
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  mutate(valor_SM_fx_maximo_2024 = Faixa.Rem.Média..SM,
+         valor_SM_fx_maximo_2024 = recode(valor_SM_fx_maximo_2024, # correção a partir do valor do salário mínimo de 2024 (R$ 1.412,00)
+                "Até 0,50 salários mínimos" = 706,
+                "0,51 a 1,00 salários mínimos" = 1412,
+                "1,01 a 1,50 salários mínimos" = (1412* 1.5),
+                "1,51 a 2,00 salários mínimos" = (1412* 2),
+                "2,01 a 3,00 salários mínimos" = (1412* 3),
+                "3,01 a 4,00 salários mínimos" = (1412* 4),
+                "4,01 a 5,00 salários mínimos" = (1412* 5),
+                "5,01 a 7,00 salários mínimos" = (1412* 7),
+                "7,01 a 10,00 salários mínimos" = (1412* 10),
+                "10,01 a 15,00 salários mínimos" = (1412* 15),
+                "15,01 a 20,00 salários mínimos" = (1412* 20),
+                "Mais de 20,00 salários mínimos" = (1412* 20)),
+         vl.rem.dez.nom.corrigido = ifelse(Vl.Rem.Dezembro.Nom <= valor_SM_fx_maximo_2024
+                                           | Vl.Rem.Dezembro.Nom == 0.00,
+                               round(Vl.Rem.Dezembro.Nom, 2),
+                               round(Vl.Rem.Dezembro.Nom / 100, 2))) |> 
+  mutate(Natureza.Jurídica = dplyr::recode(Natureza.Jurídica,
+                                      "AUTARQ EST" = "Setor Público Estadual",
+                                      "AUTARQ FED" = "Setor Público Federal",
+                                      "CONS EMPRES" = "Entidades Empresariais",
+                                      "FRM MER IND" = "Entidades Empresariais",
+                                      "FUNDAC FED" = "Setor Público Federal",
+                                      "FUNDAC MUN" = "Setor Público Municipal",
+                                      "MUNICIPIO" = "Setor Público Municipal",
+                                      "ORG AUT FED" = "Setor Público Federal",
+                                      "OUT FUND PR" = "Entidades sem Fins Lucrativos",
+                                      "OUTR ORG" = "Entidades sem Fins Lucrativos",
+                                      "POD EXEC ES" = "Setor Público Estadual",
+                                      "POD EXEC FE" ="Setor Público Federal",
+                                      "POD EXEC MU" = "Setor Público Municipal",
+                                      "POD LEG MUN" = "Setor Público Municipal",
+                                      "SA ABERTA" = "Entidades Empresariais",
+                                      "SA FECH" = "Entidades Empresariais",
+                                      "SERV SOC AU" = "Entidades sem Fins Lucrativos",
+                                      "SOC MISTA" = "Entidades Empresariais",
+                                      "SOC QT LTDA" = "Entidades Empresariais",
+                                      "SOC SIMP LTD" = "Entidades Empresariais",
+                                      "SOC SIMP PUR" = "Entidades Empresariais",
+                                      "{ñ class}" = "Não identificado", 
+                                      .missing = "Não identificado")) %>%
+        dplyr::select(Ano, Faixa.Rem.Dez..SM, valor_SM_fx_maximo_2024, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, 
+                      Faixa.Rem.Média..SM, Vl.Rem.Média.Nom, Vl.Rem.Média..SM, Sexo, UF.Estabelecimento, Natureza.Jurídica, Escolaridade.Após.2005, Qtd.Hora.Contr, Tempo.Emprego, Raça.Cor, Idade, Município)
+
+remunera_tabela <- remunera_corrigido %>% 
+  mutate(Ano = as.factor(Ano),
+        Faixa.Rem.Dez..SM = factor(
+          Faixa.Rem.Dez..SM, 
+                     levels = c("Até 0,50 salários mínimos", "0,51 a 1,00 salários mínimos", "1,01 a 1,50 salários mínimos", "1,51 a 2,00 salários mínimos", "2,01 a 3,00 salários mínimos", "3,01 a 4,00 salários mínimos", "4,01 a 5,00 salários mínimos", "5,01 a 7,00 salários mínimos", "7,01 a 10,00 salários mínimos", "10,01 a 15,00 salários mínimos", "15,01 a 20,00 salários mínimos", "Mais de 20,00 salários mínimos", "{ñ class}")),
+          Faixa.Rem.Dez..SM =  dplyr::recode(Faixa.Rem.Dez..SM,
+           "{ñ class}" = "Não informado")) |> 
+  dplyr::select(Ano, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, Faixa.Rem.Dez..SM, Sexo, Escolaridade.Após.2005, Idade, Município, UF.Estabelecimento, Natureza.Jurídica, Qtd.Hora.Contr, Tempo.Emprego, Raça.Cor) |> 
+  mutate(Qtd.Hora.Contr = as.factor(Qtd.Hora.Contr),
+         Qtd.Hora.Contr =  dplyr::recode(Qtd.Hora.Contr,
+           "99" = "Não declarado"),
+         Escolaridade.Após.2005 = factor(
+          Escolaridade.Após.2005,
+           levels = c("SUP. COMP", "MESTRADO", "DOUTORADO", "ANALFABETO", "FUND COMPL", "MEDIO INCOMP", "MEDIO COMPL", "SUP. INCOMP")
+    )) |> 
+  mutate(across(where(is.character), as.factor))
+
+#| column: page
+DT::datatable(remunera_tabela, filter = 'top', options = list(
+  pageLength = 5, autoWidth = TRUE,  
+  columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
+  scrollX = TRUE ),
+  colnames = c("Ano declarado", "Remuneração nominal de dezembro - original", "Remuneração nominal de dezembro - corrigido", "Faixa renda de dezembro em salário mínimo", " Sexo", "Escolaridade", "Idade", "Município do estabelecimento", "UF do estabelecimento", "Natureza jurídica do estabelecimento", "Quantidade de horas declarada", "Tempo de emprego em meses", "Cor/raça"))
+```
+
+### Média Salarial
+
+A média salarial da categoria referente ao mês de dezembro mostra um tímido crescimento nos dois últimos anos. Esse quadro nos instiga a investigar outras variáveis que possam responder a esse modesto saldo remuneratório.
+
+```{r média salarial}
+#| label: fig-ativo-media
+#| fig-cap: "Declarações ativas por média salarial"
+
+# Preparar dados
+media_anual_dezembro <- remunera_corrigido %>%
+  group_by(Ano) %>%
+  summarise(media = round(mean(vl.rem.dez.nom.corrigido, na.rm = TRUE), 2)) %>%
+  ungroup() %>%
+  arrange(Ano) %>%
+  mutate(Ano_char = as.character(Ano))
+
+# Função para adicionar uma linha tracejada para cada ano
+adicionar_linha <- function(echart, ano, valor) {
+  echart %>%
+    e_mark_line(
+      serie = "Média Salarial",
+      data = list(
+        list(xAxis = 0, yAxis = ano),
+        list(xAxis = valor, yAxis = ano)
+      ),
+      lineStyle = list(type = "dashed", color = "gray70", width = 0.5),
+      symbol = "none"
+    )
+}
+
+# Gráfico base
+p <- media_anual_dezembro %>%
+  e_charts(media) %>%
+  e_scatter(Ano_char, symbol_size = 14, name = "Média Salarial") %>%
+  e_y_axis(
+    inverse = TRUE,
+    type = "category",
+    axisLabel = list(fontSize = 10),
+    axisLine = list(show = TRUE)
+  ) %>%
+  e_x_axis(
+    axisLabel = list(
+      fontSize = 10,
+      formatter = htmlwidgets::JS("
+        function(value) {
+          return 'R$ ' + value.toFixed(2)
+            .replace('.', ',')
+            .replace(/(\\d)(?=(\\d{3})+(?!\\d))/g, '$1.');
+        }
+      ")
+    ),
+    axisLine = list(show = TRUE),
+    splitLine = list(show = FALSE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Média Salarial de Dezembro dos Vínculos Ativos",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_legend(show = FALSE) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "10%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano    = params.value[1];
+        var valor  = parseFloat(params.value[0]);
+
+        var valorFormatado = 'R$ ' + valor.toFixed(2)
+          .replace('.', ',')
+          .replace(/(\\d)(?=(\\d{3})+(?!\\d))/g, '$1.');
+
+        return 'Ano: ' + ano + '<br/>' +
+              params.marker + ' Média Salarial: ' + valorFormatado;
+      }
+    "),
+    axisPointer = list(
+      type = "cross",
+      label = list(
+        formatter = htmlwidgets::JS("
+          function(params) {
+            // params.value pode ser número ou string; garantir número
+            var val = parseFloat(params.value);
+            if (params.axisDimension === 'x' && !isNaN(val)) {
+              return 'R$ ' + val.toFixed(2)
+                .replace('.', ',')
+                .replace(/(\\d)(?=(\\d{3})+(?!\\d))/g, '$1.');
+            } else {
+              return params.value; // eixo y (ano) sem formatação
+            }
+          }
+        ")
+      )
+    )
+  )
+
+# Adicionar as linhas tracejadas iterativamente
+p_final <- purrr::reduce2(
+  .x = media_anual_dezembro$Ano_char,
+  .y = media_anual_dezembro$media,
+  .f = adicionar_linha,
+  .init = p
+)
+
+# Exibir o gráfico
+p_final
+```
+
+### Resumo Estatístico
+
+Em todas as medidas de posição houve um aumento contínuo nos valores remuneratórios, possivelmente reflexo das variações advindas dos salários mínimos, que são reajustados a cada ano. Nota-se uma diferença significativa entre a média e mediana, que saltou de R$ 645,99 para R$ 820,95. Nesse caso estamos diante de uma assimetria na distribuição dos números, com os supersalários puxando o aumento da média. Diante disso, a mediana é o indicator mais realista para representar os salários dos arqueólogos, tendo em vista que ela localiza os 50% dos trabalhadores que recebem um determinado valor, enquanto a média é sensível a remunerações extremas.
+
+Importante destacar que o valor mínimo para o ano de 2022 mostrado na tabela abaixo é referente ao segundo valor mínimo daquele ano. O primeiro é o valor zero e optamos por remover esse número da tabela por ser o único ano que apresentou valores zero no período analisado. Essa remoção é apenas para fins ilustrativo, pois o zero está sendo considerado no cálculo da média, tendo em vista que faz parte do universo amostral. Ainda sobre esse ponto, até o momento não foi possível identificar as variáveis determinantes para a imputação de cifras zero.
+
+```{r tabela resumo estatistico}
+#| label: tbl-resumo-estatistico-geral-ativos
+#| tbl-cap: "Medidas de posição das remunerações nominais de dezembro dos vínculos ativos"
+
+resumo_remunera <- remunera_corrigido %>%
+     group_by(Ano) %>%
+     summarise(
+       Mínimo = min(vl.rem.dez.nom.corrigido[vl.rem.dez.nom.corrigido > 0], na.rm = TRUE),
+       Mediana = median(vl.rem.dez.nom.corrigido, na.rm = TRUE),
+       Média = mean(vl.rem.dez.nom.corrigido, na.rm = TRUE),
+       Máximo = max(vl.rem.dez.nom.corrigido, na.rm = TRUE)) %>%
+      mutate(across(where(is.numeric), ~ round(., 2)))
+
+resumo_remunera2 <- resumo_remunera %>%
+  pivot_longer(-Ano, names_to = "Estatística", values_to = "Valor") %>%
+  pivot_wider(names_from = Ano, values_from = Valor)
+
+tabela_remunera <- resumo_remunera2 %>%
+  gt() %>%
+  tab_header(
+    title = "Resumo Estatístico",
+    subtitle = "Valores Remuneratórios de Dezembro"
+  ) %>%
+  fmt_number(columns = where(is.numeric), decimals = 2, 
+             sep_mark = ".", dec_mark = ",", pattern = "R$ {x}") %>%
+  cols_label(
+    Estatística = ""
+  ) %>%
+  tab_spanner(
+    label = "Ano",
+    columns = where(is.numeric))
+
+tabela_remunera
+```
+
+A figura abaixo mostra a distribuição dos valores remuneratórios de dezembro na forma de boxplot, uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (outliers).
+
+O boxplot já confirma o que foi observado na tabela anterior, no qual a dispersão dos valores remuneratórios são assiméticos. Nessa visualização gráfica é possível identificar que houve uma queda no intervalo interquartil (IQR) de 2023 para 2024. Em 2023 o IQR obteve R$ 3.187,60 e em 2024 encolheu para R$ 3.159,27, que corresponde a uma diferença de -R$ 28,33. Da mesma forma, a base (1Q) diminuiu de R$ 3.156,16 para R$ 3.060,36, enquanto o topo (3Q) caiu de R$ 6.343,76 para R$ 6.219,63. Isso aponta que houve perdas salariais na faixa central das remunerações em relação a 2023.
+
+```{r boxplot}
+#| label: fig-boxplot
+#| fig-cap: "Boxplot das remunerações nominais de dezembro dos vínculos ativos"
+
+tabela <- remunera_corrigido %>%
+  group_by(Ano) %>%
+  summarise(
+    Mínimo = min(vl.rem.dez.nom.corrigido, na.rm = TRUE),
+    Q1 = quantile(vl.rem.dez.nom.corrigido, 0.25, na.rm = TRUE),
+    Mediana = median(vl.rem.dez.nom.corrigido, na.rm = TRUE),
+    Q3 = quantile(vl.rem.dez.nom.corrigido, 0.75, na.rm = TRUE),
+    Máximo = max(vl.rem.dez.nom.corrigido, na.rm = TRUE)
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  mutate(Ano = as.character(Ano))  # chave para o objeto JS
+
+tabela_list <- list()
+for(i in 1:nrow(tabela)) {
+  ano <- tabela$Ano[i]
+  tabela_list[[ano]] <- list(
+    Minimo = tabela$Mínimo[i],
+    Q1 = tabela$Q1[i],
+    Mediana = tabela$Mediana[i],
+    Q3 = tabela$Q3[i],
+    Maximo = tabela$Máximo[i]
+  )
+}
+
+tabela_json <- toJSON(tabela_list, auto_unbox = TRUE)
+
+dados_boxplot <- remunera_corrigido %>%
+  mutate(Ano = factor(Ano, levels = c(2022, 2023, 2024)))
+
+tooltip_js <- sprintf("
+  function(params) {
+    // Função auxiliar de formatação monetária
+    var formatMoney = function(val) {
+      if (typeof val !== 'number') val = parseFloat(val);
+      return 'R$ ' + val.toFixed(2)
+        .replace('.', ',')
+        .replace(/(\\d)(?=(\\d{3})+(?!\\d))/g, '$1.');
+    };
+
+    // Dados da tabela
+    var tabela = %s;
+
+    // Identificar o ano
+    var ano = params.name || params.axisValue;
+
+    // Verificar se é uma caixa (array com 5 elementos)
+    if (params.value && Array.isArray(params.value) && params.value.length >= 5) {
+      // Buscar estatísticas da tabela para este ano
+      var stats = tabela[ano];
+      if (stats) {
+        return 'Ano: ' + ano + '<br/>' +
+               'Mínimo: ' + formatMoney(stats.Minimo) + '<br/>' +
+               '1º Quartil: ' + formatMoney(stats.Q1) + '<br/>' +
+               'Mediana: ' + formatMoney(stats.Mediana) + '<br/>' +
+               '3º Quartil: ' + formatMoney(stats.Q3) + '<br/>' +
+               'Máximo: ' + formatMoney(stats.Maximo);
+      } else {
+        return 'Ano: ' + ano + ' (dados não encontrados)';
+      }
+    } else {
+      // É um outlier
+      var outlierVal = params.value;
+      if (Array.isArray(outlierVal)) outlierVal = outlierVal[1];
+      return 'Ano: ' + ano + '<br/>' +
+             'Outlier: ' + formatMoney(outlierVal);
+    }
+  }
+", tabela_json)
+
+dados_boxplot %>%
+  group_by(Ano) %>%
+  e_charts(Ano) %>%
+  e_boxplot(vl.rem.dez.nom.corrigido) %>%
+  e_y_axis(
+    axisLabel = list(
+      fontSize = 10,
+      formatter = htmlwidgets::JS("
+        function(value) {
+          return 'R$ ' + value.toFixed(2)
+            .replace('.', ',')
+            .replace(/(\\d)(?=(\\d{3})+(?!\\d))/g, '$1.');
+        }
+      ")
+    ),
+    axisLine = list(show = TRUE),
+    splitLine = list(show = TRUE)
+  ) %>%
+  e_x_axis(
+    type = "category",
+    axisLabel = list(fontSize = 11),
+    data = levels(dados_boxplot$Ano)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Boxplot da Remuneração de Dezembro dos Vínculos Ativos",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_legend(show = FALSE) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "10%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS(tooltip_js),
+    axisPointer = list(
+      type = "cross",
+      label = list(
+        formatter = htmlwidgets::JS("
+          function(params) {
+            var val = parseFloat(params.value);
+            if (params.axisDimension === 'y' && !isNaN(val)) {
+              return 'R$ ' + val.toFixed(2)
+                .replace('.', ',')
+                .replace(/(\\d)(?=(\\d{3})+(?!\\d))/g, '$1.');
+            } else {
+              return params.value; // eixo x (ano) sem formatação
+            }
+          }
+        ")
+      )
+    )
+  )
+```
+
+Para facilitar o entendimento de um boxplot, a figura abaixo ilustra como deve ser feito a leitura dessa representação gráfica.
+
+![Exemplo de leitura de [boxplot](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png "Link para acesso a fonte da figura boxplot"){target="_blank"}](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png){fig-align="center" #fig-gif-boxplot}
+
+### Distribuição por Faixa Salarial
+
+A maioria dos arqueólogos receberam remunerações que compreende a faixa entre 3 a 4 salários mínimos, seguido de 2 a 3 salários mínimos. Essas duas faixas foram as únicas que permaneceram em suas posições no registro longitudional. 
+
+Um contigente significativo de profissionais foram pagos em valores abaixo de 1 salário mínimo. Isso indica que para o mês de dezembro alguns arqueólogos pegaram curtos trabalhos de campo ou então foram contratados para atenderem demandas de projetos pequenos ou mesmo aceitaram remuneração baixa como opção para conseguir emprego.
+
+```{r tabela faixas salariais}
+#| results: 'asis'
+
+salario.2022 <- remunera_corrigido %>% 
+  dplyr::filter(Ano==2022) %>% 
+  mutate(
+    faixa_SM = case_when(
+      vl.rem.dez.nom.corrigido <= 1212 ~ "Até 1 salário mínimo",
+      vl.rem.dez.nom.corrigido > 1212 & vl.rem.dez.nom.corrigido <= (1212*2) ~ "Entre 1 e 2 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1212*2) & vl.rem.dez.nom.corrigido <= (1212*3) ~ "Entre 2 e 3 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1212*3) & vl.rem.dez.nom.corrigido <= (1212*4) ~ "Entre 3 e 4 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1212*4) & vl.rem.dez.nom.corrigido <= (1212*5) ~ "Entre 4 e 5 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1212*5) & vl.rem.dez.nom.corrigido <= (1212*7) ~ "Entre 5 e 7 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1212*7) & vl.rem.dez.nom.corrigido <= (1212*10) ~ "Entre 7 e 10 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1212*10) & vl.rem.dez.nom.corrigido <= (1212*15) ~ "Entre 10 e 15 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1212*15) & vl.rem.dez.nom.corrigido <= (1212*20) ~ "Entre 15 e 20 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1212*20) ~ "Acima de 20 salários mínimos",
+      TRUE ~ NA_character_),
+    faixa_valor = case_when(
+      vl.rem.dez.nom.corrigido <= 1212 ~ "Até R$ 1.212",
+      vl.rem.dez.nom.corrigido > 1212 & vl.rem.dez.nom.corrigido <= (1212*2) ~ "R$ 1.212 a R$ 2.424",
+      vl.rem.dez.nom.corrigido > (1212*2) & vl.rem.dez.nom.corrigido <= (1212*3) ~ "R$ 2.424 a R$ 3.636",
+      vl.rem.dez.nom.corrigido > (1212*3) & vl.rem.dez.nom.corrigido <= (1212*4) ~ "R$ 3.636 a R$ 4.848",
+      vl.rem.dez.nom.corrigido > (1212*4) & vl.rem.dez.nom.corrigido <= (1212*5) ~ "R$ 4.848 a R$ 6.060",
+      vl.rem.dez.nom.corrigido > (1212*5) & vl.rem.dez.nom.corrigido <= (1212*7) ~ "R$ 6.060 a R$ 8.484",
+      vl.rem.dez.nom.corrigido > (1212*7) & vl.rem.dez.nom.corrigido <= (1212*10) ~ "R$ 8.484 a R$ 12.120",
+      vl.rem.dez.nom.corrigido > (1212*10) & vl.rem.dez.nom.corrigido <= (1212*15) ~ "R$ 12.120 a R$ 18.180",
+      vl.rem.dez.nom.corrigido > (1212*15) & vl.rem.dez.nom.corrigido <= (1212*20) ~ "R$ 18.180 a R$ 24.240",
+      vl.rem.dez.nom.corrigido > (1212*20) ~ "Acima de R$ 24.240",
+      TRUE ~ NA_character_)) %>%
+  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor)
+
+resumo_salario.2022 <- salario.2022 %>% 
+group_by(faixa_SM, faixa_valor) %>%
+  summarise(quantidade= n()) %>% 
+  ungroup() %>% 
+  mutate(porcentagem = round((quantidade / sum(quantidade) * 100),2)) %>% 
+  dplyr::select(faixa_SM, faixa_valor, quantidade, porcentagem) %>% 
+  arrange(desc(porcentagem))
+
+tab.resumo_salario.2022 <- resumo_salario.2022 %>%
+  dplyr::select(faixa_SM, faixa_valor, porcentagem) %>% 
+  gt() %>%
+  tab_header(
+    title = "Distribuição Salarial - Dezembro/2022",
+    subtitle = "Salário mínimo de R$ 1.212") %>%
+  fmt_number(
+    columns = porcentagem,
+    decimals = 2, sep_mark = ".", dec_mark = ",") %>%
+  text_transform(
+    locations = cells_body(columns = porcentagem),
+    fn = function(x) paste0(x, "%")) %>%
+  cols_label(faixa_SM = gt::html("Faixa de Renda<br>(em salários mínimos)"),
+             faixa_valor = gt::html("Valor em<br>Salário Mínimo"),
+             porcentagem = gt::html("% de<br>Arqueólogos")) |> 
+  cols_align(
+  align = "center",
+  columns = c(porcentagem, faixa_valor, faixa_SM)
+)
+
+salario.2023 <- remunera_corrigido %>% 
+  dplyr::filter(Ano==2023) %>% 
+  mutate(
+    faixa_SM = case_when(
+      vl.rem.dez.nom.corrigido <= 1320 ~ "Até 1 salário mínimo",
+      vl.rem.dez.nom.corrigido > 1320 & vl.rem.dez.nom.corrigido <= (1320*2) ~ "Entre 1 e 2 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1320*2) & vl.rem.dez.nom.corrigido <= (1320*3) ~ "Entre 2 e 3 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1320*3) & vl.rem.dez.nom.corrigido <= (1320*4) ~ "Entre 3 e 4 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1320*4) & vl.rem.dez.nom.corrigido <= (1320*5) ~ "Entre 4 e 5 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1320*5) & vl.rem.dez.nom.corrigido <= (1320*7) ~ "Entre 5 e 7 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1320*7) & vl.rem.dez.nom.corrigido <= (1320*10) ~ "Entre 7 e 10 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1320*10) & vl.rem.dez.nom.corrigido <= (1320*15) ~ "Entre 10 e 15 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1320*15) & vl.rem.dez.nom.corrigido <= (1320*20) ~ "Entre 15 e 20 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1320*20) ~ "Acima de 20 salários mínimos",
+      TRUE ~ NA_character_),
+    faixa_valor = case_when(
+      vl.rem.dez.nom.corrigido <= 1320 ~ "Até R$ 1.320",
+      vl.rem.dez.nom.corrigido > 1320 & vl.rem.dez.nom.corrigido <= (1320*2) ~ "R$ 1.320 a R$ 2.640",
+      vl.rem.dez.nom.corrigido > (1320*2) & vl.rem.dez.nom.corrigido <= (1320*3) ~ "R$ 2.640 a R$ 3.960",
+      vl.rem.dez.nom.corrigido > (1320*3) & vl.rem.dez.nom.corrigido <= (1320*4) ~ "R$ 3.960 a R$ 5.280",
+      vl.rem.dez.nom.corrigido > (1320*4) & vl.rem.dez.nom.corrigido <= (1320*5) ~ "R$ 5.280 a R$ 6.600",
+      vl.rem.dez.nom.corrigido > (1320*5) & vl.rem.dez.nom.corrigido <= (1320*7) ~ "R$ 6.600 a R$ 9.240",
+      vl.rem.dez.nom.corrigido > (1320*7) & vl.rem.dez.nom.corrigido <= (1320*10) ~ "R$ 9.240 a R$ 13.200",
+      vl.rem.dez.nom.corrigido > (1320*10) & vl.rem.dez.nom.corrigido <= (1320*15) ~ "R$ 13.200 a R$ 19.800",
+      vl.rem.dez.nom.corrigido > (1320*15) & vl.rem.dez.nom.corrigido <= (1320*20) ~ "R$ 19.800 a R$ 26.400",
+      vl.rem.dez.nom.corrigido > (1320*20) ~ "Acima de R$ 26.400",
+      TRUE ~ NA_character_)) %>%
+  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor) %>% 
+  na.omit()
+
+resumo_salario.2023 <- salario.2023 %>% 
+  group_by(faixa_SM, faixa_valor) %>%
+  summarise(quantidade= n()) %>% 
+  ungroup() %>% 
+  mutate(porcentagem = round((quantidade / sum(quantidade) * 100),2)) %>% 
+  dplyr::select(faixa_SM, faixa_valor, quantidade, porcentagem) %>% 
+  arrange(desc(porcentagem))
+
+tab.resumo_salario.2023 <- resumo_salario.2023 %>%
+  dplyr::select(faixa_SM, faixa_valor, porcentagem) %>% 
+  gt() %>%
+  tab_header(
+    title = "Distribuição Salarial - Dezembro/2023",
+    subtitle = "Salário mínimo de R$ 1.320") %>%
+  fmt_number(
+    columns = porcentagem,
+    decimals = 2, sep_mark = ".", dec_mark = ",") %>%
+  text_transform(
+    locations = cells_body(columns = porcentagem),
+    fn = function(x) paste0(x, "%")) %>%
+  cols_label(faixa_SM = gt::html("Faixa de Renda<br>(em salários mínimos)"),
+             faixa_valor = gt::html("Valor em<br>Salário Mínimo"),
+             porcentagem = gt::html("% de<br>Arqueólogos")) |> 
+  cols_align(
+  align = "center",
+  columns = c(porcentagem, faixa_valor, faixa_SM)
+)
+
+salario.2024 <- remunera_corrigido %>% 
+  dplyr::filter(Ano==2024) %>% 
+  mutate(
+    faixa_SM = case_when(
+      vl.rem.dez.nom.corrigido <= 1412 ~ "Até 1 salário mínimo",
+      vl.rem.dez.nom.corrigido > 1412 & vl.rem.dez.nom.corrigido <= (1412*2) ~ "Entre 1 e 2 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1412*2) & vl.rem.dez.nom.corrigido <= (1412*3) ~ "Entre 2 e 3 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1412*3) & vl.rem.dez.nom.corrigido <= (1412*4) ~ "Entre 3 e 4 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1412*4) & vl.rem.dez.nom.corrigido <= (1412*5) ~ "Entre 4 e 5 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1412*5) & vl.rem.dez.nom.corrigido <= (1412*7) ~ "Entre 5 e 7 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1412*7) & vl.rem.dez.nom.corrigido <= (1412*10) ~ "Entre 7 e 10 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1412*10) & vl.rem.dez.nom.corrigido <= (1412*15) ~ "Entre 10 e 15 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1412*15) & vl.rem.dez.nom.corrigido <= (1412*20) ~ "Entre 15 e 20 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1412*20) ~ "Acima de 20 salários mínimos",
+      TRUE ~ NA_character_),
+    faixa_valor = case_when(
+      vl.rem.dez.nom.corrigido <= 1412 ~ "Até R$ 1.412",
+      vl.rem.dez.nom.corrigido > 1412 & vl.rem.dez.nom.corrigido <= (1412*2) ~ "R$ 1.412 a R$ 2.824",
+      vl.rem.dez.nom.corrigido > (1412*2) & vl.rem.dez.nom.corrigido <= (1412*3) ~ "R$ 2.824 a R$ 4.236",
+      vl.rem.dez.nom.corrigido > (1412*3) & vl.rem.dez.nom.corrigido <= (1412*4) ~ "R$ 4.236 a R$ 5.648",
+      vl.rem.dez.nom.corrigido > (1412*4) & vl.rem.dez.nom.corrigido <= (1412*5) ~ "R$ 5.648 a R$ 7.060",
+      vl.rem.dez.nom.corrigido > (1412*5) & vl.rem.dez.nom.corrigido <= (1412*7) ~ "R$ 7.060 a R$ 9.884",
+      vl.rem.dez.nom.corrigido > (1412*7) & vl.rem.dez.nom.corrigido <= (1412*10) ~ "R$ 9.884 a R$ 14.120",
+      vl.rem.dez.nom.corrigido > (1412*10) & vl.rem.dez.nom.corrigido <= (1412*15) ~ "R$ 14.120 a R$ 21.180",
+      vl.rem.dez.nom.corrigido > (1412*15) & vl.rem.dez.nom.corrigido <= (1412*20) ~ "R$ 21.180 a R$ 28.240",
+      vl.rem.dez.nom.corrigido > (1412*20) ~ "Acima de R$ 28.240",
+      TRUE ~ NA_character_)) %>%
+  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor) %>% 
+  na.omit()
+
+resumo_salario.2024 <- salario.2024 %>% 
+  group_by(faixa_SM, faixa_valor) %>%
+  summarise(quantidade= n()) %>% 
+  ungroup() %>% 
+  mutate(porcentagem = round((quantidade / sum(quantidade) * 100),2)) %>% 
+  dplyr::select(faixa_SM, faixa_valor, quantidade, porcentagem) %>% 
+  arrange(desc(porcentagem))
+
+tab.resumo_salario.2024 <- resumo_salario.2024 %>%
+  dplyr::select(faixa_SM, faixa_valor, porcentagem) %>% 
+  gt() %>%
+  tab_header(
+    title = "Distribuição Salarial - Dezembro/2024",
+    subtitle = "Salário mínimo de R$ 1.412") %>%
+  fmt_number(
+    columns = porcentagem,
+    decimals = 2, sep_mark = ".", dec_mark = ",") %>%
+  text_transform(
+    locations = cells_body(columns = porcentagem),
+    fn = function(x) paste0(x, "%")) %>%
+  cols_label(faixa_SM = gt::html("Faixa de Renda<br>(em salários mínimos)"),
+             faixa_valor = gt::html("Valor em<br>Salário Mínimo"),
+             porcentagem = gt::html("% de<br>Arqueólogos")) |> 
+  cols_align(
+  align = "center",
+  columns = c(porcentagem, faixa_valor, faixa_SM)
+)
+
+html_2022 <- gt::as_raw_html(tab.resumo_salario.2022)
+html_2023 <- gt::as_raw_html(tab.resumo_salario.2023)
+html_2024 <- gt::as_raw_html(tab.resumo_salario.2024)
+
+htmltools::browsable(
+  htmltools::tagList(
+
+    htmltools::tags$div(
+      id = "tabelas-container",
+      style = "
+        width: 80vw;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0 1rem;
+        box-sizing: border-box;
+      ",
+      htmltools::tags$div(
+        style = "
+          display: flex;
+          gap: 20px;
+          align-items: flex-start;
+          min-width: 900px;
+        ",
+        htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2022)),
+        htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2023)),
+        htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2024))
+      )
+    ),
+
+    htmltools::tags$script('
+      document.addEventListener("DOMContentLoaded", function() {
+        var container = document.getElementById("tabelas-container");
+
+        // Tenta os seletores mais comuns do TOC no Quarto
+        var toc = document.getElementById("TOC") ||
+                  document.querySelector(".sidebar-navigation") ||
+                  document.querySelector("nav[role=doc-toc]") ||
+                  document.querySelector(".toc-active");
+
+        if (!container || !toc) return;
+
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            toc.style.visibility = entry.isIntersecting ? "hidden" : "visible";
+          });
+        }, { threshold: 0.01 });
+
+        observer.observe(container);
+      });
+    ')
+  )
+)
+```
+
+### Distribuição por Sexo
+
+Os dados segmentados da remuneração por sexo mostra uma situação curiosa e indagativa: a média salarial das arqueólogas se mostrou maior que a dos arqueólogos em 2022 e 2023, mas recuou no ano de 2024, quebrando a trajetória de crescimento. O cenário é invertido com os homens superando as mulheres em um ritmo de subida consistente.
+
+Se em 2022 e 2023 o quadro favorecia as arqueólogas com uma diferença, respectivamente, de R$ 869,76 e R$ 273,32, por que se alterou para o ano de 2024 com os homens ultrapassando as mulheres em R$ 257,32? E qual ou quais fatorores impulsionaram o desempenho salarial das trabalhadoras nos anos iniciais, considerando que elas não representam o maior contingente no mercado de trabalho formal, conforme visualizado na @fig-ativo-sexo?
+
+A pista para compreender esse cenário pode ser obtida na tabela seguinte.
+
+```{r média remuneratória por sexo}
+#| label: fig-media-sexo
+#| fig-cap: "Média remuneratória de dezembro por sexo"
+
+media_anual_dez_masc <- remunera_corrigido %>%
+  dplyr::filter(Sexo=="MASCULINO") %>% 
+  group_by(Ano) %>%
+  summarise_at(vars(vl.rem.dez.nom.corrigido), list(media_masculino = ~ round(mean(., na.rm = TRUE),2)))
+
+media_anual_dez_fem <- remunera_corrigido %>%
+  dplyr::filter(Sexo=="FEMININO") %>% 
+  group_by(Ano) %>%
+  summarise_at(vars(vl.rem.dez.nom.corrigido), list(media_feminino = ~ round(mean(., na.rm = TRUE),2)))
+
+media_sexos <- full_join(media_anual_dez_fem, media_anual_dez_masc, by= NULL) 
+
+media_sexos2 <- media_sexos %>%
+  pivot_longer(-Ano, names_to = "Sexo", values_to = "Média_Dezembro") %>%
+  mutate(Sexo = recode(Sexo,
+                        media_feminino = "FEMININO",
+                        media_masculino = "MASCULINO")) %>%
+  mutate(Sexo = factor(Sexo,
+                       levels = c("FEMININO", "MASCULINO")),
+                Ano = as.factor(Ano))
+
+media_sexos2 %>%
+  group_by(Sexo) %>%
+  e_charts(Ano, timeline = FALSE) %>%
+  e_bar(Média_Dezembro, stack = FALSE) %>%
+  e_flip_coords() %>%
+  e_y_axis(inverse = TRUE, axisLabel = list(fontSize = 9)) %>%
+  e_x_axis(
+    axisLabel = list(
+      fontSize = 10,
+      formatter = htmlwidgets::JS("
+        function(value) {
+          return 'R$ ' + value.toFixed(2)
+            .replace('.', ',')
+            .replace(/(\\d)(?=(\\d{3})+(?!\\d))/g, '$1.');
+        }
+      ")
+    ),    
+    axisLine = list(show = TRUE),
+    splitLine = list(show = FALSE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Média Salarial de Dezembro por Sexo",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#D55E00", "#00868B")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "5%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          var valor = p.value[0];
+          // Garantir que valor é número antes de chamar toFixed
+          if (typeof valor === 'number') {
+            var valorFormatado = 'R$ ' + valor.toFixed(2)
+              .replace('.', ',')
+              .replace(/(\\d)(?=(\\d{3})+(?!\\d))/g, '$1.');
+          } else {
+            var valorFormatado = 'R$ ' + parseFloat(valor).toFixed(2)
+              .replace('.', ',')
+              .replace(/(\\d)(?=(\\d{3})+(?!\\d))/g, '$1.');
+          }
+          result += p.marker + ' ' + p.seriesName + ': ' + valorFormatado + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+
+```
+
+Todas as medidas de posição favoreciam as mulheres, com diferenças apontadas somente para o ano de 2024. A mediana apresentou uma trajetória mais simétria no período longitudinal, além de ser a medida mais próxima entre os sexos. Isso mostra que as divergências estão localizadas nos valores extremos, fato que é observado no topo e na base das remunerações. 
+
+Em relação as cifras máximas de 2024, o grupo feminino registrou uma queda considerável de -48,12% em comparação a 2023. Isso significa que a arqueóloga que recebeu a maior remuneração pode ter encerrado seu vínculo, se aposentado ou migrado para outra função ou mesmo permanecido no cargo com redução salarial mediada por acordo. Para o sexo masculino, o desempenho obtido em 2024 foi o responsável por manter o saldo positivo da média salarial geral da categoria daquele ano.
+
+Se todas as medidas de posição, a exceção de 2024, destacam as arqueólogas como o grupo com a melhor remuneração no mercado de trabalho formal, isso indica que, talvez, elas estejam ocupando cargos de chefia na condução dos projetos arqueológicos, enquanto os homens estão sendo direcionados para realizarem os trabalhos braçais de campo.
+
+```{r resumo estatístico por sexo}
+#| label: tbl-resumo-estatistico-sexo
+#| tbl-cap: "Medidas de posição das remunerações nominais de dezembro dos vínculos ativos por sexo"
+
+resumo_remunera_sexos <- remunera_corrigido %>%
+  mutate(Sexo = recode(Sexo,
+                       "FEMININO" = "Feminino",
+                       "MASCULINO" = "Masculino")) %>% 
+  group_by(Ano, Sexo) %>%
+  summarise(
+    Mínimo = min(vl.rem.dez.nom.corrigido[vl.rem.dez.nom.corrigido > 0], na.rm = TRUE),
+    Q1 = quantile(vl.rem.dez.nom.corrigido, 0.25, na.rm = TRUE),
+    Mediana = median(vl.rem.dez.nom.corrigido, na.rm = TRUE),
+    Média = mean(vl.rem.dez.nom.corrigido, na.rm = TRUE),
+    Q3 = quantile(vl.rem.dez.nom.corrigido, 0.75, na.rm = TRUE),
+    Máximo = max(vl.rem.dez.nom.corrigido, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  pivot_longer(
+    cols = c(Mínimo, Q1, Mediana, Média, Q3, Máximo),
+    names_to = "Estatística",
+    values_to = "Valor"
+  ) %>%
+  pivot_wider(
+    names_from = Ano,
+    values_from = Valor
+  )
+
+tabela_sexos <- resumo_remunera_sexos %>%
+  gt(
+    rowname_col = "Sexo",
+    groupname_col = "Estatística") %>%
+  tab_header(
+    title = "Resumo Estatístico",
+    subtitle = "Valores Remuneratórios de Dezembro por Sexo") %>%
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 2,
+    sep_mark = ".",
+    dec_mark = ",",
+    pattern = "R$ {x}"
+  ) %>%
+  tab_spanner(
+    label = "Ano",
+    columns = where(is.numeric)) %>%
+  cols_align(
+    align = "center",
+    columns = where(is.numeric)) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_row_groups())
+
+tabela_sexos
+```
+
+## Análise dos Dados por Vínculos Desligados em 31/12
+
+Os gráficos seguintes são relativos as declarações de trabalhadores que não permaneceram em seus postos de trabalho até o final do ano. Assim, a filtragem dos registros será dada pela coluna `Ind.Vínculo.Ativo.31.12 == "NÃO"`, em que o `NÃO` representa os vínculos desligados.
+
+### Motivo do Desligamento
+
+Os tipos de desligamentos com os maiores quantitativos mantiveram uma trajetória relativamente estável, mas com algumas nuances. O ano de 2023 foi bem atípico na dinâmica de rescisão de empregos, tendo em vista que houve um aumento significativo de arqueólogos pedindo demissão do trabalho, quase o dobro em relação ao ano anterior, enquanto a iniciativa de rompimento do vínculo pelo empregador ou pelo término de contrato obteram quedas nas declarações. Pode ser que esse cenário seja resultado da retomada da execução de grandes projetos arqueológicos pós-pandemia somado a mudanças do quadro político que favoreceu aos profissionais escolherem oportunidades de empregos vantajosos ou, talvez, o peso dos encargos trabalhistas no bolso obrigaram os trabalhadores a migrarem para o regime MEI, abrindo mão dos benefícios trabalhistas. Para 2024, os registros regrediram para o desempenho alcançado em 2022, com os arqueólogos perdendo poder de barganha para sair por conta própria.
+
+As declarações do término de contrato revelam que boa parte dos arqueólogos atuaram em vínculos temporários para atender projetos arqueológicos de curta duração. Merece atenção o aumento constantemente discreto de transferências de empregados, o que pode indicar parcerias entre as empresas visando alocar profissionais para projetos com dificuldades na aquisição de mão de obra ou de arqueólogos especialistas para condução dos trabalhos de campo ou de laboratório. Outro destaque é a presença no registro longitudinal das demissões por acordo, embora com proporções pequena, mas indicativo que esse tipo de desligamento também é utilizado nas rescisões de contrato motivados por negociações.
+
+```{r motivo desligamento}
+#| label: fig-motivo-desliga
+#| fig-cap: "Declarações desligadas por motivo de saída"
+
+desligados <- Arqueo.RAIS.2022_2024 %>% 
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=='NÃO') %>% 
+  mutate(Motivo.Desligamento = recode(Motivo.Desligamento,
+                           "DEM SEM JC" = "Rescisão sem Justa Causa - Empregador",
+                           "DESL POR ACORDO" = "Rescisão por Acordo",
+                           "DESL SEM JC" = "Rescisão sem Justa Causa - Empregado",
+                           "FALECIMENTO" = "Falecimento",
+                           "POSS OUT CAR" = "Posse em Outro Cargo Inacumulável",
+                           "TERM CONTR" = "Término do Contrato de Trabalho",
+                           "TRANS S/ONUS" = "Transferência de Empregado sem Ônus")) %>% 
+  group_by(Ano, Motivo.Desligamento) %>% 
+  summarise(quantidade= n()) %>% 
+  dplyr::select(Ano, Motivo.Desligamento, quantidade) %>% 
+  mutate(Motivo.Desligamento = factor(Motivo.Desligamento, 
+                           levels = c("Rescisão sem Justa Causa - Empregador", 
+                                      "Rescisão sem Justa Causa - Empregado",
+                                      "Término do Contrato de Trabalho", 
+                                      "Transferência de Empregado sem Ônus",
+                                      "Rescisão por Acordo", 
+                                      "Posse em Outro Cargo Inacumulável", "Falecimento"))) |> 
+  mutate(Ano = as.factor(Ano))
+
+desligados |>
+  group_by(Motivo.Desligamento) |>
+  e_charts(Ano) |>
+  e_bar(quantidade) |>
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Distribuição dos Motivos do Desligamento",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    ")
+  )
+```
+
+### Desligamento por Sexo
+
+Assim como nos vínculos ativos, os arqueólogos lideram nas saídas do mercado de trabalho formal, mas com um comportamento inverso. Aqui há uma tendência de encolhimento, reflexo do aumento ano a ano das declarações ativas. Situação um pouco diferente para os registros das arqueólogas, no qual o aumento notado nos vínculos ativos não interfere na diminuição da saída, pelo contrário, chega a projetar uma possível superação dos vínculos masculinos. 
+
+```{r motivo desligamento - sexo}
+#| label: fig-desliga-sexo
+#| fig-cap: "Declarações desligadas por sexo"
+
+sexo.desligado <- Arqueo.RAIS.2022_2024 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=='NÃO') %>% 
+  group_by(Ano, Sexo) %>%
+  summarise(quant.sexo= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Sexo, quant.sexo) |> 
+  mutate(Ano = as.factor(Ano),
+  Sexo = factor(Sexo, 
+                           levels = c("MASCULINO", "FEMININO")))
+
+sexo.desligado %>%
+  group_by(Sexo) %>%
+  e_charts(Ano, timeline = FALSE) %>%
+  e_bar(quant.sexo, stack = FALSE) %>%
+  e_flip_coords() %>%
+  e_y_axis(inverse = TRUE, axisLabel = list(fontSize = 9)) %>%
+  e_x_axis(    
+    axisLabel = list(fontSize = 9),
+    splitLine = list(show = FALSE), axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Distribuição dos Vínculos Desligados por Sexo",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#00868B", "#D55E00")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "5%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[0] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+```
+
+## Conclusão
+
+Os dados aqui analisados...
