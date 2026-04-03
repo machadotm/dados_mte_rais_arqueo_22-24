@@ -1499,24 +1499,17 @@ html_2022 <- gt::as_raw_html(tab.resumo_salario.2022)
 html_2023 <- gt::as_raw_html(tab.resumo_salario.2023)
 html_2024 <- gt::as_raw_html(tab.resumo_salario.2024)
 
-htmltools::tags$script(HTML('
-  document.addEventListener("DOMContentLoaded", function() {
-    var container = document.getElementById("tabelas-container");
-    var toc = document.getElementById("TOC") ||
-              document.querySelector(".sidebar-navigation") ||
-              document.querySelector("nav[role=doc-toc]");
+htmltools::browsable(
+  htmltools::tagList(
+      htmltools::tags$div(
+        class = "tabelas-side-by-side",
+        htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2022)),
+        htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2023)),
+        htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2024))
+      )
+    )
+  )
 
-    if (!container || !toc) return;
-
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        toc.style.visibility = entry.isIntersecting ? "hidden" : "visible";
-      });
-    }, { threshold: 0.01 });
-
-    observer.observe(container);
-  });
-'))
 ```
 
 ### Distribuição por Sexo
