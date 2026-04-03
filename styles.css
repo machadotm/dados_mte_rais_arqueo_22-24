@@ -5,3 +5,15 @@ p {
 .titulo-grafico p {
   text-align: center;
 }
+
+/* Garante que a sidebar recolhida não deixe espaço residual */
+#quarto-sidebar,
+#quarto-margin-sidebar,
+.sidebar-navigation {
+  transition: width 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+  min-width: 0 !important;
+}
+
+#quarto-content {
+  transition: margin 0.3s ease;
+}
