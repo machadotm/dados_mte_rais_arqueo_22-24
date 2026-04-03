@@ -6,14 +6,17 @@ p {
   text-align: center;
 }
 
-/* Garante que a sidebar recolhida não deixe espaço residual */
-#quarto-sidebar,
-#quarto-margin-sidebar,
-.sidebar-navigation {
-  transition: width 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
-  min-width: 0 !important;
+/* Classe aplicada pelo JS quando as tabelas estão visíveis */
+.toc-oculto #quarto-sidebar,
+.toc-oculto #quarto-margin-sidebar,
+.toc-oculto .sidebar-navigation {
+  display: none !important;
 }
 
-#quarto-content {
-  transition: margin 0.3s ease;
+.toc-oculto #quarto-content,
+.toc-oculto .quarto-grid,
+.toc-oculto #quarto-document-content {
+  grid-column: 1 / -1 !important;
+  max-width: 100% !important;
+  width: 100% !important;
 }
