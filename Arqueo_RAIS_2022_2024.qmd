@@ -1321,6 +1321,7 @@ Um contigente significativo de profissionais foram pagos em valores abaixo de 1 
 
 ```{r tabela faixas salariais}
 #| results: 'asis'
+#| column: screen-inset
 
 salario.2022 <- remunera_corrigido %>% 
   dplyr::filter(Ano==2022) %>% 
