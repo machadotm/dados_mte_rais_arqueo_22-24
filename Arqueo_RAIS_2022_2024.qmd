@@ -33,9 +33,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 # Carregar pacotes necessários
 library(httr)
 library(readxl)
-library(dplyr)
-library(tidyr)
-library(ggplot2) 
+library(tidyverse)
 library(echarts4r)
 library(scales)
 library(ggiraph)
@@ -44,6 +42,8 @@ library(gridExtra)
 library(DT)
 library(jsonlite)
 library(htmltools)
+library(flextable)
+library(officer)
 ```
 
 ## Introdução
@@ -95,7 +95,7 @@ Ainda sobre esse ponto de exibição de código, vale destacar que a escrita des
 A tabela interativa abaixo exibe todas as declarações, em formato legível, da profissão de arqueólogo das RAIS 2022 a 2024.
 
 ```{r carregando dados}
-#| label: tabela-geral
+#| label: tbl-tabela-geral 
 #| tbl-cap: "Tabela geral do conjunto de dados da RAIS 2022 a 2024"
 #| column: page
 #| fig-width: 12
@@ -548,6 +548,235 @@ titulo_html <- tags$div(
 )
 
 browsable(tagList(titulo_html, grafico))
+```
+
+### Tamanho do Estabelecimento por Setores Econômicos
+
+teste*******
+
+```{r econômico}
+#| column: screen-inset
+#| label: tbl-setor-economico
+#| tbl-cap: "Quantitativo de empregados por Classificação Nacional de Atividades Econômicas (CNAE) do IBGE"
+
+# Baixando o dicionário de dados do Novo CAGED (contém os setores econômicos)
+url.dic.cadeg <- "https://github.com/machadotm/Dados_MTE_Arqueo/raw/refs/heads/main/CAGED/3-Novo_Caged/Dicionario_Dados/Layout_Novo_Caged.xlsx"
+tmp.dic.caged <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url.dic.cadeg, write_disk(tmp.dic.caged ))))  
+
+secao <- read_excel(tmp.dic.caged, 
+                    sheet = "seção") %>% 
+  rename(Descrição_seção= Descrição,
+         Código_seção= Código)
+
+subclasse <- read_excel(tmp.dic.caged, 
+                        sheet = "subclasse",
+                        col_types = "text") %>% 
+  rename(Descrição_subclase= Descrição)
+
+# Recuperando os zeros
+subclasse <- subclasse %>%
+  mutate(Código = str_pad(Código, width = 7, side = "left", pad = "0"))
+
+subclasse <- subclasse %>%
+  mutate(prefixo = substr(Código, 1, 2)) %>%
+  mutate(Código_seção = case_when(
+    prefixo >= "01" & prefixo <= "03" ~ "A",
+    prefixo >= "05" & prefixo <= "09" ~ "B",
+    prefixo >= "10" & prefixo <= "33" ~ "C",
+    prefixo == "35" ~ "D",
+    prefixo >= "36" & prefixo <= "39" ~ "E",
+    prefixo >= "41" & prefixo <= "43" ~ "F",
+    prefixo >= "45" & prefixo <= "47" ~ "G",
+    prefixo >= "49" & prefixo <= "53" ~ "H",
+    prefixo >= "55" & prefixo <= "56" ~ "I",
+    prefixo >= "58" & prefixo <= "63" ~ "J",
+    prefixo >= "64" & prefixo <= "66" ~ "K",
+    prefixo == "68" ~ "L",
+    prefixo >= "69" & prefixo <= "75" ~ "M",
+    prefixo >= "77" & prefixo <= "82" ~ "N",
+    prefixo == "84" ~ "O",
+    prefixo == "85" ~ "P",
+    prefixo >= "86" & prefixo <= "88" ~ "Q",
+    prefixo >= "90" & prefixo <= "93" ~ "R",
+    prefixo >= "94" & prefixo <= "96" ~ "S",
+    prefixo == "97" ~ "T",
+    prefixo == "99" ~ "U"))
+
+junta.secao.subclasse <- left_join(subclasse, secao, by= 'Código_seção') %>% 
+  dplyr::select(-c(Código, prefixo, Código_seção)) %>% 
+  mutate(Descrição_seção = recode(Descrição_seção,
+                                  "Agricultura, Pecuária, Produção Florestal, Pesca e AqÜIcultura" =
+                                    "Agricultura, Pecuária, Produção Florestal, Pesca e Aquicultura")) %>% 
+  rename(CNAE.2.0.Subclasse = Descrição_subclase)
+
+Arqueo.RAIS.2022_2024 <- left_join(Arqueo.RAIS.2022_2024, junta.secao.subclasse, by= 'CNAE.2.0.Subclasse')#63
+
+tamanho.tab.economico <- Arqueo.RAIS.2022_2024
+
+tamanho.tab.economico <- tamanho.tab.economico %>% 
+  rename(
+         seção = Descrição_seção,
+         subclasse = CNAE.2.0.Subclasse,
+         tamestab = Tamanho.Estabelecimento)
+
+tamanho.tab.economico <- tamanho.tab.economico %>% 
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>% 
+  group_by(Ano, seção, subclasse, tamestab) %>% 
+  summarise(quantidade = n(), .groups = "drop") %>% 
+  mutate(tamestab = dplyr::recode(tamestab,
+                           "ATE 4" = "Até 4 trabalhadores", 
+                             "DE 5 A 9" = "De 5 a 9 trabalhadores",
+                             "DE 10 A 19" = "De 10 a 19 trabalhadores", 
+                             "DE 20 A 49" = "De 20 a 49 trabalhadores", 
+                             "DE 50 A 99" = "De 50 a 99 trabalhadores",
+                             "DE 100 A 249" = "De 100 a 249 trabalhadores", 
+                             "DE 250 A 499" = "De 250 a 499 trabalhadores", 
+                             "DE 500 A 999" = "De 500 a 999 trabalhadores",
+                             "1000 OU MAIS" = "1000 ou mais trabalhadores")) %>% 
+  mutate(tamestab = factor(tamestab, 
+                                    levels = c("Até 4 trabalhadores", "De 5 a 9 trabalhadores",
+                                                  "De 10 a 19 trabalhadores", "De 20 a 49 trabalhadores", 
+                                                  "De 50 a 99 trabalhadores", "De 100 a 249 trabalhadores", 
+                                                  "De 250 a 499 trabalhadores", "De 500 a 999 trabalhadores",
+                                                  "1000 ou mais trabalhadores"))) %>%
+  pivot_wider(
+    names_from  = Ano,
+    values_from = quantidade) %>% 
+  arrange(tamestab, seção, subclasse)
+
+
+colunas_anos <- tamanho.tab.economico %>%
+  select(where(is.numeric)) %>%
+  names()
+
+n_anos <- length(colunas_anos)
+
+# Totais por tamestab e ano
+totais_tab <- tamanho.tab.economico %>%
+  group_by(tamestab) %>%
+  summarise(across(all_of(colunas_anos), \(x) sum(x, na.rm = TRUE)),
+            .groups = "drop")
+
+# Total geral por ano
+totais_gerais <- tamanho.tab.economico %>%
+  summarise(across(all_of(colunas_anos), \(x) sum(x, na.rm = TRUE)))
+
+# Linha de percentual por grupo 
+percentual_secao <- totais_tab %>%
+  mutate(
+    across(all_of(colunas_anos), ~ {
+      total_geral <- totais_gerais[[cur_column()]]
+      ifelse(. == 0, "-", paste0(., " (", round(. / total_geral * 100, 2), "%)"))
+    }),
+    seção     = "",
+    subclasse = ""   
+  )
+
+anos_chr <- tamanho.tab.economico %>%
+  mutate(across(all_of(colunas_anos), ~ ifelse(is.na(.) | . == 0, "-", as.character(.))))
+
+dados_com_pct <- bind_rows(anos_chr, percentual_secao) %>%
+  arrange(tamestab, seção == "", subclasse == "")
+
+linhas_pct <- which(
+  dados_com_pct$seção == "" & dados_com_pct$subclasse == ""
+)
+
+linhas_tamestab <- which(
+  c(FALSE, dados_com_pct$tamestab[-1] != dados_com_pct$tamestab[-nrow(dados_com_pct)])
+) - 1
+
+linhas_secao <- dados_com_pct %>%
+  mutate(row_id = row_number()) %>%
+  group_by(tamestab) %>%
+  mutate(
+    mudou_secao = seção != lag(seção, default = first(seção)) & seção != ""
+  ) %>%
+  ungroup() %>%
+  filter(mudou_secao) %>%
+  pull(row_id)
+
+linhas_secao <- setdiff(linhas_secao - 1, linhas_tamestab)
+
+# Estilos de borda
+borda_grossa <- fp_border(color = "#222222", width = 2.0)
+borda_fina <- fp_border(color = "#888888", width = 1.0)
+borda_vert <- fp_border(color = "#aaaaaa", width = 1.5)
+borda_invisivel <- fp_border(width = 0, color = "transparent")
+
+# Tabela flextable
+tabela_tambest <- dados_com_pct %>%
+  flextable(col_keys = c("tamestab", "seção", "subclasse", colunas_anos)) %>%
+  merge_v(j = "tamestab") %>%
+  merge_v(j = "seção") %>%
+  add_header_row(
+    top = TRUE,
+    values = c("", "", "", ""),
+    colwidths = c(1, 1, 1, n_anos)
+  ) %>%
+  
+  # Rótulos da linha base do cabeçalho
+  set_header_labels(
+    tamestab = "Tamanho do Estabelecimento - Empregados Ativos",
+    seção = "Agrupamento Econômico - Seção CNAE 2.0",
+    subclasse = "Atividade Econômica Principal do CNPJ - Subclasse CNAE 2.0"
+  ) %>%
+  
+  # Nomear os anos na linha base
+  compose(
+    part = "header", i = 2,
+    j    = colunas_anos,
+    value = as_paragraph(colunas_anos)
+  ) %>%
+  align(align = "center", part = "all") %>%
+  align(j = c("seção", "subclasse"), align = "left", part = "body") %>%
+  
+  bold(part = "header") %>%
+  bold(j = "tamestab", part = "body") %>%
+  
+  # --- Estilo linhas de percentual ---
+  bold(i   = linhas_pct, part = "body") %>%
+  italic(i = linhas_pct, part = "body") %>%
+  color(i  = linhas_pct, color = "#2c5f8a", part = "body") %>%
+  
+  # Fundo azul claro apenas nas colunas de anos das linhas de percentual
+  bg(
+    i  = linhas_pct,
+    j  = colunas_anos,
+    bg = "#eef4fb",
+    part = "body"
+  ) %>%
+  
+  # --- Larguras ---
+  width(j = "tamestab", width = 2.5) %>%
+  width(j = "seção",       width = 3.0) %>%
+  width(j = "subclasse",   width = 3.5) %>%
+  width(j = colunas_anos,  width = 1.2) %>%
+   
+  theme_booktabs() %>%
+  
+  # Bordas verticais
+  border(j = "seção",     border.right = borda_vert, part = "all") %>%
+  border(j = "subclasse", border.right = borda_vert, part = "all") %>%
+  # Bordas horizontais
+  hline(i = linhas_tamestab, border = borda_grossa, part = "body") %>%
+  hline(i = linhas_secao,       border = borda_fina,   part = "body") %>%
+  
+  add_header_lines("Distribuição do Tamanho dos Estabelecimentos por Setores Econômicos") %>%
+  add_header_lines("Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024") %>%
+  
+  # Remover bordas das linhas de título/subtítulo
+  hline(i = 1, border = borda_invisivel, part = "header") %>%
+
+  # Centralizar, negrito e tamanhos diferenciados
+  align(i  = 1:2, align = "center", part = "header") %>%
+  
+  fontsize(i = 1, size = 14, part = "header") %>%  
+  fontsize(i = 2, size = 11, part = "header")   
+
+tabela_tambest
 ```
 
 ### Escolaridade dos Arqueólogos
