@@ -21,3 +21,9 @@ p {
   flex: 1 1 0;
   min-width: 260px;
 }
+
+/* Expande widgets plotly para 100% do container */
+.plotly.html-widget {
+  width: 100% !important;
+}
+

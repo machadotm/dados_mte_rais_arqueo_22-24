@@ -1,6 +1,6 @@
 ---
-title: "O Mercado de Trabalho dos Arqueólogos - Parte 1"
-subtitle: "Análise dos Dados da RAIS 2022 a 2024"
+title: "O Mercado de Trabalho Formal dos Arqueólogos"
+subtitle: "Análise dos Dados da RAIS e do Novo CAGED - 2022 a 2025"
 author: "Seu Nome"
 date: last-modified
 format: 
@@ -44,35 +44,45 @@ library(jsonlite)
 library(htmltools)
 library(flextable)
 library(officer)
+library(data.table)
+library(plotly)
 ```
 
-## Introdução
+# Notas Introdutórias
 
-Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) para os anos de 2022 a 2024, relativo à ocupação de arqueólogo. Os dados, aqui manipulados e consolidados para a geração de gráficos e tabelas, foram obtidos a partir dos registros tratados disponibilizados no [GitHub](https://github.com/machadotm/Novos_Dados_MTE_Arqueo "Link para acesso aos dados brutos e tratados"){target="_blank"}.
+Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) e do Novo CAGED (Cadastro Geral de Empregados e Desempregados) para os anos de 2022 a 2025, relativo à ocupação de arqueólogo. Os dados, aqui manipulados e consolidados para a geração de gráficos e tabelas, foram obtidos a partir dos registros tratados disponibilizados no [GitHub](https://github.com/machadotm/Novos_Dados_MTE_Arqueo "Link para acesso aos dados brutos e tratados"){target="_blank"}.
 
-A RAIS é uma das base de dados do governo sobre o mercado de trabalho formal no Brasil, cujo sistema é alimentado obrigatoriamente pelos estabelecimentos com ou sem empregados. Seus registros contemplam tanto as declarações de trabalhadores regidos por CLT (Consolidação das Leis do Trabalho) quanto dos servidores públicos. A divulgação das informações coletados é realizada anualmente, contendo dados detalhados do ano-base de referência de todos os trabalhadores com vínculo empregatício formal. O último ano-base divulgado é de 2024.
+Frisa-se que as análises aqui discorridas não tem a pretensão de fazer comparação ou mesmo uma continuidade das observações abordadas no artigo de [Machado e Mageste](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}, que investigaram os dados da RAIS e CAGED para o intervalo temporal de 1994 a 2021. Essa quebra histórica atende a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados da RAIS de 2022 e anos subsequentes não devem ser comparados com os registros anteriores a 2022. O MTE divulgou uma [nota técnica](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais/rais-2022/nota-tecnica-rais-2022.pdf "Link para acesso a nota técnica sobre os dados da RAIS 2022. Essa nota técnica apresenta os resultados das declarações trabalhistas daquele ano e informa a existência de quebra histórica nos dados da RAIS"){target="_blank"} detalhando as causas dessa quebra histórica, que foi resultado da transição metodológica na captação dos registros trabalhista, implementada, gradualmente, desde 2018 e concluída em 2022. Assim, um cronograma foi estabelecido para a migração ao novo sistema de envio das declarações trabalhistas, passando do tradicional GD-RAIS, alimentado anualmente, para o sistema unificado do [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"){target="_blank"}, de periodicidade mensal e contínuo, sendo o ano-base 2022 o último ano dessa transição, além de apresentar registros híbridos provenientes dos dois sistemas. Da mesma forma, o caso pode ser aplicado ao Novo CAGED, conforme [recomendação de pesquisadores](https://blogdoibre.fgv.br/posts/serie-nova-de-emprego-formal-do-caged-nao-deve-ser-comparada-com-antiga "Link para acesso a nota no blog do IBRE/FGV"){target="_blank"} no assunto.
 
-Importante destacar que as análises aqui discorridas não tem a pretensão de fazer comparação ou mesmo uma continuidade das observações abordadas no artigo de [Machado e Mageste](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}, que investigaram os dados da RAIS para o intervalo temporal de 1994 a 2021. Essa quebra histórica atende a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados de 2022 e anos subsequentes não devem ser comparados com os registros anteriores a 2022. O MTE divulgou uma [nota técnica](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais/rais-2022/nota-tecnica-rais-2022.pdf "Link para acesso a nota técnica sobre os dados da RAIS 2022. Essa nota técnica apresenta os resultados das declarações trabalhistas daquele ano e informa a existência de quebra histórica nos dados da RAIS"){target="_blank"} detalhando as causas dessa quebra histórica, que foi resultado da transição metodológica na captação dos registros trabalhista, implementada, gradualmente, desde 2018 e concluída em 2022. Assim, um cronograma foi estabelecido para a migração ao novo sistema de envio das declarações trabalhistas, passando do tradicional GD-RAIS, alimentado anualmente, para o sistema unificado do [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"){target="_blank"}, de periodicidade mensal e contínuo, sendo o ano-base 2022 o último ano dessa transição, além de apresentar registros híbridos provenientes dos dois sistemas.
+Neste estudo pretende-se analisar diferentes variáveis e o comportamento dessas informações ao longo do intervalo temporal, que inclui:
 
-Neste artigo pretende-se analisar diferentes variáveis e o comportamento dessas informações ao longo do intervalo temporal, que inclui:
+- No caso da RAIS:
+  -   quantitativo de registros declarados e os tipos de vínculos em 31/12
+  -   distribuição dos vínculos ativos em 31/12 por:
+      -   região
+      -   estados
+      -   vínculo empregatício
+      -   natureza jurídica do empregador
+      -   escolaridade dos arqueólogos
+      -   intervalo por grupos de:
+          -   idades
+          -   horas trabalhadas
+          -   tempo de emprego
+      -   sexo
+      -   cor/raça
+      -   média salarial e resumo estatísticos das remunerações
+  -   distribuição dos vínculos desligados em 31/12 por:
+      -   motivo do desligamento
+      -   sexo
 
--   quantitativo de registros declarados e os tipos de vínculos em 31/12
--   distribuição dos vínculos ativos em 31/12 por:
-    -   região
-    -   estados
-    -   vínculo empregatício
-    -   natureza jurídica do empregador
-    -   escolaridade dos arqueólogos
-    -   intervalo por grupos de:
-        -   idades
-        -   horas trabalhadas
-        -   tempo de emprego
-    -   sexo
-    -   cor/raça
-    -   média salarial e resumo estatísticos das remunerações
--   distribuição dos vínculos desligados em 31/12 por:
-    -   motivo do desligamento
-    -   sexo
+- Para o Novo CAGED:
+  - movimentações por
+    - ano
+    - mês
+    - região
+    - unidades federativas
+    - sexo
+  - unidades salariais de admitidos
 
 Os gráficos e tabelas foram feitos na linguagem de programação R. Em relação aos gráficos, eles foram criados em formato dinâmico e interativo. Assim, é possível passar o cursor do mouse para visualizar informações contidas nas barras e linhas, bem como remover registros específicos de forma a deixar apenas dados relevantes no painel de visualização.
 
@@ -86,21 +96,15 @@ Os gráficos e tabelas foram feitos na linguagem de programação R. Em relaçã
 :::
 :::::
 
-## Carregando e Processando Dados
+# Carregando e Processando Dados
 
-Conforme já relatado no item anterior, os dados foram obtidos na conta do GitHub de um dos autores deste trabalho. Os registros foram manipulados e consolidados para a geração de gráficos e tabelas. Nesse sentido, de forma a deixar transparente os procedimentos na manipulação desses dados, será mostrado o código processado no ambiente de programação R. Desse modo, em cada gráfico e tabela gerado conterá um botão no canto superior esquerdo identificado como "Mostrar código executado". Ao clicar nesse botão será exibido o script R.
+Conforme já relatado no item anterior, os dados foram obtidos na conta do GitHub do autor deste trabalho. Os registros foram manipulados e consolidados para a geração de gráficos e tabelas. Nesse sentido, de forma a deixar transparente os procedimentos na manipulação desses dados, será mostrado o código processado no ambiente de programação R. Desse modo, em cada gráfico e tabela gerado conterá um botão no canto superior esquerdo identificado como "Mostrar código executado". Ao clicar nesse botão será exibido o script R.
 
 Ainda sobre esse ponto de exibição de código, vale destacar que a escrita deste artigo foi realizada no [Quarto](https://quarto.org/ "Link para acesso ao Quarto"){target="_blank"}, uma ferramenta de publicação técnica de código aberto que possibilita executar códigos na forma de documentos, apresentações, relatórios, e-books, dashboards, blogs e websites, utilizando linguagens de programação R, Python, Julia e Observable (JavaScript).
 
-A tabela interativa abaixo exibe todas as declarações, em formato legível, da profissão de arqueólogo das RAIS 2022 a 2024.
-
 ```{r carregando dados}
-#| label: tbl-tabela-geral 
-#| tbl-cap: "Tabela geral do conjunto de dados da RAIS 2022 a 2024"
-#| column: page
-#| fig-width: 12
-#| fig-height: 6
 
+#---------------RAIS---------------
 # 2022
 url <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2022/RAIS/Dados_Tratados_RAIS_2022.xlsx"
 tmp <- tempfile(fileext = ".xlsx")
@@ -176,12 +180,78 @@ Arqueo.RAIS.2022_2024 <- full_join(junta, Arqueo.RAIS.2024, by = NULL)
 # Remover objetos temporários
 rm(tmp, tmp2, tmp3, junta, url, url2, url3, Causa.Afast.DF1, Causa.Afast.DF2)
 
+#---------------------------Novo CAGED-------------------------------
+
+url5 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2022/Novo_CAGED/Dados_Tratados_Novo%20CAGED_2022.xlsx"
+tmp5 <- tempfile(fileext = ".xlsx")  # Cria arquivo temporário
+invisible(capture.output(
+GET(url5, write_disk(tmp5))))  # Baixa o arquivo
+
+Arqueo.CAGED.2022 <- read_excel(tmp5)
+
+url6 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2023/Novo_CAGED/Dados_Tratados_Novo%20CAGED_2023.xlsx"
+tmp6 <- tempfile(fileext = ".xlsx") 
+invisible(capture.output(
+GET(url6, write_disk(tmp6))))  
+
+Arqueo.CAGED.2023 <- read_excel(tmp6)
+
+url7 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2024/Novo_CAGED/Dados_Tratados_Novo%20CAGED_2024.xlsx"
+tmp7 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url7, write_disk(tmp7)))) 
+
+Arqueo.CAGED.2024 <- read_excel(tmp7)
+
+url8 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2025/Novo_CAGED/Dados_Tratados_Novo%20CAGED_2025.xlsx"
+tmp8 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url8, write_disk(tmp8))))  
+
+Arqueo.CAGED.2025 <- read_excel(tmp8)
+
+junta3 <- full_join(Arqueo.CAGED.2022, Arqueo.CAGED.2023, by= NULL)
+
+Arqueo.CAGED.2024$horascontratuais <- gsub(",", ".", 
+                                           Arqueo.CAGED.2024$horascontratuais)
+
+Arqueo.CAGED.2024$horascontratuais <- as.numeric(Arqueo.CAGED.2024$horascontratuais)
+
+Arqueo.CAGED.2024$salário <- gsub(",", ".", 
+                                           Arqueo.CAGED.2024$salário)
+
+Arqueo.CAGED.2024$salário <- as.numeric(Arqueo.CAGED.2024$salário)
+
+Arqueo.CAGED.2024$valorsaláriofixo <- gsub(",", ".", 
+                                  Arqueo.CAGED.2024$valorsaláriofixo)
+
+Arqueo.CAGED.2024$valorsaláriofixo <- as.numeric(Arqueo.CAGED.2024$valorsaláriofixo)
+
+junta4 <- full_join(junta3, Arqueo.CAGED.2024, by= NULL)
+
+Arqueo.CAGED.2022_2025 <- full_join(junta4, Arqueo.CAGED.2025, by= NULL)
+
+# Remover objetos temporários
+rm(tmp5, tmp6, tmp7, tmp8, junta3, junta4, url5, url6, url7, url8)
+
+```
+
+# RAIS
+
+A RAIS é uma das base de dados do governo sobre o mercado de trabalho formal no Brasil, cujo sistema é alimentado obrigatoriamente pelos estabelecimentos com ou sem empregados. Seus registros contemplam tanto as declarações de trabalhadores regidos por CLT (Consolidação das Leis do Trabalho) quanto dos servidores públicos. A divulgação das informações coletados é realizada anualmente, contendo dados detalhados do ano-base de referência de todos os trabalhadores com vínculo empregatício formal. O último ano-base divulgado é de 2025.
+
+A tabela interativa abaixo exibe todas as declarações, em formato legível, da profissão de arqueólogo das RAIS 2022 a 2025.
+
+```{r tabela rais}
+#| label: tbl-tabela-geral-rais
+#| tbl-cap: "Conjunto geral de dados da RAIS 2022 a 2025"
+#| column: page
+
 # Converte todas as colunas de texto para fator
 rais_tabela <- Arqueo.RAIS.2022_2024 %>%
   mutate(across(where(is.character), as.factor)) |> 
   mutate(Ano = as.factor(Ano))
 
-#| column: page
 DT::datatable(rais_tabela, filter = 'top', options = list(
   pageLength = 5, autoWidth = TRUE,  
   columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
@@ -294,7 +364,7 @@ Os próximos gráficos são gerados a partir das declarações com vínculos ati
 
 ### Distribuição por Regiões
 
-A começar pela distribuição dos vínculos ativos por região, as maiores concentrações estão localizadas na região sudeste, seguido do nordeste. O norte obteve o menor número de declarações trabalhistas. As demais regiões apresentam pequenas oscilações nos registros analisados.
+A começar pela distribuição dos vínculos ativos por região, as maiores concentrações estão localizadas nas empresas da região sudeste, seguido do nordeste. O norte obteve o menor número de declarações trabalhistas. As demais regiões apresentam pequenas oscilações nos registros analisados.
 
 ```{r regiões}
 #| label: fig-regiao
@@ -343,7 +413,7 @@ Regiao |>
   )
 ```
 
-### Distribuição por Estados
+### Distribuição por Estados {#sec-ativos-estados}
 
 Ao desagregar as informações regionais por estados, observa-se que a cobertura do mercado de trabalho formal não contempla todas as unidades federativas. Estados da região norte são os mais afetados pela falta de oportunidade de emprego formal por estabelecimentos localizados naquela região. Por outro lado, as empresas sediadas nos estados de São Paulo, Pernambuco e Santa Catarina são as que apresentaram as maiores concentrações de mão de obra arqueológica.
 
@@ -552,7 +622,7 @@ browsable(tagList(titulo_html, grafico))
 
 ### Tamanho do Estabelecimento por Setores Econômicos
 
-teste*******
+teste\*\*\*\*\*\*\*
 
 ```{r econômico}
 #| column: screen-inset
@@ -777,6 +847,44 @@ tabela_tambest <- dados_com_pct %>%
   fontsize(i = 2, size = 11, part = "header")   
 
 tabela_tambest
+```
+
+### Trabalho Intermitente
+
+```{r intermitente}
+#| label: fig-intermitente
+#| fig-cap: "Declarações ativas por indicador de trabalho intermitente"
+
+intermintente <- Arqueo.RAIS.2022_2024 %>% 
+  filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>%
+  mutate(Ind.Trabalho.Intermitente = recode(Ind.Trabalho.Intermitente,
+                          SIM = "Sim", NAO = "Não")) %>% 
+  group_by(Ano, Ind.Trabalho.Intermitente) %>% 
+  summarise(quantidade = n(), .groups = "drop") |> 
+  mutate(Ano = as.factor(Ano))
+
+intermintente  |>
+  group_by(Ind.Trabalho.Intermitente) |>
+  e_charts(Ano) |>
+  e_bar(quantidade) |>
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    subtext = "Distribuição dos Vínculos Ativos por Trabalho Intermitente",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    ")
+  )
+
 ```
 
 ### Escolaridade dos Arqueólogos
@@ -1170,13 +1278,15 @@ browsable(tagList(titulo_html, grafico))
 
 ## Análise Remuneratória de Dezembro dos Vínculos Ativos
 
-Para fins de análise dos valores remuneratórios de dezembro, procedeu-se numa correção dos números armazenados na coluna `Vl.Rem.Dezembro.Nom`, posto que alguns apresentavam ora excesso de dígitos ora ausência do marcador decimal. A detecção dos valores inexatos aconteceu a partir da comparação com as informações da coluna `Faixa.Rem.Dez..SM`, que descreve em qual faixa de salário mínimo a remuneração se insere. Assim, foi possível identificar quais cifras estavam em desconformidade com a faixa de salário mínimo, de modo a realizar a correção pela inserção do marcador decimal ou remoção dos dois últimos algarismos da remuneração. 
+Para fins de análise dos valores remuneratórios de dezembro, procedeu-se numa correção dos números armazenados na coluna `Vl.Rem.Dezembro.Nom`, posto que alguns apresentavam ora excesso de dígitos ora ausência do marcador decimal. A detecção dos valores inexatos aconteceu a partir da comparação com as informações da coluna `Faixa.Rem.Dez..SM`, que descreve em qual faixa de salário mínimo a remuneração se insere. Assim, foi possível identificar quais cifras estavam em desconformidade com a faixa de salário mínimo, de modo a realizar a correção pela inserção do marcador decimal ou remoção dos dois últimos algarismos da remuneração.
 
 O controle para inserção do marcador decimal ou remoção de dígitos não foi dado pela coluna `Faixa.Rem.Dez..SM` e sim pela `Faixa.Rem.Média..SM` combinado com o valor do salário mínimo de 2024 (R\$ 1.412). Esse procedimento foi o que se mostrou o mais adequado para a correção das remunerações inconsistentes de forma a refletir com suas respectivas faixas de sálario mínimo.
 
 A tabela interativa abaixo mostra os valores antigos e corrigidos da coluna `Vl.Rem.Dezembro.Nom`, bem como a exibição de algumas variáveis para fins comparativos.
 
 ```{r correção de valores remuneratórios}
+#| label: tbl-tabela-comparativo
+#| tbl-cap: "Conjunto de dados com valores nominais corrigidos e colunas renomeadas"
 #| column: page
 #| fig-width: 12
 #| fig-height: 6
@@ -1366,7 +1476,7 @@ p_final
 
 ### Resumo Estatístico
 
-Em todas as medidas de posição houve um aumento contínuo nos valores remuneratórios, possivelmente reflexo das variações advindas dos salários mínimos, que são reajustados a cada ano. Nota-se uma diferença significativa entre a média e mediana, que saltou de R$ 645,99 para R$ 820,95. Nesse caso estamos diante de uma assimetria na distribuição dos números, com os supersalários puxando o aumento da média. Diante disso, a mediana é o indicator mais realista para representar os salários dos arqueólogos, tendo em vista que ela localiza os 50% dos trabalhadores que recebem um determinado valor, enquanto a média é sensível a remunerações extremas.
+Em todas as medidas de posição houve um aumento contínuo nos valores remuneratórios, possivelmente reflexo das variações advindas dos salários mínimos, que são reajustados a cada ano. Nota-se uma diferença significativa entre a média e mediana, que saltou de R\$ 645,99 para R\$ 820,95. Nesse caso estamos diante de uma assimetria na distribuição dos números, com os supersalários puxando o aumento da média. Diante disso, a mediana é o indicator mais realista para representar os salários dos arqueólogos, tendo em vista que ela localiza os 50% dos trabalhadores que recebem um determinado valor, enquanto a média é sensível a remunerações extremas.
 
 Importante destacar que o valor mínimo para o ano de 2022 mostrado na tabela abaixo é referente ao segundo valor mínimo daquele ano. O primeiro é o valor zero e optamos por remover esse número da tabela por ser o único ano que apresentou valores zero no período analisado. Essa remoção é apenas para fins ilustrativo, pois o zero está sendo considerado no cálculo da média, tendo em vista que faz parte do universo amostral. Ainda sobre esse ponto, até o momento não foi possível identificar as variáveis determinantes para a imputação de cifras zero.
 
@@ -1407,7 +1517,7 @@ tabela_remunera
 
 A figura abaixo mostra a distribuição dos valores remuneratórios de dezembro na forma de boxplot, uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (outliers).
 
-O boxplot já confirma o que foi observado na tabela anterior, no qual a dispersão dos valores remuneratórios são assiméticos. Nessa visualização gráfica é possível identificar que houve uma queda no intervalo interquartil (IQR) de 2023 para 2024. Em 2023 o IQR obteve R$ 3.187,60 e em 2024 encolheu para R$ 3.159,27, que corresponde a uma diferença de -R$ 28,33. Da mesma forma, a base (1Q) diminuiu de R$ 3.156,16 para R$ 3.060,36, enquanto o topo (3Q) caiu de R$ 6.343,76 para R$ 6.219,63. Isso aponta que houve perdas salariais na faixa central das remunerações em relação a 2023.
+O boxplot já confirma o que foi observado na tabela anterior, no qual a dispersão dos valores remuneratórios são assiméticos. Nessa visualização gráfica é possível identificar que houve uma queda no intervalo interquartil (IQR) de 2023 para 2024. Em 2023 o IQR obteve R\$ 3.187,60 e em 2024 encolheu para R\$ 3.159,27, que corresponde a uma diferença de -R\$ 28,33. Da mesma forma, a base (1Q) diminuiu de R\$ 3.156,16 para R\$ 3.060,36, enquanto o topo (3Q) caiu de R\$ 6.343,76 para R\$ 6.219,63. Isso aponta que houve perdas salariais na faixa central das remunerações em relação a 2023.
 
 ```{r boxplot}
 #| label: fig-boxplot
@@ -1540,17 +1650,17 @@ dados_boxplot %>%
 
 Para facilitar o entendimento de um boxplot, a figura abaixo ilustra como deve ser feito a leitura dessa representação gráfica.
 
-![Exemplo de leitura de [boxplot](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png "Link para acesso a fonte da figura boxplot"){target="_blank"}](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png){fig-align="center" #fig-gif-boxplot}
+![Exemplo de leitura de [boxplot](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png "Link para acesso a fonte da figura boxplot"){target="_blank"}](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png){#fig-gif-boxplot fig-align="center"}
 
 ### Distribuição por Faixa Salarial
 
-A maioria dos arqueólogos receberam remunerações que compreende a faixa entre 3 a 4 salários mínimos, seguido de 2 a 3 salários mínimos. Essas duas faixas foram as únicas que permaneceram em suas posições no registro longitudional. 
+A maioria dos arqueólogos receberam remunerações que compreende a faixa entre 3 a 4 salários mínimos, seguido de 2 a 3 salários mínimos. Essas duas faixas foram as únicas que permaneceram em suas posições no registro longitudional.
 
 Um contigente significativo de profissionais foram pagos em valores abaixo de 1 salário mínimo. Isso indica que para o mês de dezembro alguns arqueólogos pegaram curtos trabalhos de campo ou então foram contratados para atenderem demandas de projetos pequenos ou mesmo aceitaram remuneração baixa como opção para conseguir emprego.
 
 ```{r tabela faixas salariais}
-#| results: 'asis'
 #| column: screen-inset
+#| results: 'asis'
 
 salario.2022 <- remunera_corrigido %>% 
   dplyr::filter(Ano==2022) %>% 
@@ -1743,7 +1853,7 @@ htmltools::tagList(
 
 Os dados segmentados da remuneração por sexo mostra uma situação curiosa e indagativa: a média salarial das arqueólogas se mostrou maior que a dos arqueólogos em 2022 e 2023, mas recuou no ano de 2024, quebrando a trajetória de crescimento. O cenário é invertido com os homens superando as mulheres em um ritmo de subida consistente.
 
-Se em 2022 e 2023 o quadro favorecia as arqueólogas com uma diferença, respectivamente, de R$ 869,76 e R$ 273,32, por que se alterou para o ano de 2024 com os homens ultrapassando as mulheres em R$ 257,32? E qual ou quais fatorores impulsionaram o desempenho salarial das trabalhadoras nos anos iniciais, considerando que elas não representam o maior contingente no mercado de trabalho formal, conforme visualizado na @fig-ativo-sexo?
+Se em 2022 e 2023 o quadro favorecia as arqueólogas com uma diferença, respectivamente, de R\$ 869,76 e R\$ 273,32, por que se alterou para o ano de 2024 com os homens ultrapassando as mulheres em R\$ 257,32? E qual ou quais fatorores impulsionaram o desempenho salarial das trabalhadoras nos anos iniciais, considerando que elas não representam o maior contingente no mercado de trabalho formal, conforme visualizado na @fig-ativo-sexo?
 
 A pista para compreender esse cenário pode ser obtida na tabela seguinte.
 
@@ -1830,7 +1940,7 @@ media_sexos2 %>%
 
 ```
 
-Todas as medidas de posição favoreciam as mulheres, com diferenças apontadas somente para o ano de 2024. A mediana apresentou uma trajetória mais simétria no período longitudinal, além de ser a medida mais próxima entre os sexos. Isso mostra que as divergências estão localizadas nos valores extremos, fato que é observado no topo e na base das remunerações. 
+Todas as medidas de posição favoreciam as mulheres, com diferenças apontadas somente para o ano de 2024. A mediana apresentou uma trajetória mais simétria no período longitudinal, além de ser a medida mais próxima entre os sexos. Isso mostra que as divergências estão localizadas nos valores extremos, fato que é observado no topo e na base das remunerações.
 
 Em relação as cifras máximas de 2024, o grupo feminino registrou uma queda considerável de -48,12% em comparação a 2023. Isso significa que a arqueóloga que recebeu a maior remuneração pode ter encerrado seu vínculo, se aposentado ou migrado para outra função ou mesmo permanecido no cargo com redução salarial mediada por acordo. Para o sexo masculino, o desempenho obtido em 2024 foi o responsável por manter o saldo positivo da média salarial geral da categoria daquele ano.
 
@@ -1896,7 +2006,7 @@ tabela_sexos
 
 Os gráficos seguintes são relativos as declarações de trabalhadores que não permaneceram em seus postos de trabalho até o final do ano. Assim, a filtragem dos registros será dada pela coluna `Ind.Vínculo.Ativo.31.12 == "NÃO"`, em que o `NÃO` representa os vínculos desligados.
 
-### Motivo do Desligamento
+### Motivo do Desligamento {#sec-desligamento}
 
 Os tipos de desligamentos com os maiores quantitativos mantiveram uma trajetória relativamente estável, mas com algumas nuances. O ano de 2023 foi bem atípico na dinâmica de rescisão de empregos, tendo em vista que houve um aumento significativo de arqueólogos pedindo demissão do trabalho, quase o dobro em relação ao ano anterior, enquanto a iniciativa de rompimento do vínculo pelo empregador ou pelo término de contrato obteram quedas nas declarações. Pode ser que esse cenário seja resultado da retomada da execução de grandes projetos arqueológicos pós-pandemia somado a mudanças do quadro político que favoreceu aos profissionais escolherem oportunidades de empregos vantajosos ou, talvez, o peso dos encargos trabalhistas no bolso obrigaram os trabalhadores a migrarem para o regime MEI, abrindo mão dos benefícios trabalhistas. Para 2024, os registros regrediram para o desempenho alcançado em 2022, com os arqueólogos perdendo poder de barganha para sair por conta própria.
 
@@ -1953,7 +2063,7 @@ desligados |>
 
 ### Desligamento por Sexo
 
-Assim como nos vínculos ativos, os arqueólogos lideram nas saídas do mercado de trabalho formal, mas com um comportamento inverso. Aqui há uma tendência de encolhimento, reflexo do aumento ano a ano das declarações ativas. Situação um pouco diferente para os registros das arqueólogas, no qual o aumento notado nos vínculos ativos não interfere na diminuição da saída, pelo contrário, chega a projetar uma possível superação dos vínculos masculinos. 
+Assim como nos vínculos ativos, os arqueólogos lideram nas saídas do mercado de trabalho formal, mas com um comportamento inverso. Aqui há uma tendência de encolhimento, reflexo do aumento ano a ano das declarações ativas. Situação um pouco diferente para os registros das arqueólogas, no qual o aumento notado nos vínculos ativos não interfere na diminuição da saída, pelo contrário, chega a projetar uma possível superação dos vínculos masculinos.
 
 ```{r motivo desligamento - sexo}
 #| label: fig-desliga-sexo
@@ -2004,6 +2114,763 @@ sexo.desligado %>%
   )
 ```
 
-## Conclusão
+# Novo CAGED
+
+O Novo CAGED é a base do governo voltada para acompanhar e fiscalizar os registros de admissão e desligamentos dos trabalhadores vinculados ao regime da Consolidação das Leis do Trabalho (CLT). Sua periodicidade de publicação é realizada mensalmente, sendo um importante instrumento trabalhista pela sua tempestividade de divulgação de informações sobre o mercado de trabalho formal brasileiro. Essa fonte de dados contempla somente os vínculos celetistas, não abarcando declarações de vínculos estatutários.
+
+Destaca-se que o registro saldo não está presente na base do Novo CAGED, e foi obtido a partir da fórmula `Saldo=Admitidos−Desligamento`. Os dados de admitidos e desligamento foram captados da coluna `saldomovimentação`. O saldo é um indicador que possibilita acompanhar o dinamismo no contrato laboral, com vista a identificar quantas vagas foram abertas ou postos de trabalhos fechados em determinado período analisado. Assim, o resultado positivo indica novas vagas criadas, enquanto o resultado negativo aponta dificuldades de contratação.
+
+A tabela interativa abaixo exibe todas as declarações, em formato legível, da profissão de arqueólogo do Novo CAGED 2022 a 2025.
+
+```{r tabela caged}
+#| label: tbl-tabela-geral-caged 
+#| tbl-cap: "Conjunto geral de dados do Novo CAGED 2022 a 2025"
+#| column: page
+
+# Converte todas as colunas de texto para fator
+caged_tabela <- Arqueo.CAGED.2022_2025 %>%
+  mutate(across(where(is.character), as.factor)) |> 
+  mutate(anocompetênciamov = as.factor(anocompetênciamov))
+
+DT::datatable(caged_tabela, filter = 'top', options = list(
+  pageLength = 5, autoWidth = TRUE,  
+  columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
+  scrollX = TRUE ))
+```
+
+## Análise das Movimentações
+
+Conforme comentado no item anterior, o saldo é um importante indicador para avaliar se o mercado de trabalho formal está em expansão ou enfrenta retração. Desse modo, seu resultado permite acompanhar o desempenho das contratações de arqueólogos no período analisado. Assim, os próximos gráficos foram gerados com base nesse indicador, a fim de observar seu comportamento em relação a algumas variáveis selecionadas.
+
+### Movimentação Anual
+
+O saldo da movimentação anual manteve-se com pontuação positiva até o ano de 2024, quando se observa dificuldades para manter contratos no ano seguinte. O ano de 2023 merece atenção, pois registrou um quantitativo expressivo de vagas abertas, o que corrobora com uma das hipóteses levantadas no subitem [-@sec-desligamento]: a de que o retorno dos projetos paralisados na época da pandemia, aliado ao quadro político, movimentou a oferta de trabalho para aquele ano.
+
+```{r movimentação anual}
+#| label: fig-movimenta-anual
+#| fig-cap: "Movimentações anuais"
+
+saldo_anual <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  group_by(anocompetênciamov, saldomovimentação) %>% 
+  summarise(quantidade= n()) %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  mutate(Ano_num = as.numeric(factor(anocompetênciamov, 
+                                     levels = c(2022, 2023, 2024, 2025))))
+
+rotulos_finais <- saldo_anual %>%
+  group_by(saldomovimentação) %>%
+  slice_max(Ano_num, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(x_fim = Ano_num,
+         y_fim = quantidade)
+
+saldo_anual %>%
+  group_by(saldomovimentação) %>%
+  e_charts(anocompetênciamov) %>%
+  e_line(quantidade, 
+         smooth = FALSE, 
+         symbol = "circle", 
+         symbolSize = 8,
+         lineStyle = list(width = 0.9)) %>%
+  e_x_axis(
+    type = "category", 
+    axisLabel = list(fontSize = 10),
+    axisTick = list(alignWithLabel = TRUE)
+  ) %>%
+  e_y_axis(
+  axisLabel = list(
+    fontSize = 11,
+    rich = list(
+      red = list(color = "red")
+    ),
+    formatter = htmlwidgets::JS("
+      function(value) {
+        var formatted = Math.abs(value).toLocaleString('pt-BR');
+        if (value < 0) {
+          return '{red|-' + formatted + '}';
+        } else {
+          return formatted;
+        }
+      }
+    ")
+  ),
+  splitLine = list(show = TRUE),
+  axisLine = list(show = TRUE)
+  ) |> 
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    subtext = "Distribuição Anual das Movimentações",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#377EB8", "#E41A1C", "#4DAF4A")) %>%  
+  e_mark_line(
+    serie = "Saldo",                
+    data = list(yAxis = -0),         
+    lineStyle = list(color = "red", width = 2, type = "solid"),
+    symbol = "none",
+    label = list(show = FALSE),
+    tooltip = list(show = FALSE)
+  ) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "15%") %>%  
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    "),
+    axisPointer = list(type = "cross")
+  )
+```
+
+### Movimentação Mensal
+
+Pela distribuição mensal do saldo, fevereiro é o mês apontado com o pior desempenho de contração, com postos de trabalhos fechados que supera os demais meses. As festividades do carnaval podem ser um dos fatores para esse cenário visualizado. O mês de março acompanha o comportamento do seu predecessor. Esse quadro observado indica que o primeiro trimestre do ano é um período de retração na oferta de trabalho para os arqueólogos.
+
+Junho revelou ser o mês com o melhor resultado em termos de vagas abertas, pois registrou saldo positivo constante no período analisado. Já agosto apresenta um ritmo de decréscimo na linha temporal do saldo.
+
+```{r movimentação mensal}
+#| label: fig-movimenta-mes
+#| fig-cap: "Movimentações mensais"
+#| fig-align: center
+#| column: page
+
+saldo_mensal <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  group_by(anocompetênciamov, mêscompetênciamov, saldomovimentação) %>% 
+  summarise(quantidade = n(), .groups = "drop") %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  mutate(Ano_num = as.numeric(factor(anocompetênciamov, 
+                                     levels = c(2022, 2023, 2024, 2025)))) %>% 
+  mutate(mêscompetênciamov = factor(mêscompetênciamov, 
+                         levels = c("Janeiro", "Fevereiro", "Março", "Abril", "Maio",
+                                    "Junho", "Julho", "Agosto", "Setembro",
+                                    "Outubro", "Novembro", "Dezembro")))
+
+p_mensal <- saldo_mensal %>%
+  mutate(saldomovimentação = factor(saldomovimentação,
+                                    levels = c("Admitido", "Desligado", "Saldo"))) %>%
+  ggplot(aes(x = Ano_num, y = quantidade,
+             group = saldomovimentação, color = saldomovimentação,
+             text = paste0(
+               "Ano: ", c(2022, 2023, 2024, 2025)[Ano_num], "<br>",
+               saldomovimentação, ": ", quantidade
+             ))) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.5) +
+  geom_hline(yintercept = 0, color = "red", linewidth = 0.7) +
+  facet_wrap(~ mêscompetênciamov, ncol = 4, nrow = 3, scales = "free_x") + # ← só x livre
+  scale_x_continuous(
+    breaks = 1:4, labels = c(2022, 2023, 2024, 2025),
+    expand = expansion(mult = c(0.05, 0.15))
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+  scale_color_manual(
+    values = c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45"),
+    name = NULL
+  ) +
+  labs(x = "", y = "") +
+  theme_bw() +
+  theme(
+    axis.text.x        = element_text(angle = 0, hjust = 0.5, size = 8),
+    axis.text.y        = element_text(size = 8),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor   = element_blank(),
+    strip.background   = element_rect(fill = "lightgray"),
+    strip.text         = element_text(face = "bold", size = 9),
+    legend.position    = "bottom",  
+    legend.background  = element_rect(fill = "white", color = "gray50"),
+    plot.title         = element_blank(),
+    plot.subtitle      = element_blank(),
+    panel.spacing.x    = unit(0.3, "cm"),
+    panel.spacing.y    = unit(0.8, "cm"),
+    plot.margin        = margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+  )
+
+fig <- ggplotly(p_mensal, tooltip = "text", height = 780) %>% 
+  layout(
+    legend = list(
+      title       = list(text = ""),
+      orientation = "h",
+      x           = 0.5,
+      xanchor     = "center",
+      y           = -0.12,
+      yanchor     = "top"
+    ),
+    margin = list(t = 20, l = 50, r = 30, b = 130),
+    hoverlabel = list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = "rgba(0,0,0,0)",
+      font        = list(color = "black")
+    )
+  ) %>%
+  config(
+    responsive      = TRUE,   
+    displayModeBar  = FALSE  
+  )
+
+series_colors <- c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45")
+for (i in seq_along(fig$x$data)) {
+  trace_name <- fig$x$data[[i]]$name
+  if (!is.null(trace_name) && trace_name %in% names(series_colors)) {
+    fig$x$data[[i]]$hoverlabel <- list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = series_colors[trace_name],
+      font        = list(color = "black", size = 12)
+    )
+  }
+}
+
+y_axes <- grep("^yaxis", names(fig$x$layout), value = TRUE)
+for (ax in y_axes) {
+  ticks <- fig$x$layout[[ax]]$tickvals
+  if (!is.null(ticks)) {
+    colored <- sapply(ticks, function(v) {
+      if (v < 0) paste0('<span style="color:red">', v, '</span>') else as.character(v)
+    })
+    fig$x$layout[[ax]]$ticktext <- colored
+    fig$x$layout[[ax]]$tickfont <- list(size = 10)
+  }
+}
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "text-align: center; margin-bottom: 6px; width: 100%;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0; text-align: center;"
+  ),
+  tags$p(
+    "Distribuição Mensal das Movimentações",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555; text-align: center;"
+  )
+)
+
+browsable(tagList(titulo_html, fig))
+
+```
+
+### Movimentação por Região
+
+Os estabelecimentos localizados na região nordeste registraram saldo positivo no período longitudinal, enquanto as empresas do sul estiveram diante de obstáculos para contratar e manter vínculos celetistas. 
+
+Nota-se que os estabelecimentos situados no Centro-Oeste foram os responsáveis por concentrar as vagas abertas em 2023, mas que nos anos subsequentes se encontraram com dificuldades para manter os postos de trabalhos criados.
+
+```{r movimenta região}
+#| fig-align: center
+#| label: fig-movimenta-regiao
+#| fig-cap: "Movimentações regionais"
+
+saldo_região <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  group_by(anocompetênciamov, região, saldomovimentação) %>% 
+  summarise(quantidade = n()) %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  mutate(Ano_num = as.numeric(factor(anocompetênciamov, 
+                                     levels = c(2022, 2023, 2024, 2025)))) %>% 
+  mutate(região = factor(região, 
+                         levels = c("Norte", "Nordeste", "Centro-Oeste",
+                                    "Sudeste", "Sul")))
+
+p_regiao <- saldo_região %>%
+  mutate(saldomovimentação = factor(saldomovimentação,
+                                    levels = c("Admitido", "Desligado", "Saldo"))) %>%
+  ggplot(aes(x = Ano_num, y = quantidade,
+             group = saldomovimentação, color = saldomovimentação,
+             text = paste0(
+               "Ano: ", c(2022, 2023, 2024, 2025)[Ano_num], "<br>",
+               saldomovimentação, ": ", quantidade
+             ))) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.5) +
+  geom_hline(yintercept = 0, color = "red", linewidth = 0.7) +
+  facet_wrap(~ região, ncol = 3, nrow = 2, scales = "free_x") + 
+  scale_x_continuous(
+    breaks = 1:4, labels = c(2022, 2023, 2024, 2025),
+    expand = expansion(mult = c(0.05, 0.15))
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.1))) +
+  scale_color_manual(
+    values = c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45"),
+    name = NULL
+  ) +
+  labs(x = "", y = "") +
+  theme_bw() +
+  theme(
+    axis.text.x        = element_text(angle = 0, hjust = 0.5, size = 8),
+    axis.text.y        = element_text(size = 8),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor   = element_blank(),
+    strip.background   = element_rect(fill = "lightgray"),
+    strip.text         = element_text(face = "bold", size = 9),
+    legend.position    = "bottom",  
+    legend.background  = element_rect(fill = "white", color = "gray50"),
+    plot.title         = element_blank(),
+    plot.subtitle      = element_blank(),
+    panel.spacing.x    = unit(0.3, "cm"),
+    panel.spacing.y    = unit(0.8, "cm"),
+    plot.margin        = margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+  )
+
+fig <- ggplotly(p_regiao, tooltip = "text", height = 780) %>% 
+  layout(
+    legend = list(
+      title       = list(text = ""),
+      orientation = "h",
+      x           = 0.5,
+      xanchor     = "center",
+      y           = -0.12,
+      yanchor     = "top"
+    ),
+    margin = list(t = 20, l = 50, r = 30, b = 130),
+    hoverlabel = list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = "rgba(0,0,0,0)",
+      font        = list(color = "black")
+    )
+  ) %>%
+  config(
+    responsive      = TRUE, 
+    displayModeBar  = FALSE 
+  )
+
+series_colors <- c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45")
+for (i in seq_along(fig$x$data)) {
+  trace_name <- fig$x$data[[i]]$name
+  if (!is.null(trace_name) && trace_name %in% names(series_colors)) {
+    fig$x$data[[i]]$hoverlabel <- list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = series_colors[trace_name],
+      font        = list(color = "black", size = 12)
+    )
+  }
+}
+
+y_axes <- grep("^yaxis", names(fig$x$layout), value = TRUE)
+for (ax in y_axes) {
+  ticks <- fig$x$layout[[ax]]$tickvals
+  if (!is.null(ticks)) {
+    colored <- sapply(ticks, function(v) {
+      if (v < 0) paste0('<span style="color:red">', v, '</span>') else as.character(v)
+    })
+    fig$x$layout[[ax]]$ticktext <- colored
+    fig$x$layout[[ax]]$tickfont <- list(size = 10)
+  }
+}
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "text-align: center; margin-bottom: 6px; width: 100%;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0; text-align: center;"
+  ),
+  tags$p(
+    "Distribuição das Movimentações por Região",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555; text-align: center;"
+  )
+)
+
+browsable(tagList(titulo_html, fig))
+```
+
+### Movimentação por Estados
+
+Assim como registrado no subitem [-@sec-ativos-estados], a distribuição das movimentações por estados também é assimétrica, não abrangendo todas as unidades federativas, com alguns estados apresentando apenas um registro no período analisado. 
+
+Devido a essa discrepância nas declarações de movimentação, o resultado do saldo não é obtido para todos os estados, comprometendo uma análise comparativa. À vista disso, os dados foram consolidados para cada unidade federativa que obteve registro no saldo, com a remoção daqueles estados sem saldo. Desse modo, os resultados de cada ano foram somados, gerando um saldo acumulado do período analisado.
+
+O saldo acumulado por estados revelou que o maior quantitativo de empregos criados foi em Pernambuco. Esse estado manteve uma liderança com larga vantagem, apresentando saldo positivo em todos os quatro anos que, somados, acumularam 42 postos de trabalho criados. Na sequência encontra-se São Paulo, com 10 vagas acumuladas no período (12 em 2022, 9 em 2023, 4 em 2024 e -15 em 2025). Cabe destacar que as empresas paulistas são as que possuem o maior volume absoluto de movimentações (131 admitidos e 121 desligados), mas que em 2025 obtiveram um desempenho atípico, com os desligamentos superando as admissões, resultando em um saldo fortemente negativo de -15. Essa movimentação pontual revela que pode ter havido o encerramento de projetos de grande porte naquele estado ou indicar tendência de retração no maior mercado formal da profissão.
+
+Goiás, que registra saldo acumulado de -1, foi o estado que apresentou um pico expressivo no saldo de 2023 (24 vagas abertas), seguido de forte retração no ano seguinte (17 postos de trabalho fechados). Esse comportamento errático dos estabelecimentos goianos aponta que eles foram os responsáveis pela alta empregabilidade documentada em 2023, ocasionada, possivelmente, pelo retorno de grandes empreendimentos paralisados na época da pandemia ou por projetos específicos que demandaram força de trabalho naquele ano.
+
+Por fim, chama atenção o estado do Ceará, que lidera o ranking de saldo negativo acumulado no período, por ter registrado, no acumulado de movimentações, mais desligamentos (30) do que admitidos (14). Esse desequilíbrio concentrou-se em 2022 (23 desligamentos para apenas 6 admitidos). Ao que tudo indica, esse quantitativo de encerramento de vínculos pode ter sido ocasionado por contratações não sustentadas.
+
+```{r movimenta estados}
+#| label: fig-movimenta-estados
+#| fig-cap: "Saldo acumulado dos estados"
+#| fig-align: center
+
+saldo_estados <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>%
+  mutate(uf= recode(uf, "Minas gerais" = "Minas Gerais")) |> 
+  group_by(anocompetênciamov, uf, saldomovimentação) %>% 
+  summarise(quantidade = n(), .groups = "drop") %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  pivot_wider(
+    names_from = anocompetênciamov,
+    values_from = quantidade) %>% 
+  arrange(uf)
+
+saldo_acumulado_estados <- saldo_estados %>% 
+  dplyr::filter(saldomovimentação== "Saldo") %>% 
+  dplyr::filter(!if_all(c(`2022`, `2023`, `2024`, `2025`), is.na)) %>%
+  rowwise() %>% 
+  mutate(saldo_acumulado= sum(c(`2022`, `2023`, `2024`, `2025`), na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  arrange(saldo_acumulado) |> 
+  mutate(status= if_else(saldo_acumulado >=0, 'positivo', 'negativo'))
+
+saldo_acumulado_estados %>%
+  arrange(saldo_acumulado) %>%
+  e_charts(uf) %>%
+  e_bar(
+    saldo_acumulado,
+    name      = "Saldo",
+    legend    = FALSE,
+    itemStyle = list(
+      color = htmlwidgets::JS(
+        "function(params) {
+          return params.value[0] >= 0 ? '#3B6D11' : '#E24B4A';
+        }"
+      )
+    )
+  ) %>%
+  e_flip_coords() %>%
+  e_x_axis(
+    axisLabel = list(fontSize = 9),
+    splitLine = list(show = FALSE),
+    axisLine  = list(show = TRUE)
+  ) %>%
+  e_y_axis(
+    axisLabel = list(fontSize = 9)
+  ) %>%
+  e_mark_line(
+    data      = list(xAxis = 0),
+    lineStyle = list(color = "grey50", width = 0.8, type = "solid"),
+    symbol    = "none",
+    label     = list(show = FALSE),
+    silent    = TRUE
+  ) %>%
+  e_grid(
+    containLabel = TRUE,
+    left         = "10%",
+    right        = "15%"
+  ) %>%
+  e_title(
+    text         = "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    subtext      = "Distribuição das Movimentações por Estados - Saldo Acumulado",
+    textStyle    = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Estado: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[0];
+      }
+    "),
+    axisPointer = list(type = "cross")
+  )
+```
+
+### Movimentação por Sexo
+
+Em ambos os sexos houve saldo positivo até 2024, quando o cenário muda para retração em 2025. A trajetória temporal mostra que as arqueólogas tiveram vantagens na ocupação dos postos de trabalho criados. No entanto, ao observar as movimentações para o sexo feminino, é visto que esse gênero acumulou desligamentos crescente entre 2022 a 2024, cujo resultado culminou para um saldo negativo em 2025.
+
+Por outro lado, os homens concentram os maiores volumes absolutos de movimentações (296 admitidos e 275 desligados), o que sugere maior rotatividade nos vínculos masculinos.
+
+```{r movimenta sexo}
+#| label: fig-movimenta-sexo
+#| fig-cap: "Movimentações por sexo"
+#| fig-align: center
+
+saldo_sexo <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  group_by(anocompetênciamov, sexo, saldomovimentação) %>% 
+  summarise(quantidade = n(), .groups = "drop") %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  mutate(Ano_num = as.numeric(factor(anocompetênciamov, 
+                                     levels = c(2022, 2023, 2024, 2025)))) %>% 
+  mutate(sexo = recode(sexo, 
+                            "Homem"= "Masculino",
+                            "Mulher"= "Feminino"))
+
+p_sexo <- saldo_sexo %>%
+  mutate(saldomovimentação = factor(saldomovimentação,
+                                    levels = c("Admitido", "Desligado", "Saldo"))) %>%
+  ggplot(aes(x = Ano_num, y = quantidade,
+             group = saldomovimentação, color = saldomovimentação,
+             text = paste0(
+               "Ano: ", c(2022, 2023, 2024, 2025)[Ano_num], "<br>",
+               saldomovimentação, ": ", quantidade
+             ))) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.5) +
+  geom_hline(yintercept = 0, color = "red", linewidth = 0.7) +
+  facet_grid(cols = vars(sexo)) +
+  scale_x_continuous(
+    breaks = 1:4, labels = c(2022, 2023, 2024, 2025),
+    expand = expansion(mult = c(0.05, 0.15))
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.1))) +
+  scale_color_manual(
+    values = c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45"),
+    name = NULL
+  ) +
+  labs(x = "", y = "") +
+  theme_bw() +
+  theme(
+    axis.text.x        = element_text(angle = 0, hjust = 0.5, size = 8),
+    axis.text.y        = element_text(size = 8),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor   = element_blank(),
+    strip.background   = element_rect(fill = "lightgray"),
+    strip.text         = element_text(face = "bold", size = 9),
+    legend.position    = "bottom",  
+    legend.background  = element_rect(fill = "white", color = "gray50"),
+    plot.title         = element_blank(),
+    plot.subtitle      = element_blank(),
+    panel.spacing.x    = unit(1.2, "cm"),
+    panel.spacing.y    = unit(0.8, "cm"),
+    plot.margin        = margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+  )
+
+fig <- ggplotly(p_sexo, tooltip = "text", height = 780) %>% 
+  layout(
+    legend = list(
+      title       = list(text = ""),
+      orientation = "h",
+      x           = 0.5,
+      xanchor     = "center",
+      y           = -0.12,
+      yanchor     = "top"
+    ),
+    margin = list(t = 20, l = 50, r = 30, b = 130),
+    hoverlabel = list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = "rgba(0,0,0,0)",
+      font        = list(color = "black")
+    )
+  ) %>%
+  config(
+    responsive      = TRUE, 
+    displayModeBar  = FALSE 
+  )
+
+series_colors <- c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45")
+for (i in seq_along(fig$x$data)) {
+  trace_name <- fig$x$data[[i]]$name
+  if (!is.null(trace_name) && trace_name %in% names(series_colors)) {
+    fig$x$data[[i]]$hoverlabel <- list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = series_colors[trace_name],
+      font        = list(color = "black", size = 12)
+    )
+  }
+}
+
+y_axes <- grep("^yaxis", names(fig$x$layout), value = TRUE)
+for (ax in y_axes) {
+  ticks <- fig$x$layout[[ax]]$tickvals
+  if (!is.null(ticks)) {
+    ticks <- sapply(ticks, function(v) if (abs(v) < 1e-9) 0 else v)
+    fig$x$layout[[ax]]$tickvals <- ticks
+    colored <- sapply(ticks, function(v) {
+      if (v < 0) paste0('<span style="color:red">', v, '</span>') else as.character(v)
+    })
+    fig$x$layout[[ax]]$ticktext <- colored
+    fig$x$layout[[ax]]$tickfont <- list(size = 10)
+  }
+}
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "text-align: center; margin-bottom: 6px; width: 100%;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0; text-align: center;"
+  ),
+  tags$p(
+    "Distribuição das Movimentações por Sexo",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555; text-align: center;"
+  )
+)
+
+browsable(tagList(titulo_html, fig))
+```
+
+## Remuneração dos Admitidos
+
+Os gráficos a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados nulos. 
+
+### Unidades de Pagamento
+
+A base do Novo CAGED contém registros da unidade salarial contratada. Por meio dessa variável, é possível obter dados remuneratórios por hora, dia e mês. Ao consolidar as informações em um resumo estatístico tabular, nota-se que são poucas as contratações pagas por dia. Essa categoria não teve dados declarados em 2022 e, devido à pequena quantidade de informações preenchidas, as medidas de posição mostraram-se uniformes ao longo do registro longitudinal. 
+
+Os salários pagos por hora também apresentam poucas declarações. Outliers são vistos nos anos de 2024 e 2025, com o valor máximo apresentado números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando a permanência de um trabalhador que recebe supersalário. Um padrão observado no valor mínimo e na mediana é que, nos anos iniciais, houve crescimento e, nos anos finais, houve desvalorização.
+
+Já na modalidade mensal - que concentra o maior número de contratações -, o número de declarações registrou crescimento em 2022 e 2023, mas nos anos subsequentes apresentou retrações nas admissões. Em todas as medidas de posição, há oscilações interanuais, isto é, variações que, em determinado ano, registram alta e, no seguinte, registram queda.
+
+```{r unidades salariais}
+#| label: tbl-resumo-estatistico-unidades-salario
+#| tbl-cap: "Medidas de posição das unidades salarias da movimentação de admitidos"
+
+resumo_unidades_salariais <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  dplyr::filter(saldomovimentação == "Admitido" & unidadesaláriocódigo != "Variavel") %>% 
+  mutate(unidadesaláriocódigo = factor(unidadesaláriocódigo,
+                                       levels = c("Hora", "Dia", "Mês"))) %>%
+  group_by(anocompetênciamov, unidadesaláriocódigo) %>%
+  summarise(
+    Quantidade = n(),
+    Mínimo     = min(valorsaláriofixo,    na.rm = TRUE),
+    Mediana    = median(valorsaláriofixo, na.rm = TRUE),
+    Média      = mean(valorsaláriofixo,   na.rm = TRUE),
+    Máximo     = max(valorsaláriofixo,    na.rm = TRUE),
+    .groups = "drop") %>%
+  arrange(anocompetênciamov, unidadesaláriocódigo) %>%
+  pivot_longer(
+    cols      = c(Quantidade, Mínimo, Mediana, Média, Máximo),
+    names_to  = "Estatística",
+    values_to = "Valor") %>%
+  mutate(Estatística = factor(Estatística,
+                              levels = c("Quantidade", "Mínimo", "Mediana",
+                                         "Média", "Máximo"))) %>%
+  pivot_wider(
+    names_from  = anocompetênciamov,
+    values_from = Valor) %>%
+  arrange(unidadesaláriocódigo, Estatística)
+
+colunas_anos <- resumo_unidades_salariais %>%
+  select(where(is.numeric)) %>%
+  names()
+
+linhas_qtd <- which(resumo_unidades_salariais$Estatística == "Quantidade")
+
+linhas_monetario <- which(resumo_unidades_salariais$Estatística != "Quantidade")
+
+tabela_unidades_salariais <- resumo_unidades_salariais %>%
+  gt(rowname_col   = "Estatística",
+     groupname_col = "unidadesaláriocódigo") %>%
+  tab_header(
+    title    = "Resumo Estatístico",
+    subtitle = "Unidades Salariais de Pagamento dos Admitidos") %>%
+  tab_spanner(
+    label   = "Ano",
+    columns = all_of(colunas_anos)) %>%
+  
+  fmt_number(
+    columns  = all_of(colunas_anos),
+    rows     = Estatística %in% c("Mínimo", "Mediana", "Média", "Máximo"),
+    decimals = 2,
+    sep_mark = ".",
+    dec_mark = ",") %>%
+  fmt_currency(
+    columns  = all_of(colunas_anos),
+    rows     = Estatística %in% c("Mínimo", "Mediana", "Média", "Máximo"),
+    currency = "BRL",
+    decimals = 2,
+    sep_mark = ".",
+    dec_mark = ",") %>%
+  
+  fmt_integer(
+    columns  = all_of(colunas_anos),
+    rows     = Estatística == "Quantidade",
+    sep_mark = ".") %>%
+  cols_align(align = "center", columns = all_of(colunas_anos)) %>%
+  
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_row_groups()) %>%
+  
+  tab_style(
+    style = list(
+      cell_text(weight = "bold", color = "#2c5f8a"),
+      cell_fill(color = "#eef4fb")),
+    locations = cells_body(
+      columns = all_of(colunas_anos),
+      rows    = Estatística == "Quantidade")) %>%
+  
+  tab_style(
+    style = cell_borders(
+      sides  = "bottom",
+      color  = "#aaaaaa",
+      weight = px(1.5)),
+    locations = cells_body(rows = Estatística == "Quantidade")) %>%
+  sub_missing(
+    columns      = all_of(colunas_anos),
+    missing_text = "-")
+
+tabela_unidades_salariais
+```
+
+### Valores Salariais
+
+As medidas de posição revelaram assimetrias acentuadas na distribuição dos valores remuneratórios dos arqueólogos admitidos, tornando a mediana o indicador mais adequado para representar a categoria. 
+
+A presença de um valor máximo de R$ 404.199,41 repetido em 2024 e 2025 - um outlier que coincide com o valor máximo da unidade de pagamento por hora analisada na @tbl-resumo-estatistico-unidades-salario - distorce a média de forma severa, que chegou a R$ 12.964,12 em 2024, valor quase quatro vezes superior à mediana do mesmo ano. 
+
+A mediana apresentou oscilações interanuais e trajetória de queda no período (R$ 3.636,60 em 2022 para R$ 3.322,28 em 2025), enquanto o valor mínimo foi a única medida com crescimento consistente ao longo de todo o período.
+
+```{r remunera admitidos}
+#| label: tbl-resumo-estatistico-remunera-admitidos
+#| tbl-cap: "Medidas de posição da remuneração dos admitidos"
+
+resumo_remunera_caged <- Arqueo.CAGED.2022_2025 %>% 
+     dplyr::filter(anocompetênciamov != "2021") %>%
+     dplyr::filter(saldomovimentação == "Admitido" & unidadesaláriocódigo != "Variavel") %>% 
+     group_by(anocompetênciamov) %>%
+     summarise(
+       Mínimo = min(salário, na.rm = TRUE),
+       Mediana = median(salário, na.rm = TRUE),
+       Média = mean(salário, na.rm = TRUE),
+       Máximo = max(salário, na.rm = TRUE)) %>%
+      mutate(across(where(is.numeric), ~ round(., 2)))
+
+tabela_remunera_caged <- resumo_remunera_caged %>%
+  pivot_longer(-anocompetênciamov, names_to = "Estatística", values_to = "Valor") %>%
+  pivot_wider(names_from = anocompetênciamov, values_from = Valor)
+
+tabela_remunera_caged2 <- tabela_remunera_caged %>%
+  gt() %>%
+  tab_header(
+    title = "Resumo Estatístico",
+    subtitle = "Valores Remuneratórios da Movimentação de Admitidos"
+  ) %>%
+  fmt_number(columns = where(is.numeric), decimals = 2, 
+             sep_mark = ".", dec_mark = ",", pattern = "R$ {x}") %>%
+  cols_label(
+    Estatística = ""
+  ) %>%
+  tab_spanner(
+    label = "Ano",
+    columns = where(is.numeric))
+
+tabela_remunera_caged2
+```
+
+
+
+# Conclusão
 
 Os dados aqui analisados...
