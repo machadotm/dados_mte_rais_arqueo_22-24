@@ -2721,7 +2721,7 @@ browsable(tagList(titulo_html, fig))
 
 ## Remuneração dos Admitidos
 
-Os gráficos a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados nulos. 
+As tabelas a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados nulos. 
 
 ### Unidades de Pagamento
 
