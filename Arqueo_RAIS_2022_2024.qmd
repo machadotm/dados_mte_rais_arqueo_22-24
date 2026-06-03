@@ -57,32 +57,34 @@ Frisa-se que as análises aqui discorridas não tem a pretensão de fazer compar
 Neste estudo pretende-se analisar diferentes variáveis e o comportamento dessas informações ao longo do intervalo temporal, que inclui:
 
 - No caso da RAIS:
-  -   quantitativo de registros declarados e os tipos de vínculos em 31/12
-  -   distribuição dos vínculos ativos em 31/12 por:
-      -   região
-      -   estados
-      -   vínculo empregatício
-      -   natureza jurídica do empregador
-      -   escolaridade dos arqueólogos
-      -   intervalo por grupos de:
-          -   idades
-          -   horas trabalhadas
-          -   tempo de emprego
-      -   sexo
-      -   cor/raça
-      -   média salarial e resumo estatísticos das remunerações
-  -   distribuição dos vínculos desligados em 31/12 por:
-      -   motivo do desligamento
-      -   sexo
+  - quantitativo de registros declarados e os tipos de vínculos em 31/12
+  - distribuição dos vínculos ativos em 31/12 por:
+      - região
+      - estados
+      - vínculo empregatício
+      - natureza jurídica do empregador
+      - tamanho do estabelecimento por setores econômicos
+      - trabalho intermitente
+      - escolaridade dos arqueólogos
+      - intervalo por grupos de:
+          - idades
+          - horas trabalhadas
+          - tempo de emprego
+      - sexo
+      - cor/raça
+      - análise remuneratória
+  - distribuição dos vínculos desligados em 31/12 por:
+      - motivo do desligamento
+      - sexo
 
 - Para o Novo CAGED:
   - movimentações por
     - ano
     - mês
     - região
-    - unidades federativas
+    - estados
     - sexo
-  - unidades salariais de admitidos
+  - remuneração dos admitidos
 
 Os gráficos e tabelas foram feitos na linguagem de programação R. Em relação aos gráficos, eles foram criados em formato dinâmico e interativo. Assim, é possível passar o cursor do mouse para visualizar informações contidas nas barras e linhas, bem como remover registros específicos de forma a deixar apenas dados relevantes no painel de visualização.
 
@@ -360,7 +362,7 @@ vinculos_31.12 %>%
 
 ## Análise dos Dados por Vínculos Ativos em 31/12
 
-Os próximos gráficos são gerados a partir das declarações com vínculos ativos em 31/12. Esse procedimento possibilita analisar os dados dos arqueólogos que permaneceram em seus postos de trabalho até o final de cada ano. Assim, a filtragem dos registros será dada pela coluna `Ind.Vínculo.Ativo.31.12 == "SIM"`, em que o `SIM` representa os vínculos ativos.
+Os próximos gráficos foram gerados a partir das declarações com vínculos ativos em 31/12. Esse procedimento possibilitou analisar os dados dos arqueólogos que permaneceram em seus postos de trabalho até o final de cada ano. Assim, a filtragem dos registros será dada pela coluna `Ind.Vínculo.Ativo.31.12 == "SIM"`, em que o `SIM` representa os vínculos ativos.
 
 ### Distribuição por Regiões
 
@@ -415,9 +417,9 @@ Regiao |>
 
 ### Distribuição por Estados {#sec-ativos-estados}
 
-Ao desagregar as informações regionais por estados, observa-se que a cobertura do mercado de trabalho formal não contempla todas as unidades federativas. Estados da região norte são os mais afetados pela falta de oportunidade de emprego formal por estabelecimentos localizados naquela região. Por outro lado, as empresas sediadas nos estados de São Paulo, Pernambuco e Santa Catarina são as que apresentaram as maiores concentrações de mão de obra arqueológica.
+Ao desagregar as informações regionais por estados, observa-se que a cobertura do mercado de trabalho formal não contempla todas as unidades federativas. Estados da região Norte são os mais afetados pela falta de oportunidades de emprego formal em estabelecimentos localizados naquela região. Por outro lado, as empresas sediadas nos estados de São Paulo, Pernambuco e Santa Catarina são as que apresentaram as maiores concentrações de mão de obra arqueológica.
 
-Nessa conjuntura, o cenário que se visualiza é de uma assimetria na distribuição de oferta de trabalho por estabelecimentos localizados em diferentes regiões do país, desvelando um mercado concentrado nas mãos de poucas empresas que espalham seu estoque de empregados para os diversos cantos do país.
+Nessa conjuntura, o cenário que se delineia é de uma assimetria na distribuição da oferta de trabalho por estabelecimentos localizados em diferentes regiões do país, revelando um mercado concentrado nas mãos de poucas empresas que distribuem seus empregados para os diversos cantos do país.
 
 ```{r estados}
 #| label: fig-estados
@@ -622,7 +624,7 @@ browsable(tagList(titulo_html, grafico))
 
 ### Tamanho do Estabelecimento por Setores Econômicos
 
-teste\*\*\*\*\*\*\*
+Em elaboração...
 
 ```{r econômico}
 #| column: screen-inset
@@ -851,6 +853,8 @@ tabela_tambest
 
 ### Trabalho Intermitente
 
+Em elaboração...
+
 ```{r intermitente}
 #| label: fig-intermitente
 #| fig-cap: "Declarações ativas por indicador de trabalho intermitente"
@@ -1027,7 +1031,7 @@ faixa.etaria %>%
 
 A maior parte dos arqueólogos trabalha na faixa de 41 a 44 horas semanais, uma jornada que inclui até os finais de semana como parte do contrato de trabalho.
 
-A persistência no preenchimento de informações acima de 44 horas semanais revela a existência de trabalhadores submetidos a condições de superexploração da força de trabalho, aliado a uma situação incompatível com o estabelecido pelas normas constitucionais. No outro extremo, uma parcela significativa de arqueólogos possuem jornadas de trabalho abaixo de 30 horas, indicativo de que foram contratados por condições especiais mediadas por acordos com o empregador.
+A persistência no preenchimento de informações acima de 44 horas semanais revela a existência de trabalhadores submetidos a uma escala exaustiva de trabalho. No outro extremo, uma parcela significativa de arqueólogos possuem jornadas de trabalho abaixo de 30 horas, indicativo de que foram contratados por condições especiais mediadas por acordos com o empregador.
 
 ```{r faixa hora contratual}
 #| label: fig-hora
@@ -1088,9 +1092,9 @@ browsable(tagList(titulo_html, grafico))
 
 ### Faixa por Tempo de Emprego
 
-Um contigente de arqueólogos com mais de cinco anos em seus postos de trabalho mantêm uma perpectiva de estabilidade sem registro de decréscimo. Isso aponta que os estabelecimentos das duas faixas temporais (acima de 60 meses) apresentam condições laborais para a permanência dos trabalhadores.
+Um contigente de arqueólogos com mais de cinco anos em seus postos de trabalho mantêm uma perpectiva de certa estabilidade sem registro de decréscimo. Isso aponta que os estabelecimentos das duas faixas temporais (acima de 60 meses) apresentam condições laborais para a permanência dos trabalhadores.
 
-Os demais grupos registram oscilações no comportamento dos dados para cada ano analisado, sugerindo uma sensibilidade de rotatividade nas contratações de mão de obra. Isso pode ser reflexo do tempo de duração dos projetos arqueológicos executados no escopo do licenciamento ambiental.
+Os demais grupos revelaram oscilações no comportamento dos dados para cada ano analisado, sugerindo uma sensibilidade de rotatividade nas contratações de mão de obra. Isso pode ser reflexo do tempo de duração dos projetos arqueológicos executados no escopo do licenciamento ambiental.
 
 ```{r tempo emprego}
 #| label: fig-tempo
@@ -2010,7 +2014,7 @@ Os gráficos seguintes são relativos as declarações de trabalhadores que não
 
 Os tipos de desligamentos com os maiores quantitativos mantiveram uma trajetória relativamente estável, mas com algumas nuances. O ano de 2023 foi bem atípico na dinâmica de rescisão de empregos, tendo em vista que houve um aumento significativo de arqueólogos pedindo demissão do trabalho, quase o dobro em relação ao ano anterior, enquanto a iniciativa de rompimento do vínculo pelo empregador ou pelo término de contrato obteram quedas nas declarações. Pode ser que esse cenário seja resultado da retomada da execução de grandes projetos arqueológicos pós-pandemia somado a mudanças do quadro político que favoreceu aos profissionais escolherem oportunidades de empregos vantajosos ou, talvez, o peso dos encargos trabalhistas no bolso obrigaram os trabalhadores a migrarem para o regime MEI, abrindo mão dos benefícios trabalhistas. Para 2024, os registros regrediram para o desempenho alcançado em 2022, com os arqueólogos perdendo poder de barganha para sair por conta própria.
 
-As declarações do término de contrato revelam que boa parte dos arqueólogos atuaram em vínculos temporários para atender projetos arqueológicos de curta duração. Merece atenção o aumento constantemente discreto de transferências de empregados, o que pode indicar parcerias entre as empresas visando alocar profissionais para projetos com dificuldades na aquisição de mão de obra ou de arqueólogos especialistas para condução dos trabalhos de campo ou de laboratório. Outro destaque é a presença no registro longitudinal das demissões por acordo, embora com proporções pequena, mas indicativo que esse tipo de desligamento também é utilizado nas rescisões de contrato motivados por negociações.
+As declarações do término de contrato delineiam que boa parte dos arqueólogos atuaram em vínculos temporários para atender projetos arqueológicos de curta duração. Merece atenção o aumento constantemente discreto de transferências de empregados, o que pode indicar parcerias entre as empresas visando alocar profissionais para projetos com dificuldades na aquisição de mão de obra ou de arqueólogos especialistas para condução dos trabalhos de campo ou de laboratório. Outro destaque é a presença no registro longitudinal das demissões por acordo, embora com proporções pequena, mas indicativo que esse tipo de desligamento também é utilizado nas rescisões de contrato motivados por negociações.
 
 ```{r motivo desligamento}
 #| label: fig-motivo-desliga
