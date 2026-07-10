@@ -50,43 +50,44 @@ library(plotly)
 
 # Notas Introdutórias
 
-Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) e do Novo CAGED (Cadastro Geral de Empregados e Desempregados) para os anos de 2022 a 2025, relativo à ocupação de arqueólogo. Os dados, aqui manipulados e consolidados para a geração de gráficos e tabelas, foram obtidos a partir dos registros tratados disponibilizados no [GitHub](https://github.com/machadotm/Novos_Dados_MTE_Arqueo "Link para acesso aos dados brutos e tratados"){target="_blank"}.
+Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) e do Novo CAGED (Cadastro Geral de Empregados e Desempregados) para o período de 2022 a 2025, relativo à ocupação de arqueólogo. Os dados foram obtidos de registros tratados disponibilizados no [GitHub](https://github.com/machadotm/Novos_Dados_MTE_Arqueo "Link para acesso aos dados brutos e tratados"){target="_blank"}, manipulados e consolidados para a geração de gráficos e tabelas.
 
-Frisa-se que as análises aqui discorridas não tem a pretensão de fazer comparação ou mesmo uma continuidade das observações abordadas no artigo de [Machado e Mageste](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}, que investigaram os dados da RAIS e CAGED para o intervalo temporal de 1994 a 2021. Essa quebra histórica atende a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados da RAIS de 2022 e anos subsequentes não devem ser comparados com os registros anteriores a 2022. O MTE divulgou uma [nota técnica](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais/rais-2022/nota-tecnica-rais-2022.pdf "Link para acesso a nota técnica sobre os dados da RAIS 2022. Essa nota técnica apresenta os resultados das declarações trabalhistas daquele ano e informa a existência de quebra histórica nos dados da RAIS"){target="_blank"} detalhando as causas dessa quebra histórica, que foi resultado da transição metodológica na captação dos registros trabalhista, implementada, gradualmente, desde 2018 e concluída em 2022. Assim, um cronograma foi estabelecido para a migração ao novo sistema de envio das declarações trabalhistas, passando do tradicional GD-RAIS, alimentado anualmente, para o sistema unificado do [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"){target="_blank"}, de periodicidade mensal e contínuo, sendo o ano-base 2022 o último ano dessa transição, além de apresentar registros híbridos provenientes dos dois sistemas. Da mesma forma, o caso pode ser aplicado ao Novo CAGED, conforme [recomendação de pesquisadores](https://blogdoibre.fgv.br/posts/serie-nova-de-emprego-formal-do-caged-nao-deve-ser-comparada-com-antiga "Link para acesso a nota no blog do IBRE/FGV"){target="_blank"} no assunto.
+É importante esclarecer que esta análise não pretende comparar-se nem dar continuidade ao estudo de [Machado e Mageste](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}, que investigaram os mesmos dados para o intervalo temporal de 1994 a 2021. Essa decisão de não cruzar as duas séries históricas segue a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados da RAIS a partir de 2022 não devem ser comparados com os registros anteriores. 
+
+O MTE divulgou uma [nota técnica](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais/rais-2022/nota-tecnica-rais-2022.pdf "Link para acesso a nota técnica sobre os dados da RAIS 2022. Essa nota técnica apresenta os resultados das declarações trabalhistas daquele ano-base e informa a existência de quebra histórica nos dados da RAIS"){target="_blank"}, detalhando a transição metodológica na coleta dos registros trabalhistas, implementada gradualmente desde 2018 e concluída em 2022. O sistema tradicional GD-RAIS, de envio anual, foi substituído pelo [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"){target="_blank"}, de periodicidade mensal e contínua. O ano-base 2022, por ser o último da transição, contém declarações híbridas provenientes de ambos os sistemas, o que inviabiliza a comparabilidade com anos anteriores. Essa mesma ressalva se aplica ao Novo CAGED, conforme [apontado por pesquisadores](https://blogdoibre.fgv.br/posts/serie-nova-de-emprego-formal-do-caged-nao-deve-ser-comparada-com-antiga "Link para acesso a nota no blog do IBRE/FGV"){target="_blank"} no assunto.
 
 Neste estudo pretende-se analisar diferentes variáveis e o comportamento dessas informações ao longo do intervalo temporal, que inclui:
 
-- No caso da RAIS:
-  - quantitativo de registros declarados e os tipos de vínculos em 31/12
-  - distribuição dos vínculos ativos em 31/12 por:
-      - região
-      - estados
-      - vínculo empregatício
-      - natureza jurídica do empregador
-      - tamanho do estabelecimento por setores econômicos
-      - trabalho intermitente
-      - escolaridade dos arqueólogos
-      - intervalo por grupos de:
-          - idades
-          - horas trabalhadas
-          - tempo de emprego
-      - sexo
-      - cor/raça
-      - análise remuneratória
-  - distribuição dos vínculos desligados em 31/12 por:
-      - motivo do desligamento
-      - sexo
+-   No caso da RAIS:
+    -   quantitativo de registros declarados e os tipos de vínculos em 31/12
+    -   distribuição dos vínculos ativos em 31/12 por:
+        -   região
+        -   estados
+        -   vínculo empregatício
+        -   natureza jurídica do empregador
+        -   tamanho do estabelecimento por setores econômicos
+        -   trabalho intermitente
+        -   escolaridade dos arqueólogos
+        -   intervalo por grupos de:
+            -   idades
+            -   horas trabalhadas
+            -   tempo de emprego
+        -   sexo
+        -   cor/raça
+        -   análise remuneratória
+    -   distribuição dos vínculos desligados em 31/12 por:
+        -   motivo do desligamento
+        -   sexo
+-   Para o Novo CAGED:
+    -   movimentações por
+        -   ano
+        -   mês
+        -   região
+        -   estados
+        -   sexo
+    -   remuneração dos admitidos
 
-- Para o Novo CAGED:
-  - movimentações por
-    - ano
-    - mês
-    - região
-    - estados
-    - sexo
-  - remuneração dos admitidos
-
-Os gráficos e tabelas foram feitos na linguagem de programação R. Em relação aos gráficos, eles foram criados em formato dinâmico e interativo. Assim, é possível passar o cursor do mouse para visualizar informações contidas nas barras e linhas, bem como remover registros específicos de forma a deixar apenas dados relevantes no painel de visualização.
+Os gráficos e tabelas foram gerados na linguagem de programação R. As visualizações são dinâmicas e interativas: ao passar o cursor sobre barras ou linhas, o usuário visualiza informações detalhadas; também é possível filtrar registros para exibir apenas os dados de interesse no painel.
 
 ::::: columns
 ::: {.column width="50%"}
@@ -100,12 +101,11 @@ Os gráficos e tabelas foram feitos na linguagem de programação R. Em relaçã
 
 # Carregando e Processando Dados
 
-Conforme já relatado no item anterior, os dados foram obtidos na conta do GitHub do autor deste trabalho. Os registros foram manipulados e consolidados para a geração de gráficos e tabelas. Nesse sentido, de forma a deixar transparente os procedimentos na manipulação desses dados, será mostrado o código processado no ambiente de programação R. Desse modo, em cada gráfico e tabela gerado conterá um botão no canto superior esquerdo identificado como "Mostrar código executado". Ao clicar nesse botão será exibido o script R.
+Conforme mencionado anteriormente, os dados foram obtidos do repositório GitHub do autor e processados para gerar os gráficos e tabelas deste artigo. Para garantir transparência metodológica, cada visualização - gráfico ou tabela - inclui um botão no canto superior esquerdo rotulado "Mostrar código executado". Ao clicar, o leitor acessa diretamente o script R que produziu aquele resultado específico, permitindo verificação e reprodução dos procedimentos.
 
-Ainda sobre esse ponto de exibição de código, vale destacar que a escrita deste artigo foi realizada no [Quarto](https://quarto.org/ "Link para acesso ao Quarto"){target="_blank"}, uma ferramenta de publicação técnica de código aberto que possibilita executar códigos na forma de documentos, apresentações, relatórios, e-books, dashboards, blogs e websites, utilizando linguagens de programação R, Python, Julia e Observable (JavaScript).
+Todo o artigo foi produzido no [Quarto](https://quarto.org/ "Link para acesso ao Quarto"){target="_blank"}, uma ferramenta de publicação técnica de código aberto que integra código executável (R, Python, Julia e Observable) a documentos narrativos. Essa plataforma viabiliza exatamente o recurso descrito acima: ao compilar o documento, o Quarto embute o código-fonte junto à visualização correspondente, tornando a metodologia acessível e auditável pelo leitor.
 
 ```{r carregando dados}
-
 #---------------RAIS---------------
 # 2022
 url <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2022/RAIS/Dados_Tratados_RAIS_2022.xlsx"
@@ -175,12 +175,48 @@ Arqueo.RAIS.2024 <- left_join(Arqueo.RAIS.2024, Causa.Afast.DF2, by = "Causa.Afa
   mutate(Causa.Afastamento.2 = categorias) %>%
   select(-categorias)
 
+# 2025
+url4 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2025/RAIS/Dados_Tratados_RAIS_2025.xlsx"
+tmp4 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url4, write_disk(tmp4))))
+Arqueo.RAIS.2025 <- read_excel(tmp4)
+
+Arqueo.RAIS.2025$Ano <- 2025
+Arqueo.RAIS.2025 <- Arqueo.RAIS.2025 |> 
+  relocate(Ano, .before = Bairros.SP)
+
+Arqueo.RAIS.2025$Mês.Desligamento <- as.character(Arqueo.RAIS.2025$Mês.Desligamento)
+Arqueo.RAIS.2025$Vl.Rem.Dezembro..SM <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Dezembro..SM)
+Arqueo.RAIS.2025$Vl.Rem.Média.Nom <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Média.Nom)
+Arqueo.RAIS.2025$Vl.Rem.Média..SM <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Média..SM)
+Arqueo.RAIS.2025$Tempo.Emprego <- as.numeric(Arqueo.RAIS.2025$Tempo.Emprego)
+Arqueo.RAIS.2025$Vl.Rem.Maio.SC <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Maio.SC)
+Arqueo.RAIS.2025$Vl.Rem.Junho.SC <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Junho.SC)
+Arqueo.RAIS.2025$Vl.Rem.Setembro.SC <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Setembro.SC)
+Arqueo.RAIS.2025$Vl.Rem.Outubro.SC <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Outubro.SC)
+
+Arqueo.RAIS.2025 <- left_join(Arqueo.RAIS.2025, Causa.Afast.DF1, by = "Causa.Afastamento.1") %>%
+  mutate(Causa.Afastamento.1 = categorias) %>%
+  select(-categorias)
+
+Arqueo.RAIS.2025 <- left_join(Arqueo.RAIS.2025, Causa.Afast.DF2, by = "Causa.Afastamento.2") %>%
+  mutate(Causa.Afastamento.2 = categorias) %>%
+  select(-categorias)
+
+Arqueo.RAIS.2025 <- Arqueo.RAIS.2025 |> 
+  mutate(CNAE.2.0.Subclasse= case_when(
+    CNAE.2.0.Classe == 'Edição de jornais' ~ 'Edição de Jornais Diarios',
+    TRUE ~ CNAE.2.0.Subclasse
+  ))
+
 # Juntar todos os anos
 junta <- full_join(Arqueo.RAIS.2022, Arqueo.RAIS.2023, by = NULL)
-Arqueo.RAIS.2022_2024 <- full_join(junta, Arqueo.RAIS.2024, by = NULL)
+junta2 <- full_join(junta, Arqueo.RAIS.2024, by= NULL)
+Arqueo.RAIS.2022_2025 <- full_join(junta2, Arqueo.RAIS.2025, by = NULL)
 
 # Remover objetos temporários
-rm(tmp, tmp2, tmp3, junta, url, url2, url3, Causa.Afast.DF1, Causa.Afast.DF2)
+rm(tmp, tmp2, tmp3, tmp4, junta, junta2, url, url2, url3, url4, Causa.Afast.DF1, Causa.Afast.DF2)
 
 #---------------------------Novo CAGED-------------------------------
 
@@ -240,9 +276,9 @@ rm(tmp5, tmp6, tmp7, tmp8, junta3, junta4, url5, url6, url7, url8)
 
 # RAIS
 
-A RAIS é uma das base de dados do governo sobre o mercado de trabalho formal no Brasil, cujo sistema é alimentado obrigatoriamente pelos estabelecimentos com ou sem empregados. Seus registros contemplam tanto as declarações de trabalhadores regidos por CLT (Consolidação das Leis do Trabalho) quanto dos servidores públicos. A divulgação das informações coletados é realizada anualmente, contendo dados detalhados do ano-base de referência de todos os trabalhadores com vínculo empregatício formal. O último ano-base divulgado é de 2025.
+A RAIS é uma das principais bases de dados do governo federal sobre o mercado de trabalho formal no Brasil. O sistema é alimentado anualmente por todos os estabelecimentos que mantêm vínculos empregatícios, abrangendo tanto trabalhadores regidos pela CLT (Consolidação das Leis do Trabalho) quanto empregados públicos contratados pelo regime celetista e servidores públicos. As informações são divulgadas anualmente e contêm dados detalhados referentes ao ano-base de todos os trabalhadores com vínculo formal. O último ano-base disponível é de 2025.
 
-A tabela interativa abaixo exibe todas as declarações, em formato legível, da profissão de arqueólogo das RAIS 2022 a 2025.
+A tabela interativa abaixo exibe todas as declarações referentes à profissão de arqueólogo nas RAIS de 2022 a 2025.
 
 ```{r tabela rais}
 #| label: tbl-tabela-geral-rais
@@ -250,7 +286,7 @@ A tabela interativa abaixo exibe todas as declarações, em formato legível, da
 #| column: page
 
 # Converte todas as colunas de texto para fator
-rais_tabela <- Arqueo.RAIS.2022_2024 %>%
+rais_tabela <- Arqueo.RAIS.2022_2025 %>%
   mutate(across(where(is.character), as.factor)) |> 
   mutate(Ano = as.factor(Ano))
 
@@ -260,15 +296,17 @@ DT::datatable(rais_tabela, filter = 'top', options = list(
   scrollX = TRUE ))
 ```
 
+> Para o ano de 2025, há dados referentes a categoria do trabalhador (última coluna da tabela acima). No entanto, até o fechamento da escrita deste artigo, não houve atualização do dicionário de dados de modo a identificar a codificação dessa nova variável adicionada na base da RAIS.
+
 ## Dados Gerais
 
-As declarações trabalhistas da profissão de arqueólogo mostram uma trajetória de crescimento constante no período analisado, talvez um indicativo de que as mudanças implementadas pelo eSocial trouxe uma melhor cobertura na captação dos dados.
+As declarações trabalhistas para a profissão de arqueólogo registraram crescimento contínuo no período analisado. É possível que essa tendência seja reflexo das mudanças metodológicas implementadas pelo eSocial, que ampliaram a abrangência da captação de dados.
 
 ```{r total de vínculos}
 #| label: fig-vinculos
 #| fig-cap: "Quantitativo geral de declarações"
 
-geral.anual <- Arqueo.RAIS.2022_2024 %>%
+geral.anual <- Arqueo.RAIS.2022_2025 %>%
   group_by(Ano) %>%
   summarise(total = n()) |> 
   mutate(Ano = as.factor(Ano))
@@ -308,13 +346,13 @@ geral.anual %>%
   
 ```
 
-Ao segmentar os registros por tipo de vínculo em 31/12, nota-se a expressiva permanência dos vínculos ativos ao final de cada ano, com uma taxa de crescimento acumulada no período em torno de 26,53%. Para as declarações do tipo desligado, o comportamento dos dados revela uma certa estabilidade, sem grandes oscilações e mantendo uma proporção relativamente baixa comparado ao outro grupo.
+Na segmentação por tipo de vínculo, considerando a data de corte de 31/12 de cada ano, os vínculos ativos representam a parcela predominante, acumulando crescimento de 30,27% ao longo do período. As declarações de desligamento, por sua vez, exibem relativa estabilidade, com variações modestas e mantendo-se em patamar significativamente inferior ao do grupo de vínculos ativos durante toda a série.
 
 ```{r vínculos ativos em 31/12}
 #| label: fig-vinculos-ativos
 #| fig-cap: "Declarações por modalidades de vínculos em 31/12"
 
-vinculos_31.12 <- Arqueo.RAIS.2022_2024 %>%
+vinculos_31.12 <- Arqueo.RAIS.2022_2025 %>%
   group_by(Ano, Ind.Vínculo.Ativo.31.12) %>%
   summarise(quant.tipo.vinculo = n(), .groups = "drop") %>%
   mutate(Ind.Vínculo.Ativo.31.12 = dplyr::recode(Ind.Vínculo.Ativo.31.12,
@@ -362,17 +400,17 @@ vinculos_31.12 %>%
 
 ## Análise dos Dados por Vínculos Ativos em 31/12
 
-Os próximos gráficos foram gerados a partir das declarações com vínculos ativos em 31/12. Esse procedimento possibilitou analisar os dados dos arqueólogos que permaneceram em seus postos de trabalho até o final de cada ano. Assim, a filtragem dos registros será dada pela coluna `Ind.Vínculo.Ativo.31.12 == "SIM"`, em que o `SIM` representa os vínculos ativos.
+Os gráficos a seguir foram gerados a partir das declarações cujo indicador de vínculo ativo em 31/12 apresenta o valor `"SIM"` - ou seja, referem-se exclusivamente a arqueólogos que permaneceram em seus postos de trabalho até o final de cada ano-base. A filtragem foi aplicada sobre a coluna `Ind.Vínculo.Ativo.31.12`, selecionando apenas os registros com status ativo no recorte temporal.
 
-### Distribuição por Regiões
+### Distribuição por Região
 
-A começar pela distribuição dos vínculos ativos por região, as maiores concentrações estão localizadas nas empresas da região sudeste, seguido do nordeste. O norte obteve o menor número de declarações trabalhistas. As demais regiões apresentam pequenas oscilações nos registros analisados.
+Na distribuição dos vínculos ativos por macrorregião, a Região Sudeste concentra sistematicamente o maior volume de declarações ao longo de toda a série histórica. A Região Nordeste ocupa a segunda posição e exibe trajetória de crescimento contínuo ao longo do período. A Região Norte, embora registre o menor número absoluto de vínculos, demonstra crescimento constante, atingindo o pico de contratações em 2025. Em contraste, a Região Centro-Oeste apresenta tendência de declínio, enquanto a Região Sul mantém padrão de estabilidade nos registros trabalhistas.
 
 ```{r regiões}
 #| label: fig-regiao
 #| fig-cap: "Declarações ativas por região"
 
-Regiao <- Arqueo.RAIS.2022_2024 %>% 
+Regiao <- Arqueo.RAIS.2022_2025 %>% 
   filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>% 
   mutate(regioes = UF.Estabelecimento) %>% 
   mutate(regioes = recode(regioes,
@@ -417,9 +455,9 @@ Regiao |>
 
 ### Distribuição por Estados {#sec-ativos-estados}
 
-Ao desagregar as informações regionais por estados, observa-se que a cobertura do mercado de trabalho formal não contempla todas as unidades federativas. Estados da região Norte são os mais afetados pela falta de oportunidades de emprego formal em estabelecimentos localizados naquela região. Por outro lado, as empresas sediadas nos estados de São Paulo, Pernambuco e Santa Catarina são as que apresentaram as maiores concentrações de mão de obra arqueológica.
+A desagregação regional por estados revela que nem todas as unidades federativas registraram vínculos ativos de arqueólogos no período analisado. A ausência é mais pronunciada nos estados da Região Norte, indicando menor inserção formal dessa profissão naquela macrorregião.
 
-Nessa conjuntura, o cenário que se delineia é de uma assimetria na distribuição da oferta de trabalho por estabelecimentos localizados em diferentes regiões do país, revelando um mercado concentrado nas mãos de poucas empresas que distribuem seus empregados para os diversos cantos do país.
+Em contrapartida, os estados de São Paulo, Pernambuco e Santa Catarina concentram as maiores quantidades de vínculos ativos, configurando polos regionais de demanda por mão de obra arqueológica. Esse padrão evidencia assimetria geográfica na distribuição das oportunidades de emprego formal, com a maior parte dos vínculos concentrada em poucas unidades federativas.
 
 ```{r estados}
 #| label: fig-estados
@@ -428,7 +466,7 @@ Nessa conjuntura, o cenário que se delineia é de uma assimetria na distribuiç
 #| fig-width: 12
 #| fig-height: 6
 
-estados <- Arqueo.RAIS.2022_2024 %>% 
+estados <- Arqueo.RAIS.2022_2025 %>% 
 dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>% 
 group_by(Ano, UF.Estabelecimento) %>% 
   summarise(quant.uf= n(), .groups = "drop") |> 
@@ -475,13 +513,15 @@ browsable(tagList(titulo_html, grafico))
 
 ### Tipo de Vínculo Empregatício
 
-Para os tipos de vínculos empregatícios, há pouquíssimos arqueólogos trabalhando em repartições públicas, que, em termos proporcionais, representam 16% das declarações ativas. Ainda assim, é digno de nota o modesto crescimento observado nesse setor, o que leva a supor que houve algum tipo de movimentação política para a contratação de arqueólogos. Entretanto, é de conhecimento da categoria que no período analisado não houve um concurso público significativo que pudesse refletir os números mostrados no gráfico abaixo. A resposta para isso pode estar no painel seguinte.
+No que se refere à natureza do vínculo, a participação da administração pública é minoritária: arqueólogos em órgãos públicos representam aproximadamente 16% do total de declarações ativas no período analisado. Observa-se crescimento modesto nesse segmento até 2024, embora não tenham sido identificados concursos públicos de destaques nesse intervalo que expliquem a tendência evidenciada.
+
+A exceção ocorre em 2025, quando o IPHAN publicou edital para contratação de 15 arqueólogos por meio de [Processo Seletivo Simplificado](https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293 "Link de acesso ao edital do PSS/IPHAN 2024"){target="_blank"} - mecanismo de contratação temporária previsto na legislação federal. Esse evento pode explicar, ao menos em parte, o incremento observado no setor público naquele ano.
 
 ```{r vínculo empregatício}
 #| label: fig-empregaticio
 #| fig-cap: "Declarações ativas por modalidades de contratação"
 
-vinculos_empregaticio <- Arqueo.RAIS.2022_2024 %>%
+vinculos_empregaticio <- Arqueo.RAIS.2022_2025 %>%
   dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>% 
   mutate(Tipo.Vínculo = dplyr::recode(Tipo.Vínculo,
                                       "CLT R/PJ IND" = "CELETISTA",
@@ -494,7 +534,8 @@ vinculos_empregaticio <- Arqueo.RAIS.2022_2024 %>%
                                       "ESTAT N/EFET" = "ESTATUTÁRIO",
                                       "ESTAT RGPS" = "ESTATUTÁRIO",
                                       "ESTATUTARIO" = "ESTATUTÁRIO",
-                                      "TEMPORARIO" = "CELETISTA")) %>% 
+                                      "TEMPORARIO" = "CELETISTA",
+                                      "CLT R/PF IND"= "CELETISTA")) %>% 
   group_by(Ano, Tipo.Vínculo) %>%
   summarise(quant.tipo.vinculo= n(), .groups = "drop") %>% 
   mutate(Tipo.Vínculo = factor(Tipo.Vínculo, 
@@ -540,15 +581,19 @@ vinculos_empregaticio %>%
 
 ### Natureza Jurídica do Empregador
 
-Se no gráfico anterior apontou para um aumento progressivo nos vínculos estatutários, aqui podemos visualizar que o setor público estadual foi o responsável por aqueles números observados. Mas ainda permanece a incógnita da existência desses dados que não refletem com a realidade vivenciada. Seriam declarações inconsistentes ou contratações temporárias sem a necessidade de seleção editalícia? Por se tratar de setor público, a continuidade do aumento ao longo do período descarta a possibilidade de erro na entrega dos registros trabalhistas. O que pode ter ocorrido é que há estados que autorizam a contratação de servidores temporários sem a necessidade de processo seletivo por edital. Essa hipótese nos leva ao entendimento de que a modalidade de admissão temporária sem edital é a mais vantajosa para atender a crescente demanda de exigências do licenciamento ambiental.
+A análise por esfera administrativa revela que o setor público estadual foi o principal responsável pelo crescimento nos vínculos públicos de 2023 e 2024. Em 2025, o impulso veio do setor público municipal, invertendo o padrão observado nos anos anteriores.
 
-Quanto aos demais grupos de empregadores, as entidades empresarias lideram nas contratações de mão de obra da categoria, enquanto o restante dos setores mantiveram a permanência dos arqueólogos em seus estabelecimentos.
+Essa dinâmica suscita uma questão sobre a natureza desses registros. A continuidade do crescimento ao longo do período torna improvável que se trate de erro pontual na entrega das declarações, embora não elimine completamente essa possibilidade. Uma hipótese plausível - que demanda cruzamento de informações - é que determinados estados e municípios tenham recorrido a mecanismos de contratação temporária sem processo seletivo por edital. Se confirmada, essa prática poderia explicar parte do crescimento observado, possivelmente vinculado à demanda crescente proveniente do licenciamento ambiental.
+
+Destaca-se que o estoque do setor público federal permaneceu estável em 2025. Isso revela que o concurso temporário do IPHAN naquele ano - que contratou 15 arqueólogos via Processo Seletivo Simplificado - não impactou o código CBO 2511-10 (ocupação de arqueólogo, CBO/2002). Ocorre que as declarações desses profissionais foram registradas sob código CBO distinto, o que explica a ausência de efeito nos vínculos de âmbito federal. Esse procedimento contrasta com o ciclo de contratações temporárias anterior da mesma instituição (2014–2019), cujos registros foram corretamente classificados na CBO 2511-10, conforme documentado por [Machado e Mageste](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}.
+
+Para os empregadores do regime celetista, o quadro mostra tendências de estabilidade nas declarações trabalhistas.
 
 ```{r natureza jurídica}
 #| label: fig-juridico
 #| fig-cap: "Declarações ativas por natureza jurídica do contratante"
 
-natureza_juridica <- Arqueo.RAIS.2022_2024 %>%
+natureza_juridica <- Arqueo.RAIS.2022_2025 %>%
   dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
   mutate(Natureza.Jurídica = dplyr::recode(Natureza.Jurídica,
                                       "AUTARQ EST" = "Setor Público Estadual",
@@ -572,16 +617,19 @@ natureza_juridica <- Arqueo.RAIS.2022_2024 %>%
                                       "SOC QT LTDA" = "Entidades Empresariais",
                                       "SOC SIMP LTD" = "Entidades Empresariais",
                                       "SOC SIMP PUR" = "Entidades Empresariais",
-                                      "{ñ class}" = "Não identificado", 
-                                      .missing = "Não identificado")) %>% 
+                                      "{ñ class}"= "Não identificado e outros",
+                                      "FUNDO ADM DIRET MUN"= "Setor Público Municipal",
+                                      "EMP IND IMO"= "Não identificado e outros",
+                                      "COOPERATIVA"= "Entidades Empresariais",
+                                      .missing= "Não identificado e outros")) %>% 
   group_by(Ano, Natureza.Jurídica) %>%
-  summarise(quant.nat.jur= n()) %>% 
+  summarise(quant.nat.jur= n(), .groups = "drop") %>% 
   ungroup() %>% 
   dplyr::select(Ano, Natureza.Jurídica, quant.nat.jur) %>% 
   mutate(Natureza.Jurídica = factor(Natureza.Jurídica, 
                              levels = c("Setor Público Federal", "Setor Público Estadual",
                                         "Setor Público Municipal", "Entidades Empresariais",
-                                        "Entidades sem Fins Lucrativos", "Não identificado"))) |> 
+                                        "Entidades sem Fins Lucrativos", "Não identificado e outros"))) |> 
   mutate(Ano = as.factor(Ano))
 
 
@@ -622,14 +670,24 @@ titulo_html <- tags$div(
 browsable(tagList(titulo_html, grafico))
 ```
 
-### Tamanho do Estabelecimento por Setores Econômicos
+> Em 2025 houve o registro de _Empresa Individual Imobiliária_, pertencente a categoria jurídica de _Pessoas Físicas_. Como se trata de um único dado declarado, optou-se por incluí-lo no grupo de "Não identificado e outros" do gráfico acima.
 
-Em elaboração...
+### Distribuição por Setores Econômicos
+
+A segmentação por setores econômicos, segundo a Classificação Nacional de Atividades Econômicas (CNAE versão 2.0, IBGE), identifica 19 grupamentos com vínculos ativos de arqueólogos. Dentre eles, o grupamento _Atividades Profissionais, Científicas e Técnicas_ concentra mais de 55% das contratações. Nesse grupo, a subclasse predominante é a _Pesquisa e Desenvolvimento Experimental em Ciências Sociais e Humanas_, seguida por _Serviços de Engenharia_. Esse padrão indica que a profissão está majoritariamente concentrada em empresas de consultoria especializada, frequentemente vinculadas a projetos de licenciamento ambiental. 
+
+Em segundo lugar aparece o grupamento _Administração Pública, Defesa e Seguridade Social_, seguido por _Educação_. Esses segmentos representam parcela menor e relativamente estável do mercado, composta por órgãos públicos e instituições de ensino públicas e privadas.
+
+O setor de _Construção_ registrou expansão considerável, puxada pela subclasse _Obras de Alvenaria_. Esse movimento pode indicar uma tendência, ainda que incipiente, de construtoras contratarem arqueólogos diretamente, sem intermediação de consultorias especializadas.
+
+Chama atenção a alta pulverização de subgrupamentos com apenas 1 ou 2 eventos, espalhados em diversas atividades econômicas. Esses registros podem ser reflexos de vínculos atípicos ou mesmo ocorrências isoladas - arqueólogos ocupando cargos de gestão ou prestando consultoria pontual ou mesmo como proprietário de microempresa fora do segmento econômico principal. A análise sugere que se trata de ruído estatístico, não de uma tendência de diversificação setorial.
+
+Um caso exemplar é a subclasse _Fabricação de Periféricos para Equipamentos de Informática_ - pertencente ao grupamento _Indústrias de Transformação -, que registrou 18 declarações em 2024 e 11 em 2025. Esse padrão atípico, sem precedentes no mercado arqueológico, indica provavelmente a atuação de um único grande empregador — e não o surgimento de um novo setor de empregabilidade para a profissão.
 
 ```{r econômico}
 #| column: screen-inset
 #| label: tbl-setor-economico
-#| tbl-cap: "Quantitativo de empregados por Classificação Nacional de Atividades Econômicas (CNAE) do IBGE"
+#| tbl-cap: "Quantitativo de trabalhadores ativos por CNAE/IBGE"
 
 # Baixando o dicionário de dados do Novo CAGED (contém os setores econômicos)
 url.dic.cadeg <- "https://github.com/machadotm/Dados_MTE_Arqueo/raw/refs/heads/main/CAGED/3-Novo_Caged/Dicionario_Dados/Layout_Novo_Caged.xlsx"
@@ -683,116 +741,84 @@ junta.secao.subclasse <- left_join(subclasse, secao, by= 'Código_seção') %>%
                                     "Agricultura, Pecuária, Produção Florestal, Pesca e Aquicultura")) %>% 
   rename(CNAE.2.0.Subclasse = Descrição_subclase)
 
-Arqueo.RAIS.2022_2024 <- left_join(Arqueo.RAIS.2022_2024, junta.secao.subclasse, by= 'CNAE.2.0.Subclasse')#63
+Arqueo.RAIS.2022_2025 <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::select(-dplyr::any_of(c("Descrição_seção"))) %>%
+  left_join(junta.secao.subclasse, by = 'CNAE.2.0.Subclasse')
 
-tamanho.tab.economico <- Arqueo.RAIS.2022_2024
+setor.tab.economico <- Arqueo.RAIS.2022_2025
 
-tamanho.tab.economico <- tamanho.tab.economico %>% 
+setor.tab.economico <- setor.tab.economico %>% 
   rename(
          seção = Descrição_seção,
-         subclasse = CNAE.2.0.Subclasse,
-         tamestab = Tamanho.Estabelecimento)
+         subclasse = CNAE.2.0.Subclasse)
 
-tamanho.tab.economico <- tamanho.tab.economico %>% 
-  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>% 
-  group_by(Ano, seção, subclasse, tamestab) %>% 
+setor.tab.economico <- setor.tab.economico %>% 
+  dplyr::filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>% 
+  group_by(Ano, seção, subclasse) %>% 
   summarise(quantidade = n(), .groups = "drop") %>% 
-  mutate(tamestab = dplyr::recode(tamestab,
-                           "ATE 4" = "Até 4 trabalhadores", 
-                             "DE 5 A 9" = "De 5 a 9 trabalhadores",
-                             "DE 10 A 19" = "De 10 a 19 trabalhadores", 
-                             "DE 20 A 49" = "De 20 a 49 trabalhadores", 
-                             "DE 50 A 99" = "De 50 a 99 trabalhadores",
-                             "DE 100 A 249" = "De 100 a 249 trabalhadores", 
-                             "DE 250 A 499" = "De 250 a 499 trabalhadores", 
-                             "DE 500 A 999" = "De 500 a 999 trabalhadores",
-                             "1000 OU MAIS" = "1000 ou mais trabalhadores")) %>% 
-  mutate(tamestab = factor(tamestab, 
-                                    levels = c("Até 4 trabalhadores", "De 5 a 9 trabalhadores",
-                                                  "De 10 a 19 trabalhadores", "De 20 a 49 trabalhadores", 
-                                                  "De 50 a 99 trabalhadores", "De 100 a 249 trabalhadores", 
-                                                  "De 250 a 499 trabalhadores", "De 500 a 999 trabalhadores",
-                                                  "1000 ou mais trabalhadores"))) %>%
   pivot_wider(
     names_from  = Ano,
     values_from = quantidade) %>% 
-  arrange(tamestab, seção, subclasse)
+  arrange(seção, subclasse)
 
 
-colunas_anos <- tamanho.tab.economico %>%
+colunas_anos <- setor.tab.economico %>%
   select(where(is.numeric)) %>%
   names()
 
 n_anos <- length(colunas_anos)
 
-# Totais por tamestab e ano
-totais_tab <- tamanho.tab.economico %>%
-  group_by(tamestab) %>%
+# Totais por seção e ano 
+totais_tab <- setor.tab.economico %>%
+  group_by(seção) %>%
   summarise(across(all_of(colunas_anos), \(x) sum(x, na.rm = TRUE)),
             .groups = "drop")
 
 # Total geral por ano
-totais_gerais <- tamanho.tab.economico %>%
+totais_gerais <- setor.tab.economico %>%
   summarise(across(all_of(colunas_anos), \(x) sum(x, na.rm = TRUE)))
 
-# Linha de percentual por grupo 
+# Linha de percentual por seção
 percentual_secao <- totais_tab %>%
   mutate(
     across(all_of(colunas_anos), ~ {
       total_geral <- totais_gerais[[cur_column()]]
       ifelse(. == 0, "-", paste0(., " (", round(. / total_geral * 100, 2), "%)"))
     }),
-    seção     = "",
-    subclasse = ""   
+    subclasse = ""
   )
 
-anos_chr <- tamanho.tab.economico %>%
+anos_chr <- setor.tab.economico %>%
   mutate(across(all_of(colunas_anos), ~ ifelse(is.na(.) | . == 0, "-", as.character(.))))
 
 dados_com_pct <- bind_rows(anos_chr, percentual_secao) %>%
-  arrange(tamestab, seção == "", subclasse == "")
+  arrange(seção, subclasse == "")
 
-linhas_pct <- which(
-  dados_com_pct$seção == "" & dados_com_pct$subclasse == ""
-)
+linhas_pct <- which(dados_com_pct$subclasse == "")
 
-linhas_tamestab <- which(
-  c(FALSE, dados_com_pct$tamestab[-1] != dados_com_pct$tamestab[-nrow(dados_com_pct)])
+# Transições entre blocos de seção 
+linhas_secao <- which(
+  c(FALSE, dados_com_pct$seção[-1] != dados_com_pct$seção[-nrow(dados_com_pct)])
 ) - 1
-
-linhas_secao <- dados_com_pct %>%
-  mutate(row_id = row_number()) %>%
-  group_by(tamestab) %>%
-  mutate(
-    mudou_secao = seção != lag(seção, default = first(seção)) & seção != ""
-  ) %>%
-  ungroup() %>%
-  filter(mudou_secao) %>%
-  pull(row_id)
-
-linhas_secao <- setdiff(linhas_secao - 1, linhas_tamestab)
 
 # Estilos de borda
 borda_grossa <- fp_border(color = "#222222", width = 2.0)
-borda_fina <- fp_border(color = "#888888", width = 1.0)
 borda_vert <- fp_border(color = "#aaaaaa", width = 1.5)
 borda_invisivel <- fp_border(width = 0, color = "transparent")
 
 # Tabela flextable
-tabela_tambest <- dados_com_pct %>%
-  flextable(col_keys = c("tamestab", "seção", "subclasse", colunas_anos)) %>%
-  merge_v(j = "tamestab") %>%
+tabela_setor <- dados_com_pct %>%
+  flextable(col_keys = c("seção", "subclasse", colunas_anos)) %>%
   merge_v(j = "seção") %>%
   add_header_row(
     top = TRUE,
-    values = c("", "", "", ""),
-    colwidths = c(1, 1, 1, n_anos)
+    values = c("", "", ""),
+    colwidths = c(1, 1, n_anos)
   ) %>%
   
   # Rótulos da linha base do cabeçalho
   set_header_labels(
-    tamestab = "Tamanho do Estabelecimento - Empregados Ativos",
-    seção = "Agrupamento Econômico - Seção CNAE 2.0",
+    seção = "Grupamento de Atividades Econômicas - Seção CNAE 2.0",
     subclasse = "Atividade Econômica Principal do CNPJ - Subclasse CNAE 2.0"
   ) %>%
   
@@ -806,7 +832,7 @@ tabela_tambest <- dados_com_pct %>%
   align(j = c("seção", "subclasse"), align = "left", part = "body") %>%
   
   bold(part = "header") %>%
-  bold(j = "tamestab", part = "body") %>%
+  bold(j = "seção", part = "body") %>%
   
   # --- Estilo linhas de percentual ---
   bold(i   = linhas_pct, part = "body") %>%
@@ -822,22 +848,19 @@ tabela_tambest <- dados_com_pct %>%
   ) %>%
   
   # --- Larguras ---
-  width(j = "tamestab", width = 2.5) %>%
   width(j = "seção",       width = 3.0) %>%
   width(j = "subclasse",   width = 3.5) %>%
   width(j = colunas_anos,  width = 1.2) %>%
    
   theme_booktabs() %>%
   
-  # Bordas verticais
-  border(j = "seção",     border.right = borda_vert, part = "all") %>%
+  # Borda vertical
   border(j = "subclasse", border.right = borda_vert, part = "all") %>%
-  # Bordas horizontais
-  hline(i = linhas_tamestab, border = borda_grossa, part = "body") %>%
-  hline(i = linhas_secao,       border = borda_fina,   part = "body") %>%
+  # Borda horizontal grossa entre seções
+  hline(i = linhas_secao, border = borda_grossa, part = "body") %>%
   
-  add_header_lines("Distribuição do Tamanho dos Estabelecimentos por Setores Econômicos") %>%
-  add_header_lines("Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024") %>%
+  add_header_lines("Distribuição dos Vínculos Ativos por Setores Econômicos") %>%
+  add_header_lines("Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025") %>%
   
   # Remover bordas das linhas de título/subtítulo
   hline(i = 1, border = borda_invisivel, part = "header") %>%
@@ -848,18 +871,22 @@ tabela_tambest <- dados_com_pct %>%
   fontsize(i = 1, size = 14, part = "header") %>%  
   fontsize(i = 2, size = 11, part = "header")   
 
-tabela_tambest
+tabela_setor
 ```
 
 ### Trabalho Intermitente
 
-Em elaboração...
+O contrato de trabalho intermitente foi instituído pela Reforma Trabalhista (Lei nº 13.467/2017) como modalidade em que o trabalhador é convocado apenas quando há demanda específica do empregador, alternando períodos de atividade e inatividade sem vínculo contínuo.
+
+Essa modalidade guarda semelhança conceitual com a natureza dos projetos arqueológicos, tipicamente de curta duração e vinculados a empreendimentos sujeitos ao licenciamento ambiental. Contudo, os dados indicam que o contrato intermitente formal não é a principal forma de contratação no setor. As empresas parecem recorrer a outros mecanismos de admissão laboral, possivelmente por razões tributárias, operacionais ou de adequação contratual com o empreendedor.
+
+Ainda assim, observa-se tendência gradual de crescimento dessa modalidade ao longo do período analisado, sugerindo que sua adoção vem se expandindo de forma incremental, possivelmente à medida que empregadores e trabalhadores se familiarizam com o instrumento legal.
 
 ```{r intermitente}
 #| label: fig-intermitente
 #| fig-cap: "Declarações ativas por indicador de trabalho intermitente"
 
-intermintente <- Arqueo.RAIS.2022_2024 %>% 
+intermintente <- Arqueo.RAIS.2022_2025 %>% 
   filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>%
   mutate(Ind.Trabalho.Intermitente = recode(Ind.Trabalho.Intermitente,
                           SIM = "Sim", NAO = "Não")) %>% 
@@ -893,15 +920,17 @@ intermintente  |>
 
 ### Escolaridade dos Arqueólogos
 
-Os dados revelam que o mercado de trabalho formal não é tão atrativo para os arqueólogos com título de pós-graduação. Os graduados são os mais requisitados, representando mais de 70% das declarações de vínculos ativo. Para o ano de 2022, houve o envio de informações de escolaridade incompatível com o que determina a legislação para ser considerado arqueólogo. Esses dados foram reunidos em *Registros inconsistentes*, que engloba declarações contendo nível de analfabeto até superior incompleto.
+A distribuição de escolaridade entre os vínculos ativos revela que os arqueólogos com graduação (como escolaridade máxima registrada) representam mais de 70% das declarações anuais. Profissionais com mestrado ou doutorado aparecem em proporção significativamente menor, o que pode refletir tanto a demanda do mercado - que frequentemente exige apenas a graduação - quanto a migração de pós-graduados para carreiras acadêmicas ou informais.
 
-Nesse cenário visualizado, evidencia-se que a categoria *Registros inconsistentes* ocasionou uma sub-representação nos demais grupos, posto que não refletem seu real quantitativo para aquele ano. Um fator que pode ter contribuído para esse equívoco de preenchimento estar na transição do envio das declarações do GD-RAIS para o eSocial, em que os estabelecimentos ainda estavam se adaptando ao novo sistema.
+Para o ano-base 2022, identificou-se um volume atípico de declarações com campos de escolaridade preenchidos com níveis incompatíveis com o exercício profissional da arqueologia - variando de "analfabeto" a "superior incompleto". Essas declarações foram agrupadas na categoria _Registros inconsistentes_. A presença desse grupo distorceu a distribuição dos demais níveis de escolaridade naquele ano, sub-representando as categorias de graduados e pós-graduados.
+
+Uma hipótese plausível para essa anomalia é a transição do GD-RAIS para o eSocial, período em que estabelecimentos ainda se adaptavam ao novo formato de preenchimento. Erros de mapeamento entre os campos de escolaridade dos dois sistemas podem ter gerado registros com valores incorretos.
 
 ```{r escolaridade}
 #| label: fig-escolaridade
 #| fig-cap: "Declarações ativas por escolaridade"
 
-escolaridade <- Arqueo.RAIS.2022_2024 %>%
+escolaridade <- Arqueo.RAIS.2022_2025 %>%
   dplyr::filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>%
   mutate(
     Escolaridade.Após.2005 = dplyr::recode(
@@ -919,7 +948,7 @@ escolaridade <- Arqueo.RAIS.2022_2024 %>%
   group_by(Ano, Escolaridade.Após.2005) %>%
   summarise(quant.escolaridade = n(), .groups = "drop") %>%
   mutate(
-    Ano = factor(Ano, levels = c(2022, 2023, 2024)),
+    Ano = factor(Ano, levels = c(2022, 2023, 2024, 2025)),
     Escolaridade.Após.2005 = factor(
       Escolaridade.Após.2005,
       levels = c("Graduação", "Mestrado", "Doutorado", "Registros inconsistentes")
@@ -971,13 +1000,13 @@ escolaridade %>%
 
 ### Faixa Etária
 
-A maioria das faixas etárias apresentaram aumento nos registros trabalhistas, sendo a faixa de 30 a 39 anos a que lidera nas contratações da categoria. A partir dessa faixa, o quadro mostra uma tendência de possível abandono ou mudança de carreira ou de cargo conforme avança a idade do profissional.
+A maioria das faixas etárias registrou crescimento no período analisado, com a faixa de 30 a 39 anos concentrando a maior parcela dos vínculos ativos. Nas faixas etárias superiores (40–49, 50–64 e +65), observa-se um declínio gradual nas declarações, o que pode refletir múltiplos fenômenos: aposentadoria, migração para consultorias informais, transição para cargos de gestão ou mudança de carreira. 
 
 ```{r faixa etária}
 #| label: fig-etario
 #| fig-cap: "Declarações ativas por faixa etária"
 
-faixa.etaria <- Arqueo.RAIS.2022_2024 %>%
+faixa.etaria <- Arqueo.RAIS.2022_2025 %>%
   dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
   group_by(Ano, Faixa.Etária) %>%
   summarise(quant.etaria= n()) %>% 
@@ -1029,15 +1058,15 @@ faixa.etaria %>%
 
 ### Faixa Horária Contratual
 
-A maior parte dos arqueólogos trabalha na faixa de 41 a 44 horas semanais, uma jornada que inclui até os finais de semana como parte do contrato de trabalho.
+A maior parte dos arqueólogos trabalha entre 41 e 44 horas semanais, compatível com o regime padrão de escala 6×1 (seis dias de trabalho por um de descanso). Registros de jornadas acima de 44 horas persistem ao longo do período, indicando a existência de contratos com horas extras habituais ou regimes especiais.
 
-A persistência no preenchimento de informações acima de 44 horas semanais revela a existência de trabalhadores submetidos a uma escala exaustiva de trabalho. No outro extremo, uma parcela significativa de arqueólogos possuem jornadas de trabalho abaixo de 30 horas, indicativo de que foram contratados por condições especiais mediadas por acordos com o empregador.
+No extremo oposto, uma parcela dos profissionais possui jornadas inferiores a 30 horas semanais, sugerindo contratações em regime de tempo parcial, consultoria especializada ou condições especias mediadas por acordos com o empregador. 
 
 ```{r faixa hora contratual}
 #| label: fig-hora
 #| fig-cap: "Declarações ativas por faixa horária contratual"
 
-faixa.horario <- Arqueo.RAIS.2022_2024 %>%
+faixa.horario <- Arqueo.RAIS.2022_2025 %>%
   dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
   mutate(Faixa.Hora.Contrat = recode(Faixa.Hora.Contrat,
                                      "{ñ class}" = "Não informado",
@@ -1090,17 +1119,17 @@ titulo_html <- tags$div(
 browsable(tagList(titulo_html, grafico))
 ```
 
-### Faixa por Tempo de Emprego
+### Tempo de Emprego
 
-Um contigente de arqueólogos com mais de cinco anos em seus postos de trabalho mantêm uma perpectiva de certa estabilidade sem registro de decréscimo. Isso aponta que os estabelecimentos das duas faixas temporais (acima de 60 meses) apresentam condições laborais para a permanência dos trabalhadores.
+Um contingente significativo de arqueólogos acumula mais de cinco anos (+60 meses) no mesmo posto de trabalho, indicando relativa estabilidade e baixa rotatividade nesse segmento. Essa permanência indica a existência de empregadores que oferecem condições de retenção da mão de obra contratada.
 
-Os demais grupos revelaram oscilações no comportamento dos dados para cada ano analisado, sugerindo uma sensibilidade de rotatividade nas contratações de mão de obra. Isso pode ser reflexo do tempo de duração dos projetos arqueológicos executados no escopo do licenciamento ambiental.
+Os grupos com menos de cinco anos de vínculo apresentam maior variação anual, sugerindo rotatividade mais elevada. Esse padrão é consistente com a natureza dos projetos arqueológicos no escopo de licenciamento ambiental, tipicamente de duração limitada e com ciclos de contratação e desligamento mais frequentes.
 
 ```{r tempo emprego}
 #| label: fig-tempo
 #| fig-cap: "Declarações ativas por faixa de tempo de emprego"
 
-tempo.emp <- Arqueo.RAIS.2022_2024 %>%
+tempo.emp <- Arqueo.RAIS.2022_2025 %>%
   dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
   mutate(Faixa.Tempo.Emprego = recode(Faixa.Tempo.Emprego,
                                      "12,0 a 23,9 meses" = "12 a 23 meses",
@@ -1120,7 +1149,8 @@ tempo.emp <- Arqueo.RAIS.2022_2024 %>%
                                                 "6 a 11 meses", "12 a 23 meses",
                                                 "24 a 35 meses", "36 a 59 meses",
                                                 "60 a 119 meses", "120 meses ou mais"))) |> 
-  mutate(Ano = as.factor(Ano))
+  mutate(Ano = as.factor(Ano)) |> 
+  dplyr::filter(!is.na(Faixa.Tempo.Emprego))
 
 grafico <- tempo.emp |>
   group_by(Faixa.Tempo.Emprego) |>
@@ -1161,13 +1191,13 @@ browsable(tagList(titulo_html, grafico))
 
 ### Distribuição por Sexo
 
-Não há uma distribuição equilibrada dos vínculos ativos por sexo. Os homens são dominantes no mercado de trabalho formal. Ambas as categorias apresentam tendências de crescimento constante.
+A distribuição dos vínculos por sexo é acentuadamente desequilibrada: homens representam a grande maioria dos registros em todos os anos analisados. Ambos os sexos apresentam tendência de crescimento, mas a base masculina permanece significativamente superior à feminina ao longo de toda série temporal.
 
 ```{r distribuição por sexo}
 #| label: fig-ativo-sexo
 #| fig-cap: "Declarações ativas por sexo"
 
-sexo <- Arqueo.RAIS.2022_2024 %>%
+sexo <- Arqueo.RAIS.2022_2025 %>%
   dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") |> 
   group_by(Ano, Sexo) %>%
   summarise(quant.sexo= n(), .groups = "drop") |> 
@@ -1213,16 +1243,16 @@ sexo %>%
 
 ### Distribuição por Cor e Raça
 
-No quesito de cor e raça, a maioria dos arqueólogos se declararam como pardos, seguidos de brancos. Os pretos, indígenas e amarelos têm participação pequena no mercado de trabalho formal.
+A autodeclaração de cor e raça indica que a maioria dos arqueólogos se declara parda, seguida por branca. As categorias preta, indígena e amarela têm participação minoritária no mercado formal.
 
-O cenário mostra uma tendência de decréscimo nas informações não declaradas, o que aponta melhorias de cobertura implementadas pelo eSocial.
+Observa-se tendência de redução nos dados sem informação de cor e raça, o que pode indicar melhorias na cobertura e no preenchimento dos campos pelo eSocial.
 
 ```{r cor/raça}
 #| label: fig-cor-raca
 #| fig-cap: "Declarações ativas por cor e raça"
 
 #| fig-cap: "Gráfico teste"
-raca.cor <- Arqueo.RAIS.2022_2024 %>%
+raca.cor <- Arqueo.RAIS.2022_2025 %>%
   dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
   mutate(Raça.Cor = recode(Raça.Cor,
                                       "INDIGENA" = "Indígena",
@@ -1282,11 +1312,18 @@ browsable(tagList(titulo_html, grafico))
 
 ## Análise Remuneratória de Dezembro dos Vínculos Ativos
 
-Para fins de análise dos valores remuneratórios de dezembro, procedeu-se numa correção dos números armazenados na coluna `Vl.Rem.Dezembro.Nom`, posto que alguns apresentavam ora excesso de dígitos ora ausência do marcador decimal. A detecção dos valores inexatos aconteceu a partir da comparação com as informações da coluna `Faixa.Rem.Dez..SM`, que descreve em qual faixa de salário mínimo a remuneração se insere. Assim, foi possível identificar quais cifras estavam em desconformidade com a faixa de salário mínimo, de modo a realizar a correção pela inserção do marcador decimal ou remoção dos dois últimos algarismos da remuneração.
+Para a análise dos valores remuneratórios de dezembro, foi necessário corrigir inconsistências na coluna `Vl.Rem.Dezembro.Nom`, onde alguns registros apresentavam excesso de dígitos (ex.: 350000 em vez de 3500) e outros com ausência do marcador decimal (ex.: 280049 em vez de 2800.49). A detecção dessas inconsistências foi realizada por comparação cruzada entre o valor nominal e a faixa salarial indicada na coluna `Faixa.Rem.Média..SM`.
 
-O controle para inserção do marcador decimal ou remoção de dígitos não foi dado pela coluna `Faixa.Rem.Dez..SM` e sim pela `Faixa.Rem.Média..SM` combinado com o valor do salário mínimo de 2024 (R\$ 1.412). Esse procedimento foi o que se mostrou o mais adequado para a correção das remunerações inconsistentes de forma a refletir com suas respectivas faixas de sálario mínimo.
+O procedimento de correção adotado foi o seguinte:
 
-A tabela interativa abaixo mostra os valores antigos e corrigidos da coluna `Vl.Rem.Dezembro.Nom`, bem como a exibição de algumas variáveis para fins comparativos.
+1. Para cada registro inconsistente, verificou-se a faixa salarial e o valor do SM vigente (R$ 1.412 em 2024);
+2. Com base nessa referência, aplicou-se uma das duas operações:
+   - Inserção do marcador decimal no local que tornava o valor coerente com a faixa salarial; ou
+   - Remoção dos dois últimos algarismos, quando o valor parecia ter sido registrado com acréscimo de dois dígitos zeros sem separação decimal.
+
+A coluna `Faixa.Rem.Média..SM` - e não a `Faixa.Rem.Dez..SM` - mostrou-se o parâmetro mais confiável para orientar a correção, pois reflete a média remuneratória do vínculo ao longo do ano, reduzindo o ruído de variações pontuais.
+
+A tabela interativa abaixo apresenta os valores originais e corrigidos da coluna `Vl.Rem.Dezembro.Nom`, acompanhados de algumas variáveis para fins comparativos.
 
 ```{r correção de valores remuneratórios}
 #| label: tbl-tabela-comparativo
@@ -1295,7 +1332,7 @@ A tabela interativa abaixo mostra os valores antigos e corrigidos da coluna `Vl.
 #| fig-width: 12
 #| fig-height: 6
 
-remunera_corrigido <- Arqueo.RAIS.2022_2024 %>% # correção das casas decimais na coluna de Vl.Rem.Dezembro.Nom
+remunera_corrigido <- Arqueo.RAIS.2022_2025 %>% # correção das casas decimais na coluna de Vl.Rem.Dezembro.Nom
   dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
   mutate(valor_SM_fx_maximo_2024 = Faixa.Rem.Média..SM,
          valor_SM_fx_maximo_2024 = recode(valor_SM_fx_maximo_2024, # correção a partir do valor do salário mínimo de 2024 (R$ 1.412,00)
@@ -1369,7 +1406,9 @@ DT::datatable(remunera_tabela, filter = 'top', options = list(
 
 ### Média Salarial
 
-A média salarial da categoria referente ao mês de dezembro mostra um tímido crescimento nos dois últimos anos. Esse quadro nos instiga a investigar outras variáveis que possam responder a esse modesto saldo remuneratório.
+A média remuneratória de dezembro cresceu de R$ 4.645,99 em 2022 para R$ 5.877,39 em 2025 - uma variação nominal de +26,5% ao longo de três anos. Contudo, esse crescimento não foi linear. A desaceleração em 2024 (crescimento de apenas +1,5%) contrasta com a expansão registrada de 2023 (+16,5%), enquanto 2025 retoma o ritmo de crescimento (+6,9%). 
+
+Essa oscilação observada indica que o desempenho salarial da categoria foi sensível a fatores conjunturais ocorridos no biênio 2023-2024.
 
 ```{r média salarial}
 #| label: fig-ativo-media
@@ -1480,9 +1519,9 @@ p_final
 
 ### Resumo Estatístico
 
-Em todas as medidas de posição houve um aumento contínuo nos valores remuneratórios, possivelmente reflexo das variações advindas dos salários mínimos, que são reajustados a cada ano. Nota-se uma diferença significativa entre a média e mediana, que saltou de R\$ 645,99 para R\$ 820,95. Nesse caso estamos diante de uma assimetria na distribuição dos números, com os supersalários puxando o aumento da média. Diante disso, a mediana é o indicator mais realista para representar os salários dos arqueólogos, tendo em vista que ela localiza os 50% dos trabalhadores que recebem um determinado valor, enquanto a média é sensível a remunerações extremas.
+As medidas de posição remuneratórias revelam assimetria positiva na distribuição dos dados: a média é sistematicamente superior à mediana, indicando que uma minoria de remunerações elevadas puxa o valor médio para cima. No período analisado, a diferença entre a média e mediana foi ampliada de R$ 645,99 para R$ 935,61.
 
-Importante destacar que o valor mínimo para o ano de 2022 mostrado na tabela abaixo é referente ao segundo valor mínimo daquele ano. O primeiro é o valor zero e optamos por remover esse número da tabela por ser o único ano que apresentou valores zero no período analisado. Essa remoção é apenas para fins ilustrativo, pois o zero está sendo considerado no cálculo da média, tendo em vista que faz parte do universo amostral. Ainda sobre esse ponto, até o momento não foi possível identificar as variáveis determinantes para a imputação de cifras zero.
+Nesse contexto, a mediana é o indicador mais representativo do salário típico dos arqueólogos, pois não é influenciada por valores extremos. A média, por outro lado, reflete a distribuição global, incluindo os supersalários que distorcem o valor central.
 
 ```{r tabela resumo estatistico}
 #| label: tbl-resumo-estatistico-geral-ativos
@@ -1519,9 +1558,9 @@ tabela_remunera <- resumo_remunera2 %>%
 tabela_remunera
 ```
 
-A figura abaixo mostra a distribuição dos valores remuneratórios de dezembro na forma de boxplot, uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (outliers).
+> O ano-base 2022 apresentou dados com valor remuneratório de R$ 0,00 - fenômeno não observado nos demais anos da RAIS. Esses eventos foram excluídos da tabela ilustrativa para fins de visualização, mas mantidos nos cálculos das medidas de posição, pois integram o espaço amostral. Até o momento, não foi possível identificar as variáveis determinantes para o registro de remuneração zero, hipótese que pode envolver desde erro de preenchimento até licenças sem remuneração ou afastamentos legais.
 
-O boxplot já confirma o que foi observado na tabela anterior, no qual a dispersão dos valores remuneratórios são assiméticos. Nessa visualização gráfica é possível identificar que houve uma queda no intervalo interquartil (IQR) de 2023 para 2024. Em 2023 o IQR obteve R\$ 3.187,60 e em 2024 encolheu para R\$ 3.159,27, que corresponde a uma diferença de -R\$ 28,33. Da mesma forma, a base (1Q) diminuiu de R\$ 3.156,16 para R\$ 3.060,36, enquanto o topo (3Q) caiu de R\$ 6.343,76 para R\$ 6.219,63. Isso aponta que houve perdas salariais na faixa central das remunerações em relação a 2023.
+A figura abaixo mostra a distribuição dos valores remuneratórios de dezembro na forma de boxplot, uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (outliers).
 
 ```{r boxplot}
 #| label: fig-boxplot
@@ -1554,7 +1593,7 @@ for(i in 1:nrow(tabela)) {
 tabela_json <- toJSON(tabela_list, auto_unbox = TRUE)
 
 dados_boxplot <- remunera_corrigido %>%
-  mutate(Ano = factor(Ano, levels = c(2022, 2023, 2024)))
+  mutate(Ano = factor(Ano, levels = c(2022, 2023, 2024, 2025)))
 
 tooltip_js <- sprintf("
   function(params) {
@@ -1652,15 +1691,28 @@ dados_boxplot %>%
   )
 ```
 
+O boxplot da distribuição remuneratória confirma a assimetria positiva e permite visualizar o intervalo interquartil (IQR) - faixa que contém os 50% dos trabalhadores centrais. Em 2025, o IQR mostra recuperação após dois recuos consecutivos (2022→2023 e 2023→2024):
+
+| Ano-base | Q1 (1º quartil) | Var. Q1 | Q3 (3º quartil) | Var. Q3 | IQR         | Var. IQR |
+|----------|-----------------|---------|-----------------|---------|-------------|----------|
+| 2022     | R$ 2.809,88     |     -   | R$ 6.026,62     |    -    | R$ 3.216,74 |    -     |
+| 2023     | R$ 3.156,16     | +12,3%  | R$ 6.343,76     | +5,3%   | R$ 3.187,60 | −0,9%    |
+| 2024     | R$ 3.060,36     | −3%     | R$ 6.219,63     | −2%     | R$ 3.159,27 | −0,9%    | 
+| 2025     | R$ 3.320,00     | +8,5%   | R$ 6.484,62     | +4,3%   | R$ 3.164,62 | +0,2%    |
+
+> A estabilidade do IQR indica que, embora Q1 e Q3 tenham obtido um desempenho em ritmos diferentes, a dispersão da faixa central permaneceu praticamente constante, sugerindo que a valorização salarial afetou proporcionalmente tanto os trabalhadores de menor remuneração (Q1) quanto os de faixa intermediária (Q3).
+
 Para facilitar o entendimento de um boxplot, a figura abaixo ilustra como deve ser feito a leitura dessa representação gráfica.
 
 ![Exemplo de leitura de [boxplot](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png "Link para acesso a fonte da figura boxplot"){target="_blank"}](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png){#fig-gif-boxplot fig-align="center"}
 
 ### Distribuição por Faixa Salarial
 
-A maioria dos arqueólogos receberam remunerações que compreende a faixa entre 3 a 4 salários mínimos, seguido de 2 a 3 salários mínimos. Essas duas faixas foram as únicas que permaneceram em suas posições no registro longitudional.
+A distribuição dos arqueólogos por faixa salarial em dezembro revela um padrão de redistribuição ao longo do período analisado. As faixas 2-3 SM e 3-4 SM concentraram, em conjunto, a maior parcela dos vínculos ativos em todos os anos. Até 2024, a faixa 3-4 SM ocupava a primeira posição e a faixa 2-3 SM a segunda colocação - ordem que se inverte em 2025, quando a faixa 2-3 SM assume a liderança.
 
-Um contigente significativo de profissionais foram pagos em valores abaixo de 1 salário mínimo. Isso indica que para o mês de dezembro alguns arqueólogos pegaram curtos trabalhos de campo ou então foram contratados para atenderem demandas de projetos pequenos ou mesmo aceitaram remuneração baixa como opção para conseguir emprego.
+O destaque é a faixa 1-2 SM, cuja participação cresceu de 7,82% para 19,14% - um aumento de 2,45× ao longo da série histórica. Em contrapartida, a faixa 5-7 SM sofreu queda de 9,7 pontos percentuais (de 15,65% para 5,94%). A combinação de crescimento na faixa 1-2 SM e retração na faixa 5-7 SM sugere que a profissão pode estar perdendo poder aquisitivo em relação à valorização do salário mínimo. 
+
+Aliado a esse quadro, a presença de profissionais com remuneração abaixo de 1 SM indica contratos de curta duração formalizados ao final do ano - possivelmente trabalhos de campo sazonais, consultorias pontuais ou vínculos intermitentes.
 
 ```{r tabela faixas salariais}
 #| column: screen-inset
@@ -1715,7 +1767,7 @@ tab.resumo_salario.2022 <- resumo_salario.2022 %>%
   text_transform(
     locations = cells_body(columns = porcentagem),
     fn = function(x) paste0(x, "%")) %>%
-  cols_label(faixa_SM = gt::html("Faixa de Renda<br>(em salários mínimos)"),
+  cols_label(faixa_SM = gt::html("Faixa de<br>Renda"),
              faixa_valor = gt::html("Valor em<br>Salário Mínimo"),
              porcentagem = gt::html("% de<br>Arqueólogos")) |> 
   cols_align(
@@ -1773,7 +1825,7 @@ tab.resumo_salario.2023 <- resumo_salario.2023 %>%
   text_transform(
     locations = cells_body(columns = porcentagem),
     fn = function(x) paste0(x, "%")) %>%
-  cols_label(faixa_SM = gt::html("Faixa de Renda<br>(em salários mínimos)"),
+  cols_label(faixa_SM = gt::html("Faixa de<br>Renda"),
              faixa_valor = gt::html("Valor em<br>Salário Mínimo"),
              porcentagem = gt::html("% de<br>Arqueólogos")) |> 
   cols_align(
@@ -1831,7 +1883,65 @@ tab.resumo_salario.2024 <- resumo_salario.2024 %>%
   text_transform(
     locations = cells_body(columns = porcentagem),
     fn = function(x) paste0(x, "%")) %>%
-  cols_label(faixa_SM = gt::html("Faixa de Renda<br>(em salários mínimos)"),
+  cols_label(faixa_SM = gt::html("Faixa de<br>Renda"),
+             faixa_valor = gt::html("Valor em<br>Salário Mínimo"),
+             porcentagem = gt::html("% de<br>Arqueólogos")) |> 
+  cols_align(
+  align = "center",
+  columns = c(porcentagem, faixa_valor, faixa_SM)
+)
+
+salario.2025 <- remunera_corrigido %>% 
+  dplyr::filter(Ano==2025) %>% 
+  mutate(
+    faixa_SM = case_when(
+      vl.rem.dez.nom.corrigido <= 1518 ~ "Até 1 salário mínimo",
+      vl.rem.dez.nom.corrigido > 1518 & vl.rem.dez.nom.corrigido <= (1518*2) ~ "Entre 1 e 2 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1518*2) & vl.rem.dez.nom.corrigido <= (1518*3) ~ "Entre 2 e 3 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1518*3) & vl.rem.dez.nom.corrigido <= (1518*4) ~ "Entre 3 e 4 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1518*4) & vl.rem.dez.nom.corrigido <= (1518*5) ~ "Entre 4 e 5 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1518*5) & vl.rem.dez.nom.corrigido <= (1518*7) ~ "Entre 5 e 7 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1518*7) & vl.rem.dez.nom.corrigido <= (1518*10) ~ "Entre 7 e 10 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1518*10) & vl.rem.dez.nom.corrigido <= (1518*15) ~ "Entre 10 e 15 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1518*15) & vl.rem.dez.nom.corrigido <= (1518*20) ~ "Entre 15 e 20 salários mínimos",
+      vl.rem.dez.nom.corrigido > (1518*20) ~ "Acima de 20 salários mínimos",
+      TRUE ~ NA_character_),
+    faixa_valor = case_when(
+      vl.rem.dez.nom.corrigido <= 1518 ~ "Até R$ 1.518",
+      vl.rem.dez.nom.corrigido > 1518 & vl.rem.dez.nom.corrigido <= (1518*2) ~ "R$ 1.5181.518 a R$ 3.036",
+      vl.rem.dez.nom.corrigido > (1518*2) & vl.rem.dez.nom.corrigido <= (1518*3) ~ "R$ 3.036 a R$ 4.554",
+      vl.rem.dez.nom.corrigido > (1518*3) & vl.rem.dez.nom.corrigido <= (1518*4) ~ "R$ 4.554 a R$ 6.072",
+      vl.rem.dez.nom.corrigido > (1518*4) & vl.rem.dez.nom.corrigido <= (1518*5) ~ "R$ 6.072 a R$ 7.590",
+      vl.rem.dez.nom.corrigido > (1518*5) & vl.rem.dez.nom.corrigido <= (1518*7) ~ "R$ 7.590 a R$ 10.626",
+      vl.rem.dez.nom.corrigido > (1518*7) & vl.rem.dez.nom.corrigido <= (1518*10) ~ "R$ 10.626 a R$ 15.180",
+      vl.rem.dez.nom.corrigido > (1518*10) & vl.rem.dez.nom.corrigido <= (1518*15) ~ "R$ 15.180 a R$ 22.770",
+      vl.rem.dez.nom.corrigido > (1518*15) & vl.rem.dez.nom.corrigido <= (1518*20) ~ "R$ 22.770 a R$ 30.360",
+      vl.rem.dez.nom.corrigido > (1518*20) ~ "Acima de R$ 30.360",
+      TRUE ~ NA_character_)) %>%
+  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor) %>% 
+  na.omit()
+
+resumo_salario.2025 <- salario.2025 %>% 
+  group_by(faixa_SM, faixa_valor) %>%
+  summarise(quantidade= n()) %>% 
+  ungroup() %>% 
+  mutate(porcentagem = round((quantidade / sum(quantidade) * 100),2)) %>% 
+  dplyr::select(faixa_SM, faixa_valor, quantidade, porcentagem) %>% 
+  arrange(desc(porcentagem))
+
+tab.resumo_salario.2025 <- resumo_salario.2025 %>%
+  dplyr::select(faixa_SM, faixa_valor, porcentagem) %>% 
+  gt() %>%
+  tab_header(
+    title = "Distribuição Salarial - Dezembro/2025",
+    subtitle = "Salário mínimo de R$ 1.518") %>%
+  fmt_number(
+    columns = porcentagem,
+    decimals = 2, sep_mark = ".", dec_mark = ",") %>%
+  text_transform(
+    locations = cells_body(columns = porcentagem),
+    fn = function(x) paste0(x, "%")) %>%
+  cols_label(faixa_SM = gt::html("Faixa de<br>Renda"),
              faixa_valor = gt::html("Valor em<br>Salário Mínimo"),
              porcentagem = gt::html("% de<br>Arqueólogos")) |> 
   cols_align(
@@ -1842,24 +1952,32 @@ tab.resumo_salario.2024 <- resumo_salario.2024 %>%
 html_2022 <- gt::as_raw_html(tab.resumo_salario.2022)
 html_2023 <- gt::as_raw_html(tab.resumo_salario.2023)
 html_2024 <- gt::as_raw_html(tab.resumo_salario.2024)
+html_2025 <- gt::as_raw_html(tab.resumo_salario.2025)
 
 htmltools::tagList(
   htmltools::tags$div(
     class = "tabelas-side-by-side",
     htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2022)),
     htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2023)),
-    htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2024))
+    htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2024)),
+    htmltools::tags$div(style = "flex: 1 1 0; min-width: 0;", htmltools::HTML(html_2025))
   )
 )
 ```
 
 ### Distribuição por Sexo
 
-Os dados segmentados da remuneração por sexo mostra uma situação curiosa e indagativa: a média salarial das arqueólogas se mostrou maior que a dos arqueólogos em 2022 e 2023, mas recuou no ano de 2024, quebrando a trajetória de crescimento. O cenário é invertido com os homens superando as mulheres em um ritmo de subida consistente.
+A evolução da média salarial por sexo entre 2022 e 2025 revela um padrão oscilatório inesperado, com duas inversões de vantagem e variações de magnitude significativa. A trajetória pode ser descrita em quatro momentos distintos:
 
-Se em 2022 e 2023 o quadro favorecia as arqueólogas com uma diferença, respectivamente, de R\$ 869,76 e R\$ 273,32, por que se alterou para o ano de 2024 com os homens ultrapassando as mulheres em R\$ 257,32? E qual ou quais fatorores impulsionaram o desempenho salarial das trabalhadoras nos anos iniciais, considerando que elas não representam o maior contingente no mercado de trabalho formal, conforme visualizado na @fig-ativo-sexo?
+Em 2022, as arqueólogas apresentavam média salarial de R$ 5.151,87, contra R$ 4.282,11 dos arqueólogos - uma vantagem de R$ 869,76 que se manteve como a maior diferença do período. No ano seguinte, essa vantagem se reduziu para R$ 273,32 (R$ 5.563,63 vs. R$ 5.290,31), sugerindo que os homens estavam ganhando terreno de forma gradual.
 
-A pista para compreender esse cenário pode ser obtida na tabela seguinte.
+A primeira inversão ocorreu em 2024: a média masculina saltou para R$ 5.615,93, enquanto a feminina recuou para R$ 5.358,61 - uma diferença de −R$ 257,32 em favor dos homens. Essa mudança marcou a primeira vez, em toda a série, que os arqueólogos superaram as arqueólogas em média remuneratória.
+
+Contudo, a tendência não se consolidou. Em 2025, o padrão se reverteu de forma ainda mais acentuada: a média feminina disparou para R$ 6.144,29 (+14,6% em relação a 2024), enquanto a masculina avançou modestamente para R$ 5.648,15 (+0,6%). O resultado foi uma nova vantagem feminina de R$ 496,14.
+
+Esse vaivém sugere que a remuneração por sexo também se mostrou altamente sensível a fatores conjunturais ocorridos no biênio 2023-2024. A inversão de 2024 pode ter sido impulsionada por um conjunto específico de contratações masculinas em faixas salariais superiores, enquanto a reversão de 2025 indica que as arqueólogas se beneficiaram de reajustes ou novas contratações em patamares mais elevados. 
+
+A análise das medidas de posição podem revelar novas informações desse padrão observado na média.
 
 ```{r média remuneratória por sexo}
 #| label: fig-media-sexo
@@ -1944,11 +2062,17 @@ media_sexos2 %>%
 
 ```
 
-Todas as medidas de posição favoreciam as mulheres, com diferenças apontadas somente para o ano de 2024. A mediana apresentou uma trajetória mais simétria no período longitudinal, além de ser a medida mais próxima entre os sexos. Isso mostra que as divergências estão localizadas nos valores extremos, fato que é observado no topo e na base das remunerações.
+Pela tabela abaixo, observa-se que as medidas de posição favorecem as mulheres na maior parte do período analisado, revelando um caso de valorização simultânea em todas as camadas de distribuição - com exceções localizadas em 2024 e no valor máximo. 
 
-Em relação as cifras máximas de 2024, o grupo feminino registrou uma queda considerável de -48,12% em comparação a 2023. Isso significa que a arqueóloga que recebeu a maior remuneração pode ter encerrado seu vínculo, se aposentado ou migrado para outra função ou mesmo permanecido no cargo com redução salarial mediada por acordo. Para o sexo masculino, o desempenho obtido em 2024 foi o responsável por manter o saldo positivo da média salarial geral da categoria daquele ano.
+No núcleo da distribuição, as mulheres lideram de forma consistente. O primeiro quartil (Q1) feminino parte de R$ 3.222,40 em 2022 e atinge R$ 3.564,68 em 2025, sempre acima do masculino (R$ 2.602,98 → R$ 2.996,22). A mediana feminina segue a mesma trajetória ascendente: R$ 4.040,91 → R$ 5.148,62 (+27,4% acumulado), enquanto a masculina acompanhou um saldo positivo até 2024 (R$ 4.000,00 → R$ 4.673,98), quando registra queda relativa em 2025 - R$ 4.673,98 → R$ 4.500 (-3,7%). O terceiro quartil (Q3) feminino se manteve constante nos quatro anos (R$ 6.802,71 → R$ 6.699,66 vs. R$ 5.329,66 → R$ 6.313,59). Esses dados indicam que a arqueóloga típica está inserida em faixas salariais mais elevadas que o arqueólogo típico.
 
-Se todas as medidas de posição, a exceção de 2024, destacam as arqueólogas como o grupo com a melhor remuneração no mercado de trabalho formal, isso indica que, talvez, elas estejam ocupando cargos de chefia na condução dos projetos arqueológicos, enquanto os homens estão sendo direcionados para realizarem os trabalhos braçais de campo.
+A base remuneratória reforça essa vantagem: o mínimo feminino saltou de R$ 393,17 para R$ 1.518 (+286%) entre 2022 e 2025, enquanto o masculino cresceu apenas 55% (R$ 393,17 → R$ 610,89). Esse avanço sugere que novas arqueólogas estão sendo contratadas com salários iniciais mais competitivos.
+
+O cenário se inverte nos extremos superiores. Em 2024, o máximo masculino atinge R$ 33.710,08 - o maior valor declarado da série - enquanto o feminino cai para R$ 18.298,50. Essa disparidade elevou a média masculina acima da feminina naquele ano (R$ 5.615,93 vs. R$ 5.358,61), configurando a única inversão do período. Contudo, em 2025, o máximo masculino recua para R$ 30.597 (−9,2%), enquanto o feminino recupera para R$ 24.420,84 (+33,5%).
+
+Essa alternância revela que os supersalários são eventos episódicos, não atributos permanentes de indivíduos específicos. O máximo masculino de 2024 provavelmente corresponde a um contrato pontual de alto valor que não se repetiu em 2025. O máximo feminino, por sua vez, oscilou entre R$ 18.298,50 e R$ 27.103,79, sugerindo que as mulheres também acessam, mas não chegam a dominar os picos remuneratórios.
+
+Se os dados mostram uma posição mais favorável para as arqueólogas no centro e na base da distribuição salarial, isso indica que, talvez, haja uma maior concentração feminina na coordenação de projetos arqueológicos ou elas possuem maior tempo de experiência no trabalho ou mesmo condições vantajosas para sua permanência em regiões remotas.
 
 ```{r resumo estatístico por sexo}
 #| label: tbl-resumo-estatistico-sexo
@@ -2012,15 +2136,21 @@ Os gráficos seguintes são relativos as declarações de trabalhadores que não
 
 ### Motivo do Desligamento {#sec-desligamento}
 
-Os tipos de desligamentos com os maiores quantitativos mantiveram uma trajetória relativamente estável, mas com algumas nuances. O ano de 2023 foi bem atípico na dinâmica de rescisão de empregos, tendo em vista que houve um aumento significativo de arqueólogos pedindo demissão do trabalho, quase o dobro em relação ao ano anterior, enquanto a iniciativa de rompimento do vínculo pelo empregador ou pelo término de contrato obteram quedas nas declarações. Pode ser que esse cenário seja resultado da retomada da execução de grandes projetos arqueológicos pós-pandemia somado a mudanças do quadro político que favoreceu aos profissionais escolherem oportunidades de empregos vantajosos ou, talvez, o peso dos encargos trabalhistas no bolso obrigaram os trabalhadores a migrarem para o regime MEI, abrindo mão dos benefícios trabalhistas. Para 2024, os registros regrediram para o desempenho alcançado em 2022, com os arqueólogos perdendo poder de barganha para sair por conta própria.
+A análise dos vínculos desligados revelou dinamismo na movimentação de desligamentos, cujos padrões se reconfiguraram em três fases distintas ao longo do período longitudinal.
 
-As declarações do término de contrato delineiam que boa parte dos arqueólogos atuaram em vínculos temporários para atender projetos arqueológicos de curta duração. Merece atenção o aumento constantemente discreto de transferências de empregados, o que pode indicar parcerias entre as empresas visando alocar profissionais para projetos com dificuldades na aquisição de mão de obra ou de arqueólogos especialistas para condução dos trabalhos de campo ou de laboratório. Outro destaque é a presença no registro longitudinal das demissões por acordo, embora com proporções pequena, mas indicativo que esse tipo de desligamento também é utilizado nas rescisões de contrato motivados por negociações.
+Em 2023, o mercado de trabalho exibiu uma situação atípico de mobilidade voluntária: os pedidos de demissão quase dobraram em relação a 2022 (22 → 36), enquanto as demissões por iniciativa do empregador e os términos de contrato por prazo determinado recuaram (78 → 63 e 32 → 24). Esse padrão sugere que a retomada pós-pandemia de grandes projetos de licenciamento ambiental ampliou as oportunidades de escolha dos profissionais ou que a migração para o regime MEI atraiu arqueólogos para fora do mercado formal.
+
+Em 2024, o padrão retornou ao nível de 2022, com queda expressiva nos pedidos de demissão por iniciativa do empregado (36 → 23). A reversão indica que o pico de 2023 foi um evento conjuntural, não uma tendência estrutural. A estabilização indica uma menor disponibilidade de oportunidades vantajosas para os trabalhadores.
+
+Em 2025, o campo laboral se reconfigurou novamente: pedidos de encerramento de vínculos e demissões patronais voltaram a crescer, enquanto os términos de contrato por prazo determinado despencaram −59,4% em relação a 2024 (32 → 13). Essa queda abrupta sugere que houve novos contratos temporários formalizados ou convertidos em vínculos indeterminados antes do fechamento do ano.
+
+Paralelamente, as transferências entre empregadores cresceram de forma constante, indicando uma maior articulação entre consultorias para alocação de profissionais especializados em projetos específicos. E as demissões por acordo mantiveram participação no quadriênio, sinalizando que a rescisão negociada também é um mecanismo utilizado na profissão.
 
 ```{r motivo desligamento}
 #| label: fig-motivo-desliga
 #| fig-cap: "Declarações desligadas por motivo de saída"
 
-desligados <- Arqueo.RAIS.2022_2024 %>% 
+desligados <- Arqueo.RAIS.2022_2025 %>% 
   dplyr::filter(Ind.Vínculo.Ativo.31.12=='NÃO') %>% 
   mutate(Motivo.Desligamento = recode(Motivo.Desligamento,
                            "DEM SEM JC" = "Rescisão sem Justa Causa - Empregador",
@@ -2067,13 +2197,17 @@ desligados |>
 
 ### Desligamento por Sexo
 
-Assim como nos vínculos ativos, os arqueólogos lideram nas saídas do mercado de trabalho formal, mas com um comportamento inverso. Aqui há uma tendência de encolhimento, reflexo do aumento ano a ano das declarações ativas. Situação um pouco diferente para os registros das arqueólogas, no qual o aumento notado nos vínculos ativos não interfere na diminuição da saída, pelo contrário, chega a projetar uma possível superação dos vínculos masculinos.
+O desligamento por sexo revela um contraste entre os gêneros que reflete, em parte, a própria evolução dos vínculos ativos. Os arqueólogos lideram numericamente as saídas do mercado formal, mas essa liderança vem encolhendo progressivamente ao longo do período - um reflexo direto do crescimento dos vínculos ativos masculinos, que mantém mais homens no mercado e, consequentemente, reduz o volume de desligamentos. Essa relação inversa aponta que a permanência dos homens está se consolidando em ritmo acelerado.
+
+As arqueólogas, por outro lado, apresentaram um comportamento distinto. O aumento nos vínculos ativos femininos não se traduziu em redução proporcional nas saídas. Os desligamentos desse gênero sobem em ritmo acelerado (+46,8% no acumulado), indicando que a entrada de novas arqueólogas no mercado formal não está sendo acompanhada pela mesma taxa de retenção observada entre os homens. Esse padrão pode refletir maior rotatividade voluntária (transições entre projetos, busca por melhores condições, regimes alternativos) ou maior incidência de contratos temporários que se encerram após a finalização de campos curtos.
+
+Em 2025, os dois gêneros se cruzam, com os valores masculinos e femininos praticamente emparelhados. Esse estreitamento sugere que nos próximos anos as arqueólogas podem ultrapassar os homens em volume absoluto de desligamentos, caso a tendência atual persista.
 
 ```{r motivo desligamento - sexo}
 #| label: fig-desliga-sexo
 #| fig-cap: "Declarações desligadas por sexo"
 
-sexo.desligado <- Arqueo.RAIS.2022_2024 %>%
+sexo.desligado <- Arqueo.RAIS.2022_2025 %>%
   dplyr::filter(Ind.Vínculo.Ativo.31.12=='NÃO') %>% 
   group_by(Ano, Sexo) %>%
   summarise(quant.sexo= n()) %>% 
@@ -2120,11 +2254,11 @@ sexo.desligado %>%
 
 # Novo CAGED
 
-O Novo CAGED é a base do governo voltada para acompanhar e fiscalizar os registros de admissão e desligamentos dos trabalhadores vinculados ao regime da Consolidação das Leis do Trabalho (CLT). Sua periodicidade de publicação é realizada mensalmente, sendo um importante instrumento trabalhista pela sua tempestividade de divulgação de informações sobre o mercado de trabalho formal brasileiro. Essa fonte de dados contempla somente os vínculos celetistas, não abarcando declarações de vínculos estatutários.
+O Novo CAGED é a base de dados do governo federal que registra mensalmente as admissões e desligamentos de trabalhadores vinculados ao regime da CLT. Sua publicação tempestiva o consolida como o principal instrumento de monitoramento do mercado de trabalho formal brasileiro. A fonte contempla exclusivamente vínculos celetistas, não incluindo contratações sob regime estatutário.
 
-Destaca-se que o registro saldo não está presente na base do Novo CAGED, e foi obtido a partir da fórmula `Saldo=Admitidos−Desligamento`. Os dados de admitidos e desligamento foram captados da coluna `saldomovimentação`. O saldo é um indicador que possibilita acompanhar o dinamismo no contrato laboral, com vista a identificar quantas vagas foram abertas ou postos de trabalhos fechados em determinado período analisado. Assim, o resultado positivo indica novas vagas criadas, enquanto o resultado negativo aponta dificuldades de contratação.
+O indicador-chave para esta análise é o saldo de emprego, calculado pela fórmula `Saldo=Admitidos−Desligamento`. Embora a base não forneça o saldo diretamente, ele é derivado da coluna `saldomovimentação`, que registra separadamente cada admissão e desligamento. O saldo funciona como um termômetro do dinamismo no contrato laboral: valores positivos indicam criação de vagas, enquanto os números negativos apontam fechamento de postos de trabalho.
 
-A tabela interativa abaixo exibe todas as declarações, em formato legível, da profissão de arqueólogo do Novo CAGED 2022 a 2025.
+A tabela interativa abaixo exibe todas as declarações referentes à profissão de arqueólogo no Novo CAGED de 2022 a 2025.
 
 ```{r tabela caged}
 #| label: tbl-tabela-geral-caged 
@@ -2144,11 +2278,15 @@ DT::datatable(caged_tabela, filter = 'top', options = list(
 
 ## Análise das Movimentações
 
-Conforme comentado no item anterior, o saldo é um importante indicador para avaliar se o mercado de trabalho formal está em expansão ou enfrenta retração. Desse modo, seu resultado permite acompanhar o desempenho das contratações de arqueólogos no período analisado. Assim, os próximos gráficos foram gerados com base nesse indicador, a fim de observar seu comportamento em relação a algumas variáveis selecionadas.
+Conforme comentado no item anterior, o saldo é um importante indicador para avaliar se o mercado de trabalho formal está em expansão ou enfrenta retração. Desse modo, o seu resultado permite mapear o desempenho das contratações de arqueólogos no quadriênio analisado. Assim, os gráficos subsequentes foram gerados com base nesse indicador, a fim de observar o seu comportamento em relação a algumas variáveis selecionadas.
 
 ### Movimentação Anual
 
-O saldo da movimentação anual manteve-se com pontuação positiva até o ano de 2024, quando se observa dificuldades para manter contratos no ano seguinte. O ano de 2023 merece atenção, pois registrou um quantitativo expressivo de vagas abertas, o que corrobora com uma das hipóteses levantadas no subitem [-@sec-desligamento]: a de que o retorno dos projetos paralisados na época da pandemia, aliado ao quadro político, movimentou a oferta de trabalho para aquele ano.
+O saldo anual de contratações manteve-se positivo até 2024, indicando que o mercado de trabalho arqueológico criou mais vagas do que perdeu ao longo do período analisado (saldo acumulado de +64). O destaque é 2023, que registrou o maior volume de vagas abertas (+41) - um pico que corrobora com a hipótese de retomada de projetos paralisados durante a pandemia, potencializada pelo quadro político favorável ao licenciamento ambiental naquele ano.
+
+Em 2024, o saldo permaneceu positivo, porém com ritmo de crescimento reduzido (+9 vagas abertas), sinalizando queda na geração de novos empregos. O decremento aponta que o impulso pós-pandemia perdeu força, culminando em um saldo negativo em 2025, único ano da série que registrou valor abaixo de zero (-13). 
+
+A análise sugere que o mercado entrou em uma fase de retração, com menor capacidade de absorção de novos profissionais.
 
 ```{r movimentação anual}
 #| label: fig-movimenta-anual
@@ -2238,9 +2376,11 @@ saldo_anual %>%
 
 ### Movimentação Mensal
 
-Pela distribuição mensal do saldo, fevereiro é o mês apontado com o pior desempenho de contração, com postos de trabalhos fechados que supera os demais meses. As festividades do carnaval podem ser um dos fatores para esse cenário visualizado. O mês de março acompanha o comportamento do seu predecessor. Esse quadro observado indica que o primeiro trimestre do ano é um período de retração na oferta de trabalho para os arqueólogos.
+Pela distribuição mensal do saldo, fevereiro é o mês apontado com o pior desempenho de contração, com postos de trabalhos fechados que supera os demais meses (saldo acumulado de -29). As festividades do carnaval podem ser um dos fatores para essa sazonalidade identificada - contratos aguardando o início das obras. 
 
-Junho revelou ser o mês com o melhor resultado em termos de vagas abertas, pois registrou saldo positivo constante no período analisado. Já agosto apresenta um ritmo de decréscimo na linha temporal do saldo.
+Março segue a mesma tendência de seu predecessor, com saldo acumulado de -7, prolongando o período de menor dinamismo. É possível supor que o primeiro trimestre do ano é uma época de retração na oferta de emprego formal para os arqueólogos.
+
+Junho emerge como o mês mais consistente em geração de vagas, registrando desempenho positivo em todos os anos analisados (saldo acumulado de +14). Já agosto apresentou o mesmo resultado que junho, mas sinaliza tendência de decréscimo na linha temporal.
 
 ```{r movimentação mensal}
 #| label: fig-movimenta-mes
@@ -2369,9 +2509,15 @@ browsable(tagList(titulo_html, fig))
 
 ### Movimentação por Região
 
-Os estabelecimentos localizados na região nordeste registraram saldo positivo no período longitudinal, enquanto as empresas do sul estiveram diante de obstáculos para contratar e manter vínculos celetistas. 
+O Nordeste se consolida como polo de expansão sustentada, registrando saldo positivo em todos os anos analisados.
 
-Nota-se que os estabelecimentos situados no Centro-Oeste foram os responsáveis por concentrar as vagas abertas em 2023, mas que nos anos subsequentes se encontraram com dificuldades para manter os postos de trabalhos criados.
+A Região Sul apresenta um cenário oposto: saldo negativo persistente, revelando que os estabelecimentos sulistas enfrentam dificuldades de contratação e retenção de vínculos celetistas.
+
+O Centro-Oeste exibe um padrão mais volátil. Em 2023 concentrou o maior volume de vagas abertas - um pico que provavelmente reflete grandes projetos de infraestrutura ou licenciamentos ambientais específicos da região. Contudo, nos anos subsequentes, o saldo recuou acentuadamente, indicando que os postos criados eram majoritariamente temporários e não se converteram em vínculos duradouros.
+
+A Região Norte sinaliza que as empresas daquela macrorregião possuem a menor capacidade para absorver novos profissionais no mercado formal.
+
+O Sudeste registrou uma queda abrupta em 2025 (saldo de -17) após obter desempenho positivo nos anos anteriores, situação que pode indicar encerramento de projetos de grande porte naquela região.
 
 ```{r movimenta região}
 #| fig-align: center
@@ -2498,15 +2644,15 @@ browsable(tagList(titulo_html, fig))
 
 ### Movimentação por Estados
 
-Assim como registrado no subitem [-@sec-ativos-estados], a distribuição das movimentações por estados também é assimétrica, não abrangendo todas as unidades federativas, com alguns estados apresentando apenas um registro no período analisado. 
+Assim como descrito no subitem [-@sec-ativos-estados], a distribuição das movimentações por unidade federativa também é fortemente assimétrica: nem todos os estados registraram saldo no período analisado, e alguns apresentaram apenas um ou dois eventos. Para viabilizar a comparação, os dados foram consolidados apenas para as UFs que obtiveram saldo em pelo menos um ano, possibilitando gerar um saldo acumulado que sintetize o desempenho de cada estado no quadriênio analisado.
 
-Devido a essa discrepância nas declarações de movimentação, o resultado do saldo não é obtido para todos os estados, comprometendo uma análise comparativa. À vista disso, os dados foram consolidados para cada unidade federativa que obteve registro no saldo, com a remoção daqueles estados sem saldo. Desse modo, os resultados de cada ano foram somados, gerando um saldo acumulado do período analisado.
+Pernambuco se destaca como o principal polo de geração de vagas, com saldo acumulado de +42 postos de trabalho criados - o maior do país. O estado alcançou saldo positivo em todos os quatro anos, indicando que as empresas daquela unidade federativa mantém forte presença em projetos de licenciamento ambiental com exigências contratuais pelo regime celetista.
 
-O saldo acumulado por estados revelou que o maior quantitativo de empregos criados foi em Pernambuco. Esse estado manteve uma liderança com larga vantagem, apresentando saldo positivo em todos os quatro anos que, somados, acumularam 42 postos de trabalho criados. Na sequência encontra-se São Paulo, com 10 vagas acumuladas no período (12 em 2022, 9 em 2023, 4 em 2024 e -15 em 2025). Cabe destacar que as empresas paulistas são as que possuem o maior volume absoluto de movimentações (131 admitidos e 121 desligados), mas que em 2025 obtiveram um desempenho atípico, com os desligamentos superando as admissões, resultando em um saldo fortemente negativo de -15. Essa movimentação pontual revela que pode ter havido o encerramento de projetos de grande porte naquele estado ou indicar tendência de retração no maior mercado formal da profissão.
+Na sequência encontra-se São Paulo, com saldo acumulado de +10 vagas, mas com um padrão atípico em 2025. O estado concentra o maior volume absoluto de movimentações (131 admissões e 121 desligamentos no período), mas em 2025 registrou um saldo fortemente negativo de −15. Esse desempenho sugere encerramento de projetos de grande porte ou reestruturação de consultorias que mantinham contratos em massa. A queda abrupta contrasta com os anos anteriores (2022: +12; 2023: +9; 2024: +4), revelando desaceleração progressiva seguida de reversão.
 
-Goiás, que registra saldo acumulado de -1, foi o estado que apresentou um pico expressivo no saldo de 2023 (24 vagas abertas), seguido de forte retração no ano seguinte (17 postos de trabalho fechados). Esse comportamento errático dos estabelecimentos goianos aponta que eles foram os responsáveis pela alta empregabilidade documentada em 2023, ocasionada, possivelmente, pelo retorno de grandes empreendimentos paralisados na época da pandemia ou por projetos específicos que demandaram força de trabalho naquele ano.
+Goiás apresenta um padrão mais volátil: em 2023, registrou saldo de +24 vagas abertas - a maior quantidade individual entre os estados, mas em 2024 sofreu retração de −17 postos, resultando em saldo acumulado de −1. O comportamento sugere que o pico de 2023 foi impulsionado por projetos temporários (grandes obras de infraestrutura ou licenciamentos pontuais) que se encerraram no ano seguinte, sem se converterem em vínculos duradouros.
 
-Por fim, chama atenção o estado do Ceará, que lidera o ranking de saldo negativo acumulado no período, por ter registrado, no acumulado de movimentações, mais desligamentos (30) do que admitidos (14). Esse desequilíbrio concentrou-se em 2022 (23 desligamentos para apenas 6 admitidos). Ao que tudo indica, esse quantitativo de encerramento de vínculos pode ter sido ocasionado por contratações não sustentadas.
+Por fim, o Ceará lidera o ranking de saldo negativo acumulado (−18 postos no período). O desequilíbrio se concentrou em 2022, quando o estado declarou 23 desligamentos contra apenas 6 admissões - uma retração de −17 em um único ano. Esse padrão indica que contratos temporários ou consultorias locais encerraram operações naquele ano sem reposição imediata. 
 
 ```{r movimenta estados}
 #| label: fig-movimenta-estados
@@ -2594,9 +2740,11 @@ saldo_acumulado_estados %>%
 
 ### Movimentação por Sexo
 
-Em ambos os sexos houve saldo positivo até 2024, quando o cenário muda para retração em 2025. A trajetória temporal mostra que as arqueólogas tiveram vantagens na ocupação dos postos de trabalho criados. No entanto, ao observar as movimentações para o sexo feminino, é visto que esse gênero acumulou desligamentos crescente entre 2022 a 2024, cujo resultado culminou para um saldo negativo em 2025.
+Ambos os gêneros apresentaram saldo positivo entre 2022 e 2024, indicando criação líquida de vagas abertas, mas o cenário se inverteu em 2025, quando ambos registraram retração.
 
-Por outro lado, os homens concentram os maiores volumes absolutos de movimentações (296 admitidos e 275 desligados), o que sugere maior rotatividade nos vínculos masculinos.
+As arqueólogas se destacaram na ocupação dos postos criados ao longo do período, com saldo acumulado de +30. Contudo, o padrão de desligamentos femininos cresceu de forma consistente entre 2022 e 2024, culminando em saldo negativo em 2025.
+
+Os homens, por sua vez, concentram o maior volume absoluto de movimentações: 296 admissões e 275 desligamentos no período analisado (saldo acumulado de +21). Esse volume superior indica maior rotatividade nos vínculos masculinos.
 
 ```{r movimenta sexo}
 #| label: fig-movimenta-sexo
@@ -2725,15 +2873,17 @@ browsable(tagList(titulo_html, fig))
 
 ## Remuneração dos Admitidos
 
-As tabelas a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados nulos. 
+As tabelas a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados nulos.
 
 ### Unidades de Pagamento
 
-A base do Novo CAGED contém registros da unidade salarial contratada. Por meio dessa variável, é possível obter dados remuneratórios por hora, dia e mês. Ao consolidar as informações em um resumo estatístico tabular, nota-se que são poucas as contratações pagas por dia. Essa categoria não teve dados declarados em 2022 e, devido à pequena quantidade de informações preenchidas, as medidas de posição mostraram-se uniformes ao longo do registro longitudinal. 
+A base do Novo CAGED contém dados da unidade salarial contratada do vínculo celetista. Por meio dessa variável, é possível obter registros segmentados por modalidade de pagamento (hora, dia e mês).
 
-Os salários pagos por hora também apresentam poucas declarações. Outliers são vistos nos anos de 2024 e 2025, com o valor máximo apresentado números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando a permanência de um trabalhador que recebe supersalário. Um padrão observado no valor mínimo e na mediana é que, nos anos iniciais, houve crescimento e, nos anos finais, houve desvalorização.
+Ao consolidar as informações em um resumo estatístico tabular, nota-se que são poucas as contratações pagas por dia. Essa categoria não teve dados declarados em 2022 e, devido à pequena quantidade de informações preenchidas, as medidas de posição mostraram-se uniformes ao longo do registro longitudinal.
 
-Já na modalidade mensal - que concentra o maior número de contratações -, o número de declarações registrou crescimento em 2022 e 2023, mas nos anos subsequentes apresentou retrações nas admissões. Em todas as medidas de posição, há oscilações interanuais, isto é, variações que, em determinado ano, registram alta e, no seguinte, registram queda.
+Os salários pagos por hora também apresentam poucas declarações. Outliers são vistos nos anos de 2024 e 2025, com o valor máximo apresentando números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando a permanência de um trabalhador que recebe supersalário - pode ser projeto de alta complexidade com remuneração elevada. Um padrão observado no valor mínimo e na mediana é que, nos anos iniciais, houve crescimento e, nos anos finais, houve desvalorização.
+
+Já na modalidade mensal - que concentra o maior número de contratações -, o número de declarações registrou crescimento em 2022 e 2023, mas nos anos subsequentes apresentou decremento no pagamento por essa categoria. Em quase todas as medidas de posição, há oscilações interanuais, isto é, variações que, em determinado ano, registram alta e, no seguinte, registram queda.
 
 ```{r unidades salariais}
 #| label: tbl-resumo-estatistico-unidades-salario
@@ -2830,11 +2980,11 @@ tabela_unidades_salariais
 
 ### Valores Salariais
 
-As medidas de posição revelaram assimetrias acentuadas na distribuição dos valores remuneratórios dos arqueólogos admitidos, tornando a mediana o indicador mais adequado para representar a categoria. 
+A distribuição remuneratória dos arqueólogos admitidos apresenta assimetria acentuada, tornando a mediana o indicador mais confiável para representar o profissional típico. A média, distorcida por outliers extremos, superestima sistematicamente o salário real da maioria.
 
-A presença de um valor máximo de R$ 404.199,41 repetido em 2024 e 2025 - um outlier que coincide com o valor máximo da unidade de pagamento por hora analisada na @tbl-resumo-estatistico-unidades-salario - distorce a média de forma severa, que chegou a R$ 12.964,12 em 2024, valor quase quatro vezes superior à mediana do mesmo ano. 
+A presença de um valor máximo de R\$ 404.199,41 declarado em 2024 e 2025 - um outlier que possui correspondência com um contrato horista de altíssimo valor destacado na @tbl-resumo-estatistico-unidades-salario - infla a média de forma desporporcional, que chegou a R\$ 12.964,12 em 2024, valor quase quatro vezes superior à mediana daquele ano.
 
-A mediana apresentou oscilações interanuais e trajetória de queda no período (R$ 3.636,60 em 2022 para R$ 3.322,28 em 2025), enquanto o valor mínimo foi a única medida com crescimento consistente ao longo de todo o período.
+A mediana apresentou oscilações interanuais e trajetória de queda no período (R\$ 3.636,60 em 2022 para R\$ 3.322,28 em 2025 - variação acumulada de -8,6%), enquanto o valor mínimo foi a única medida com crescimento consistente ao longo de todo o período.
 
 ```{r remunera admitidos}
 #| label: tbl-resumo-estatistico-remunera-admitidos
@@ -2873,8 +3023,6 @@ tabela_remunera_caged2 <- tabela_remunera_caged %>%
 tabela_remunera_caged2
 ```
 
-
-
-# Conclusão
+# Considerações sobre os dados
 
 Os dados aqui analisados...
