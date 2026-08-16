@@ -3,6 +3,9 @@ title: "O Mercado de Trabalho Formal dos Arqueólogos"
 subtitle: "Análise dos Dados da RAIS e do Novo CAGED - 2022 a 2025"
 author: "Seu Nome"
 date: last-modified
+project:
+  type: website
+  output-dir: docs
 format: 
   html:
     css: styles.css
@@ -52,40 +55,40 @@ library(plotly)
 
 Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) e do Novo CAGED (Cadastro Geral de Empregados e Desempregados) para o período de 2022 a 2025, relativo à ocupação de arqueólogo. Os dados foram obtidos de registros tratados disponibilizados no [GitHub](https://github.com/machadotm/Novos_Dados_MTE_Arqueo "Link para acesso aos dados brutos e tratados"){target="_blank"}, manipulados e consolidados para a geração de gráficos e tabelas.
 
-É importante esclarecer que esta análise não pretende comparar-se nem dar continuidade ao estudo de [Machado e Mageste](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}, que investigaram os mesmos dados para o intervalo temporal de 1994 a 2021. Essa decisão de não cruzar as duas séries históricas segue a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados da RAIS a partir de 2022 não devem ser comparados com os registros anteriores. 
+É importante esclarecer que esta análise não pretende comparar-se nem dar continuidade ao estudo de [Machado e Mageste (2024)](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}, que investigaram os mesmos dados para o intervalo temporal de 1994 a 2021. Essa decisão de não cruzar as duas séries históricas segue a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados da RAIS a partir de 2022 não devem ser comparados com os registros anteriores. 
 
 O MTE divulgou uma [nota técnica](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais/rais-2022/nota-tecnica-rais-2022.pdf "Link para acesso a nota técnica sobre os dados da RAIS 2022. Essa nota técnica apresenta os resultados das declarações trabalhistas daquele ano-base e informa a existência de quebra histórica nos dados da RAIS"){target="_blank"}, detalhando a transição metodológica na coleta dos registros trabalhistas, implementada gradualmente desde 2018 e concluída em 2022. O sistema tradicional GD-RAIS, de envio anual, foi substituído pelo [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"){target="_blank"}, de periodicidade mensal e contínua. O ano-base 2022, por ser o último da transição, contém declarações híbridas provenientes de ambos os sistemas, o que inviabiliza a comparabilidade com anos anteriores. Essa mesma ressalva se aplica ao Novo CAGED, conforme [apontado por pesquisadores](https://blogdoibre.fgv.br/posts/serie-nova-de-emprego-formal-do-caged-nao-deve-ser-comparada-com-antiga "Link para acesso a nota no blog do IBRE/FGV"){target="_blank"} no assunto.
 
 Neste estudo pretende-se analisar diferentes variáveis e o comportamento dessas informações ao longo do intervalo temporal, que inclui:
 
 -   No caso da RAIS:
-    -   quantitativo de registros declarados e os tipos de vínculos em 31/12
-    -   distribuição dos vínculos ativos em 31/12 por:
-        -   região
-        -   estados
-        -   vínculo empregatício
-        -   natureza jurídica do empregador
-        -   tamanho do estabelecimento por setores econômicos
-        -   trabalho intermitente
-        -   escolaridade dos arqueólogos
-        -   intervalo por grupos de:
-            -   idades
-            -   horas trabalhadas
-            -   tempo de emprego
-        -   sexo
-        -   cor/raça
-        -   análise remuneratória
-    -   distribuição dos vínculos desligados em 31/12 por:
-        -   motivo do desligamento
-        -   sexo
+    -   Quantitativo de registros declarados e os tipos de vínculos em 31/12
+    -   Distribuição dos vínculos ativos em 31/12 por:
+        -   Região
+        -   Estados
+        -   Vínculo empregatício
+        -   Natureza jurídica do empregador
+        -   Tamanho do estabelecimento por setores econômicos
+        -   Trabalho intermitente
+        -   Escolaridade dos arqueólogos
+        -   Intervalo por grupos de:
+            -   Idades
+            -   Horas trabalhadas
+            -   Tempo de emprego
+        -   Sexo
+        -   Cor/raça
+        -   Análise remuneratória
+    -   Distribuição dos vínculos desligados em 31/12 por:
+        -   Motivo do desligamento
+        -   Sexo
 -   Para o Novo CAGED:
-    -   movimentações por
-        -   ano
-        -   mês
-        -   região
-        -   estados
-        -   sexo
-    -   remuneração dos admitidos
+    -   Movimentações por
+        -   Ano
+        -   Mês
+        -   Região
+        -   Estados
+        -   Sexo
+    -   Remuneração dos admitidos
 
 Os gráficos e tabelas foram gerados na linguagem de programação R. As visualizações são dinâmicas e interativas: ao passar o cursor sobre barras ou linhas, o usuário visualiza informações detalhadas; também é possível filtrar registros para exibir apenas os dados de interesse no painel.
 
@@ -103,7 +106,7 @@ Os gráficos e tabelas foram gerados na linguagem de programação R. As visuali
 
 Conforme mencionado anteriormente, os dados foram obtidos do repositório GitHub do autor e processados para gerar os gráficos e tabelas deste artigo. Para garantir transparência metodológica, cada visualização - gráfico ou tabela - inclui um botão no canto superior esquerdo rotulado "Mostrar código executado". Ao clicar, o leitor acessa diretamente o script R que produziu aquele resultado específico, permitindo verificação e reprodução dos procedimentos.
 
-Todo o artigo foi produzido no [Quarto](https://quarto.org/ "Link para acesso ao Quarto"){target="_blank"}, uma ferramenta de publicação técnica de código aberto que integra código executável (R, Python, Julia e Observable) a documentos narrativos. Essa plataforma viabiliza exatamente o recurso descrito acima: ao compilar o documento, o Quarto embute o código-fonte junto à visualização correspondente, tornando a metodologia acessível e auditável pelo leitor.
+Todo o artigo foi produzido no [Quarto](https://quarto.org/ "Link para acesso ao Quarto"){target="_blank"}, uma ferramenta de publicação técnica de código aberto que integra código executável (R, Python, Julia e Observable) a documentos narrativos.
 
 ```{r carregando dados}
 #---------------RAIS---------------
@@ -327,7 +330,7 @@ geral.anual %>%
     ")
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Total de Vínculos Declarados",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -346,7 +349,7 @@ geral.anual %>%
   
 ```
 
-Na segmentação por tipo de vínculo, considerando a data de corte de 31/12 de cada ano, os vínculos ativos representam a parcela predominante, acumulando crescimento de 30,27% ao longo do período. As declarações de desligamento, por sua vez, exibem relativa estabilidade, com variações modestas e mantendo-se em patamar significativamente inferior ao do grupo de vínculos ativos durante toda a série.
+Na segmentação por tipo de vínculo, considerando a data de corte de 31/12 de cada ano, os vínculos ativos representam a parcela predominante, acumulando crescimento de 30,27% ao longo do período. As declarações de desligamento, por sua vez, exibem relativa estabilidade, com variações modestas e mantendo-se em patamar significativamente inferior ao do grupo de vínculos ativos no quadriênio analisado.
 
 ```{r vínculos ativos em 31/12}
 #| label: fig-vinculos-ativos
@@ -374,7 +377,7 @@ vinculos_31.12 %>%
     splitLine = list(show = FALSE), axisLine = list(show = TRUE)
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Tipo de Vínculos em 31/12",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -435,7 +438,7 @@ Regiao |>
   e_charts(Ano) |>
   e_bar(quant.regioes) |>
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Distribuição dos Vínculos Ativos por Região",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -498,7 +501,7 @@ titulo_html <- tags$div(
   style = "margin-bottom: 4px;",
   style = "text-align: center; margin-bottom: 4px;",
   tags$p(
-    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     style = "font-size: 15px; font-weight: bold; margin: 0;"
   ),
   tags$p(
@@ -554,7 +557,7 @@ vinculos_empregaticio %>%
     splitLine = list(show = FALSE), axisLine = list(show = TRUE)
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Distribuição dos Vínculos Ativos por Tipo de Vínculo Empregatício",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -585,7 +588,7 @@ A análise por esfera administrativa revela que o setor público estadual foi o 
 
 Essa dinâmica suscita uma questão sobre a natureza desses registros. A continuidade do crescimento ao longo do período torna improvável que se trate de erro pontual na entrega das declarações, embora não elimine completamente essa possibilidade. Uma hipótese plausível - que demanda cruzamento de informações - é que determinados estados e municípios tenham recorrido a mecanismos de contratação temporária sem processo seletivo por edital. Se confirmada, essa prática poderia explicar parte do crescimento observado, possivelmente vinculado à demanda crescente proveniente do licenciamento ambiental.
 
-Destaca-se que o estoque do setor público federal permaneceu estável em 2025. Isso revela que o concurso temporário do IPHAN naquele ano - que contratou 15 arqueólogos via Processo Seletivo Simplificado - não impactou o código CBO 2511-10 (ocupação de arqueólogo, CBO/2002). Ocorre que as declarações desses profissionais foram registradas sob código CBO distinto, o que explica a ausência de efeito nos vínculos de âmbito federal. Esse procedimento contrasta com o ciclo de contratações temporárias anterior da mesma instituição (2014–2019), cujos registros foram corretamente classificados na CBO 2511-10, conforme documentado por [Machado e Mageste](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}.
+Destaca-se que o estoque do setor público federal permaneceu estável em 2025. Isso revela que o concurso temporário do IPHAN naquele ano - que contratou 15 arqueólogos via Processo Seletivo Simplificado - não impactou o código 2511-10 da [Classificação Brasileira de Ocupações (CBO/2002)](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/cbo "Link para mais informações sobre a CBO"){target="_blank"}, referente a identificação da ocupação de arqueólogo. Ocorre que as declarações desses profissionais foram registradas sob código CBO distinto, o que explica a ausência de efeito nos vínculos de âmbito federal. Esse procedimento contrasta com o ciclo de contratações temporárias anterior da mesma instituição (2014–2019), cujos registros foram corretamente classificados na CBO 2511-10, conforme documentado por [Machado e Mageste (2024)](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}.
 
 Para os empregadores do regime celetista, o quadro mostra tendências de estabilidade nas declarações trabalhistas.
 
@@ -658,7 +661,7 @@ titulo_html <- tags$div(
   style = "margin-bottom: 4px;",
   style = "text-align: center; margin-bottom: 4px;",
   tags$p(
-    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     style = "font-size: 15px; font-weight: bold; margin: 0;"
   ),
   tags$p(
@@ -680,9 +683,9 @@ Em segundo lugar aparece o grupamento _Administração Pública, Defesa e Seguri
 
 O setor de _Construção_ registrou expansão considerável, puxada pela subclasse _Obras de Alvenaria_. Esse movimento pode indicar uma tendência, ainda que incipiente, de construtoras contratarem arqueólogos diretamente, sem intermediação de consultorias especializadas.
 
-Chama atenção a alta pulverização de subgrupamentos com apenas 1 ou 2 eventos, espalhados em diversas atividades econômicas. Esses registros podem ser reflexos de vínculos atípicos ou mesmo ocorrências isoladas - arqueólogos ocupando cargos de gestão ou prestando consultoria pontual ou mesmo como proprietário de microempresa fora do segmento econômico principal. A análise sugere que se trata de ruído estatístico, não de uma tendência de diversificação setorial.
+Chama atenção a alta pulverização de subgrupamentos com apenas 1 ou 2 eventos, espalhados em diversas atividades econômicas. Esses registros podem ser reflexos de vínculos atípicos ou mesmo ocorrências isoladas - arqueólogos ocupando cargos de gestão ou prestando consultoria pontual ou mesmo como proprietário de microempresa fora do segmento econômico principal. A análise sugere que se trata de ruído nos dados, e não de uma tendência de diversificação setorial.
 
-Um caso exemplar é a subclasse _Fabricação de Periféricos para Equipamentos de Informática_ - pertencente ao grupamento _Indústrias de Transformação -, que registrou 18 declarações em 2024 e 11 em 2025. Esse padrão atípico, sem precedentes no mercado arqueológico, indica provavelmente a atuação de um único grande empregador — e não o surgimento de um novo setor de empregabilidade para a profissão.
+Um caso exemplar é a subclasse _Fabricação de Periféricos para Equipamentos de Informática_ - pertencente ao grupamento _Indústrias de Transformação_ -, que registrou 18 declarações em 2024 e 11 em 2025. Esse padrão atípico, sem precedentes no mercado arqueológico, indica provavelmente a atuação de um único grande empregador - e não o surgimento de um novo setor de empregabilidade para a profissão.
 
 ```{r econômico}
 #| column: screen-inset
@@ -899,7 +902,7 @@ intermintente  |>
   e_charts(Ano) |>
   e_bar(quantidade) |>
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Distribuição dos Vínculos Ativos por Trabalho Intermitente",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -975,7 +978,7 @@ escolaridade %>%
     axisLine = list(show = TRUE)
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Distribuição dos Vínculos Ativos por Escolaridade",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -1033,7 +1036,7 @@ faixa.etaria %>%
     axisLine = list(show = TRUE)
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Distribuição dos Vínculos Ativos por Faixa Etária",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -1107,7 +1110,7 @@ titulo_html <- tags$div(
   style = "margin-bottom: 4px;",
   style = "text-align: center; margin-bottom: 4px;",
   tags$p(
-    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     style = "font-size: 15px; font-weight: bold; margin: 0;"
   ),
   tags$p(
@@ -1177,7 +1180,7 @@ titulo_html <- tags$div(
   style = "margin-bottom: 4px;",
   style = "text-align: center; margin-bottom: 4px;",
   tags$p(
-    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     style = "font-size: 15px; font-weight: bold; margin: 0;"
   ),
   tags$p(
@@ -1191,7 +1194,7 @@ browsable(tagList(titulo_html, grafico))
 
 ### Distribuição por Sexo
 
-A distribuição dos vínculos por sexo é acentuadamente desequilibrada: homens representam a grande maioria dos registros em todos os anos analisados. Ambos os sexos apresentam tendência de crescimento, mas a base masculina permanece significativamente superior à feminina ao longo de toda série temporal.
+A distribuição dos vínculos por sexo é acentuadamente desequilibrada: homens representam a grande maioria dos registros em todos os anos analisados. Ambos os sexos apresentam tendência de crescimento, mas a base masculina permanece significativamente superior à feminina ao longo de toda a série temporal.
 
 ```{r distribuição por sexo}
 #| label: fig-ativo-sexo
@@ -1217,7 +1220,7 @@ sexo %>%
     splitLine = list(show = FALSE), axisLine = list(show = TRUE)
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Distribuição dos Vínculos Ativos por Sexo",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -1298,7 +1301,7 @@ titulo_html <- tags$div(
   style = "margin-bottom: 4px;",
   style = "text-align: center; margin-bottom: 4px;",
   tags$p(
-    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     style = "font-size: 15px; font-weight: bold; margin: 0;"
   ),
   tags$p(
@@ -1317,7 +1320,7 @@ Para a análise dos valores remuneratórios de dezembro, foi necessário corrigi
 O procedimento de correção adotado foi o seguinte:
 
 1. Para cada registro inconsistente, verificou-se a faixa salarial e o valor do SM vigente (R$ 1.412 em 2024);
-2. Com base nessa referência, aplicou-se uma das duas operações:
+2. Com base nessa referência, aplicou-se uma das duas operações abaixo:
    - Inserção do marcador decimal no local que tornava o valor coerente com a faixa salarial; ou
    - Remoção dos dois últimos algarismos, quando o valor parecia ter sido registrado com acréscimo de dois dígitos zeros sem separação decimal.
 
@@ -1353,31 +1356,10 @@ remunera_corrigido <- Arqueo.RAIS.2022_2025 %>% # correção das casas decimais 
                                round(Vl.Rem.Dezembro.Nom, 2),
                                round(Vl.Rem.Dezembro.Nom / 100, 2))) |> 
   mutate(Natureza.Jurídica = dplyr::recode(Natureza.Jurídica,
-                                      "AUTARQ EST" = "Setor Público Estadual",
-                                      "AUTARQ FED" = "Setor Público Federal",
-                                      "CONS EMPRES" = "Entidades Empresariais",
-                                      "FRM MER IND" = "Entidades Empresariais",
-                                      "FUNDAC FED" = "Setor Público Federal",
-                                      "FUNDAC MUN" = "Setor Público Municipal",
-                                      "MUNICIPIO" = "Setor Público Municipal",
-                                      "ORG AUT FED" = "Setor Público Federal",
-                                      "OUT FUND PR" = "Entidades sem Fins Lucrativos",
-                                      "OUTR ORG" = "Entidades sem Fins Lucrativos",
-                                      "POD EXEC ES" = "Setor Público Estadual",
-                                      "POD EXEC FE" ="Setor Público Federal",
-                                      "POD EXEC MU" = "Setor Público Municipal",
-                                      "POD LEG MUN" = "Setor Público Municipal",
-                                      "SA ABERTA" = "Entidades Empresariais",
-                                      "SA FECH" = "Entidades Empresariais",
-                                      "SERV SOC AU" = "Entidades sem Fins Lucrativos",
-                                      "SOC MISTA" = "Entidades Empresariais",
-                                      "SOC QT LTDA" = "Entidades Empresariais",
-                                      "SOC SIMP LTD" = "Entidades Empresariais",
-                                      "SOC SIMP PUR" = "Entidades Empresariais",
                                       "{ñ class}" = "Não identificado", 
                                       .missing = "Não identificado")) %>%
         dplyr::select(Ano, Faixa.Rem.Dez..SM, valor_SM_fx_maximo_2024, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, 
-                      Faixa.Rem.Média..SM, Vl.Rem.Média.Nom, Vl.Rem.Média..SM, Sexo, UF.Estabelecimento, Natureza.Jurídica, Escolaridade.Após.2005, Qtd.Hora.Contr, Tempo.Emprego, Raça.Cor, Idade, Município)
+                      Faixa.Rem.Média..SM, Vl.Rem.Média.Nom, Vl.Rem.Média..SM, Sexo, UF.Estabelecimento, Natureza.Jurídica, Escolaridade.Após.2005, Qtd.Hora.Contr, Tempo.Emprego, Raça.Cor, Idade)
 
 remunera_tabela <- remunera_corrigido %>% 
   mutate(Ano = as.factor(Ano),
@@ -1386,7 +1368,7 @@ remunera_tabela <- remunera_corrigido %>%
                      levels = c("Até 0,50 salários mínimos", "0,51 a 1,00 salários mínimos", "1,01 a 1,50 salários mínimos", "1,51 a 2,00 salários mínimos", "2,01 a 3,00 salários mínimos", "3,01 a 4,00 salários mínimos", "4,01 a 5,00 salários mínimos", "5,01 a 7,00 salários mínimos", "7,01 a 10,00 salários mínimos", "10,01 a 15,00 salários mínimos", "15,01 a 20,00 salários mínimos", "Mais de 20,00 salários mínimos", "{ñ class}")),
           Faixa.Rem.Dez..SM =  dplyr::recode(Faixa.Rem.Dez..SM,
            "{ñ class}" = "Não informado")) |> 
-  dplyr::select(Ano, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, Faixa.Rem.Dez..SM, Sexo, Escolaridade.Após.2005, Idade, Município, UF.Estabelecimento, Natureza.Jurídica, Qtd.Hora.Contr, Tempo.Emprego, Raça.Cor) |> 
+  dplyr::select(Ano, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, Faixa.Rem.Dez..SM, Sexo, Escolaridade.Após.2005, Idade, UF.Estabelecimento, Natureza.Jurídica, Qtd.Hora.Contr, Tempo.Emprego, Raça.Cor) |> 
   mutate(Qtd.Hora.Contr = as.factor(Qtd.Hora.Contr),
          Qtd.Hora.Contr =  dplyr::recode(Qtd.Hora.Contr,
            "99" = "Não declarado"),
@@ -1401,7 +1383,7 @@ DT::datatable(remunera_tabela, filter = 'top', options = list(
   pageLength = 5, autoWidth = TRUE,  
   columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
   scrollX = TRUE ),
-  colnames = c("Ano declarado", "Remuneração nominal de dezembro - original", "Remuneração nominal de dezembro - corrigido", "Faixa renda de dezembro em salário mínimo", " Sexo", "Escolaridade", "Idade", "Município do estabelecimento", "UF do estabelecimento", "Natureza jurídica do estabelecimento", "Quantidade de horas declarada", "Tempo de emprego em meses", "Cor/raça"))
+  colnames = c("Ano declarado", "Remuneração nominal de dezembro - original", "Remuneração nominal de dezembro - corrigido", "Faixa renda de dezembro em salário mínimo", " Sexo", "Escolaridade", "Idade", "UF do estabelecimento", "Natureza jurídica do estabelecimento", "Quantidade de horas declarada", "Tempo de emprego em meses", "Cor/raça"))
 ```
 
 ### Média Salarial
@@ -1461,7 +1443,7 @@ p <- media_anual_dezembro %>%
     splitLine = list(show = FALSE)
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Média Salarial de Dezembro dos Vínculos Ativos",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -1519,7 +1501,7 @@ p_final
 
 ### Resumo Estatístico
 
-As medidas de posição remuneratórias revelam assimetria positiva na distribuição dos dados: a média é sistematicamente superior à mediana, indicando que uma minoria de remunerações elevadas puxa o valor médio para cima. No período analisado, a diferença entre a média e mediana foi ampliada de R$ 645,99 para R$ 935,61.
+As medidas de posição remuneratórias revelam assimetria positiva na distribuição dos dados: a média é sistematicamente superior à mediana, indicando que uma minoria de remunerações elevadas puxa o valor médio para cima. No quadriênio analisado, a diferença entre a média e mediana foi ampliada de R$ 645,99 para R$ 935,61.
 
 Nesse contexto, a mediana é o indicador mais representativo do salário típico dos arqueólogos, pois não é influenciada por valores extremos. A média, por outro lado, reflete a distribuição global, incluindo os supersalários que distorcem o valor central.
 
@@ -1560,7 +1542,7 @@ tabela_remunera
 
 > O ano-base 2022 apresentou dados com valor remuneratório de R$ 0,00 - fenômeno não observado nos demais anos da RAIS. Esses eventos foram excluídos da tabela ilustrativa para fins de visualização, mas mantidos nos cálculos das medidas de posição, pois integram o espaço amostral. Até o momento, não foi possível identificar as variáveis determinantes para o registro de remuneração zero, hipótese que pode envolver desde erro de preenchimento até licenças sem remuneração ou afastamentos legais.
 
-A figura abaixo mostra a distribuição dos valores remuneratórios de dezembro na forma de boxplot, uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (outliers).
+A figura abaixo mostra a distribuição dos valores remuneratórios de dezembro na forma de boxplot, uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (_outliers_).
 
 ```{r boxplot}
 #| label: fig-boxplot
@@ -1659,7 +1641,7 @@ dados_boxplot %>%
     data = levels(dados_boxplot$Ano)
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Boxplot da Remuneração de Dezembro dos Vínculos Ativos",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -1710,7 +1692,7 @@ Para facilitar o entendimento de um boxplot, a figura abaixo ilustra como deve s
 
 A distribuição dos arqueólogos por faixa salarial em dezembro revela um padrão de redistribuição ao longo do período analisado. As faixas 2-3 SM e 3-4 SM concentraram, em conjunto, a maior parcela dos vínculos ativos em todos os anos. Até 2024, a faixa 3-4 SM ocupava a primeira posição e a faixa 2-3 SM a segunda colocação - ordem que se inverte em 2025, quando a faixa 2-3 SM assume a liderança.
 
-O destaque é a faixa 1-2 SM, cuja participação cresceu de 7,82% para 19,14% - um aumento de 2,45× ao longo da série histórica. Em contrapartida, a faixa 5-7 SM sofreu queda de 9,7 pontos percentuais (de 15,65% para 5,94%). A combinação de crescimento na faixa 1-2 SM e retração na faixa 5-7 SM sugere que a profissão pode estar perdendo poder aquisitivo em relação à valorização do salário mínimo. 
+O destaque é a faixa 1-2 SM, cuja participação cresceu de 7,82% para 19,14% - um aumento de 2,45× ao longo da série histórica. Em contrapartida, a faixa 5-7 SM sofreu queda de 9,7 pontos percentuais (de 15,65% para 5,94%). A combinação de crescimento na faixa 1-2 SM e retração na faixa 5-7 SM sugere que a profissão vem perdendo poder aquisitivo em relação à valorização do salário mínimo. 
 
 Aliado a esse quadro, a presença de profissionais com remuneração abaixo de 1 SM indica contratos de curta duração formalizados ao final do ano - possivelmente trabalhos de campo sazonais, consultorias pontuais ou vínculos intermitentes.
 
@@ -1967,7 +1949,7 @@ htmltools::tagList(
 
 ### Distribuição por Sexo
 
-A evolução da média salarial por sexo entre 2022 e 2025 revela um padrão oscilatório inesperado, com duas inversões de vantagem e variações de magnitude significativa. A trajetória pode ser descrita em quatro momentos distintos:
+A evolução da média salarial por sexo entre 2022 a 2025 revelou um padrão oscilatório inesperado, com duas inversões de vantagem e variações de magnitude significativa. A trajetória pode ser descrita em quatro momentos distintos:
 
 Em 2022, as arqueólogas apresentavam média salarial de R$ 5.151,87, contra R$ 4.282,11 dos arqueólogos - uma vantagem de R$ 869,76 que se manteve como a maior diferença do período. No ano seguinte, essa vantagem se reduziu para R$ 273,32 (R$ 5.563,63 vs. R$ 5.290,31), sugerindo que os homens estavam ganhando terreno de forma gradual.
 
@@ -1977,7 +1959,7 @@ Contudo, a tendência não se consolidou. Em 2025, o padrão se reverteu de form
 
 Esse vaivém sugere que a remuneração por sexo também se mostrou altamente sensível a fatores conjunturais ocorridos no biênio 2023-2024. A inversão de 2024 pode ter sido impulsionada por um conjunto específico de contratações masculinas em faixas salariais superiores, enquanto a reversão de 2025 indica que as arqueólogas se beneficiaram de reajustes ou novas contratações em patamares mais elevados. 
 
-A análise das medidas de posição podem revelar novas informações desse padrão observado na média.
+A análise da distribuição salarial pode revelar novas informações desse padrão observado na média.
 
 ```{r média remuneratória por sexo}
 #| label: fig-media-sexo
@@ -2025,7 +2007,7 @@ media_sexos2 %>%
     splitLine = list(show = FALSE)
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Média Salarial de Dezembro por Sexo",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -2177,7 +2159,7 @@ desligados |>
   e_charts(Ano) |>
   e_bar(quantidade) |>
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Distribuição dos Motivos do Desligamento",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -2228,7 +2210,7 @@ sexo.desligado %>%
     splitLine = list(show = FALSE), axisLine = list(show = TRUE)
   ) %>%
   e_title(
-    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2024",
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
     subtext = "Distribuição dos Vínculos Desligados por Sexo",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
@@ -2258,7 +2240,7 @@ O Novo CAGED é a base de dados do governo federal que registra mensalmente as a
 
 O indicador-chave para esta análise é o saldo de emprego, calculado pela fórmula `Saldo=Admitidos−Desligamento`. Embora a base não forneça o saldo diretamente, ele é derivado da coluna `saldomovimentação`, que registra separadamente cada admissão e desligamento. O saldo funciona como um termômetro do dinamismo no contrato laboral: valores positivos indicam criação de vagas, enquanto os números negativos apontam fechamento de postos de trabalho.
 
-A tabela interativa abaixo exibe todas as declarações referentes à profissão de arqueólogo no Novo CAGED de 2022 a 2025.
+A tabela interativa abaixo exibe todas as declarações referentes à ocupação de arqueólogo no Novo CAGED de 2022 a 2025.
 
 ```{r tabela caged}
 #| label: tbl-tabela-geral-caged 
@@ -2881,9 +2863,11 @@ A base do Novo CAGED contém dados da unidade salarial contratada do vínculo ce
 
 Ao consolidar as informações em um resumo estatístico tabular, nota-se que são poucas as contratações pagas por dia. Essa categoria não teve dados declarados em 2022 e, devido à pequena quantidade de informações preenchidas, as medidas de posição mostraram-se uniformes ao longo do registro longitudinal.
 
-Os salários pagos por hora também apresentam poucas declarações. Outliers são vistos nos anos de 2024 e 2025, com o valor máximo apresentando números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando a permanência de um trabalhador que recebe supersalário - pode ser projeto de alta complexidade com remuneração elevada. Um padrão observado no valor mínimo e na mediana é que, nos anos iniciais, houve crescimento e, nos anos finais, houve desvalorização.
+Os salários pagos por hora também apresentam poucas declarações. _Outliers_ são vistos nos anos de 2024 e 2025, com o valor máximo apresentando números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando a permanência de um trabalhador que recebe supersalário. Um padrão observado no valor mínimo e na mediana é que, nos anos iniciais, houve crescimento e, nos anos finais, houve desvalorização.
 
-Já na modalidade mensal - que concentra o maior número de contratações -, o número de declarações registrou crescimento em 2022 e 2023, mas nos anos subsequentes apresentou decremento no pagamento por essa categoria. Em quase todas as medidas de posição, há oscilações interanuais, isto é, variações que, em determinado ano, registram alta e, no seguinte, registram queda.
+Já na modalidade mensal - que concentra o maior número de contratações -, o número de declarações registrou crescimento em 2022 e 2023, mas nos anos subsequentes apresentou decremento no pagamento por essa categoria. 
+
+Em quase toda a distribuição salarial, há oscilações interanuais, isto é, variações que, em determinado ano, registram alta e, no seguinte, registram queda.
 
 ```{r unidades salariais}
 #| label: tbl-resumo-estatistico-unidades-salario
@@ -2980,15 +2964,15 @@ tabela_unidades_salariais
 
 ### Valores Salariais
 
-A distribuição remuneratória dos arqueólogos admitidos apresenta assimetria acentuada, tornando a mediana o indicador mais confiável para representar o profissional típico. A média, distorcida por outliers extremos, superestima sistematicamente o salário real da maioria.
+A distribuição remuneratória dos arqueólogos admitidos apresenta assimetria acentuada, tornando a mediana o indicador mais confiável para representar o profissional típico. A média, distorcida por _outliers_ extremos, superestima sistematicamente o salário real da maioria.
 
-A presença de um valor máximo de R\$ 404.199,41 declarado em 2024 e 2025 - um outlier que possui correspondência com um contrato horista de altíssimo valor destacado na @tbl-resumo-estatistico-unidades-salario - infla a média de forma desporporcional, que chegou a R\$ 12.964,12 em 2024, valor quase quatro vezes superior à mediana daquele ano.
+A presença de um valor máximo de R\$ 404.199,41 declarado em 2024 e 2025 - um _outlier_ que possui correspondência com um contrato horista de altíssimo valor destacado na @tbl-resumo-estatistico-unidades-salario - infla a média de forma desporporcional, que chegou a R\$ 12.964,12 em 2024, valor quase quatro vezes superior à mediana daquele ano.
 
 A mediana apresentou oscilações interanuais e trajetória de queda no período (R\$ 3.636,60 em 2022 para R\$ 3.322,28 em 2025 - variação acumulada de -8,6%), enquanto o valor mínimo foi a única medida com crescimento consistente ao longo de todo o período.
 
 ```{r remunera admitidos}
 #| label: tbl-resumo-estatistico-remunera-admitidos
-#| tbl-cap: "Medidas de posição da remuneração dos admitidos"
+#| tbl-cap: "Medidas de posição do salário dos admitidos"
 
 resumo_remunera_caged <- Arqueo.CAGED.2022_2025 %>% 
      dplyr::filter(anocompetênciamov != "2021") %>%
@@ -3023,6 +3007,92 @@ tabela_remunera_caged2 <- tabela_remunera_caged %>%
 tabela_remunera_caged2
 ```
 
-# Considerações sobre os dados
+### Valores Salariais por Sexo
 
-Os dados aqui analisados...
+Acerca da distribuição salarial por gênero, merece destaque o valor máximo de R$ 404.199,41, repetido de forma idêntica em três registros distintos (Feminino/2024, Masculino/2024 e Masculino/2025). Essa informação declarada constitui um alerta crítico de qualidade de dados. A coincidência exata - inclusive nos centavos - é estatisticamente improvável como evento genuíno e aponta para erro de digitação, duplicação de registro ou lançamento incorreto de verba não salarial (rescisão, indenização ou 13º salário) no campo salarial. Diante dessa situação, a análise das médias de 2024 e 2025 estão comprometidas, impossibilitando formular uma conclusão desse indicador.
+
+Afastando o viés do _outlier_, a mediana revela o padrão real. A mediana feminina caiu de R$ 4.000 em 2022 para R$ 3.338 em 2025 (−16,6%), com o menor ponto em 2023 (R$ 3.135). A masculina oscilou sem tendência clara, fechando em R$ 3.322,27 em 2025, cujo desempenho é praticamente idêntico à feminina (diferença de apenas R$ 15,73).
+
+O primeiro quartil feminino superou o masculino em 2022 a 2024, e no ano seguinte ocorre simetria entre os gêneros, sinalizando que, mesmo entre os 25% menores salários, as arqueólogas recebem mais que os homens na mesma faixa. Como essa vantagem já se manifesta na admissão, ela não pode ser atribuída exclusivamente a maior senioridade ou tempo de carreira.
+
+```{r}
+#| label: tbl-resumo-estatistico-remunera-admitidos-sexo
+#| tbl-cap: "Medidas de posição do salário dos admitidos por sexo"
+resumo_salario_sexo_caged <- Arqueo.CAGED.2022_2025 %>%
+  dplyr::filter(anocompetênciamov != "2021") %>%
+  dplyr::filter(saldomovimentação == "Admitido" & unidadesaláriocódigo != "Variavel") %>% 
+  mutate(sexo = recode(sexo,
+                       "Mulher" = "Feminino",
+                       "Homem" = "Masculino")) %>% 
+  group_by(anocompetênciamov, sexo) %>%
+  summarise(
+    Mínimo = min(salário, na.rm = TRUE),
+    Q1 = quantile(salário, 0.25, na.rm = TRUE),
+    Mediana = median(salário, na.rm = TRUE),
+    Média = mean(salário, na.rm = TRUE),
+    Q3 = quantile(salário, 0.75, na.rm = TRUE),
+    Máximo = max(salário, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  pivot_longer(
+    cols = c(Mínimo, Q1, Mediana, Média, Q3, Máximo),
+    names_to = "Estatística",
+    values_to = "Valor") %>%
+  pivot_wider(
+    names_from = anocompetênciamov,
+    values_from = Valor)
+
+
+tabela_sexos_salario_caged <- resumo_salario_sexo_caged %>%
+  gt(
+    rowname_col = "sexo",
+    groupname_col = "Estatística") %>%
+  tab_header(
+    title = "Resumo Estatístico",
+    subtitle = "Valores Remuneratórios dos Admitidos por Sexo") %>%
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 2,
+    sep_mark = ".",
+    dec_mark = ",",
+    pattern = "R$ {x}"
+  ) %>%
+  tab_spanner(
+    label = "Ano",
+    columns = where(is.numeric)) %>%
+  cols_align(
+    align = "center",
+    columns = where(is.numeric)) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_row_groups())
+
+tabela_sexos_salario_caged
+```
+
+# Interligando dados e construindo narrativas
+
+A análise dos dados da RAIS e do Novo CAGED para o período de 2022 a 2025 permitiu mapear a dinâmica atual do mercado de trabalho formal da arqueologia no Brasil. O objetivo deste levantamento não foi esgotar todas as possibilidades analíticas desses bancos de dados, mas sim apresentar os principais padrões identificados por meio de gráficos interativos e tabelas. Para garantir transparência e reprodutibilidade, o script em R foi disponibilizado em cada painel, permitindo que outros pesquisadores verifiquem os procedimentos e explorem variáveis adicionais não contempladas aqui.
+
+O panorama revelado mostra um mercado de trabalho marcado por avanços pontuais seguidos de estagnação. A arqueologia formal demonstra alta sensibilidade a eventos conjunturais: as contratações crescem quando grandes projetos de licenciamento ambiental demandam vínculos celetistas, e encolhem quando obras são paralisadas ou concluídas, provocando perda da capacidade de retenção da força de trabalho. O biênio 2023–2024 ilustra bem essa oscilação: 2023 registrou um boom de contratações e maior poder de escolha para os profissionais, enquanto 2024 trouxe uma reversão desse cenário.
+
+Geograficamente, a contratação de arqueólogos permanece concentrada na Região Sudeste. Contudo, o Nordeste emerge como polo de expansão, com destaque para Pernambuco, onde empresas locais vêm ampliando a oferta de empregos formais. Em contrapartida, a Região Norte apresenta as menores oportunidades de trabalho, e seus estabelecimentos carecem de competitividade para atrair profissionais frente às consultorias especializadas sediadas em outras regiões.
+
+O perfil de qualificação exigido pelo mercado formal também chama atenção. A maioria das vagas solicita apenas bacharelado, com pouca demanda por pós-graduados (mestrado ou doutorado). Esse padrão atrai um contingente jovem de arqueólogos, mas a ausência de estabilidade e o tempo de experiência adquirido leva muitos profissionais a migrar para a informalidade, abrir MEI ou abandonar a profissão. Os pós-graduados, sem espaço no setor privado, tendem a buscar a carreira acadêmica ou a prestar serviços autônomos. A jornada de trabalho frequentemente se estende aos finais de semana em regime 6×1, com horas extras para cumprimento de prazos de campo — fator que contribui para a insatisfação e a alta rotatividade.
+
+No recorte por gênero, observa-se uma contradição relevante: os homens predominam em número de vínculos, mas as mulheres recebem os salários mais altos, e essa vantagem já se manifesta no momento da primeira admissão. Diante disso, a situação evidencia que o setor busca manter as arqueólogas em atividade, possivelmente em resposta à crescente insatisfação desse grupo com as condições de trabalho.
+
+Quanto ao poder de compra, o crescimento salarial nominal observado no quadriênio não se traduziu necessariamente em ganho real. Um arqueólogo que recebia R$ 4.000 em 2022 estava na faixa de três a quatro salários mínimos; se esse mesmo profissional passa a receber R$ 4.500 em 2025, sua remuneração cai para a faixa de dois a três salários mínimos, dado o reajuste salarial nacional. Em termos relativos ao salário mínimo, houve rebaixamento de faixa, não ascensão.
+
+A dependência do licenciamento ambiental é o fio condutor que atravessa todas essas dinâmicas. O crescimento de vínculos e salários nominais concentra-se no setor privado, especialmente nas consultorias que atendem demandas de obras licenciáveis. Exceções existem, mas ainda não configuram novas fronteiras de empregabilidade. O setor público, por outro lado, responde por uma participação minoritária, com poucos concursos e baixa absorção de profissionais — um contrassenso diante da densidade do patrimônio arqueológico brasileiro. A predominância de projetos de curta duração gera um ciclo de alta rotatividade que impede a construção de estabilidade para a maioria dos trabalhadores.
+
+Diante desse quadro, a mobilização coletiva surge como caminho necessário. O sindicato é a instância institucional mais adequada para articular estratégias que promovam maior presença de arqueólogos em instituições públicas, diversificação das fontes de contratação - incluindo editais de fomento cultural como a [Política Nacional Aldir Blanc de Fomento à Cultura (PNAB)](https://www.gov.br/cultura/pt-br/assuntos/acoes-programas-e-politicas/politica-nacional-aldir-blanc-de-fomento-a-cultura "Link da página da PNAB"){target="_blank"} -, proposição de pisos salariais e condições mínimas de trabalho. Sem essa articulação, a profissão continuará crescendo em número de vínculos, mas sem traduzir esse crescimento em segurança, estabilidade e valorização real para seus profissionais.
+
+# Agradecimentos
+
+xxxxxxx
+
+# Referências
+
+xxxxxxx
