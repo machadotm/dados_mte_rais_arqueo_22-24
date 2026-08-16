@@ -881,7 +881,7 @@ tabela_setor
 
 O contrato de trabalho intermitente foi instituído pela Reforma Trabalhista (Lei nº 13.467/2017) como modalidade em que o trabalhador é convocado apenas quando há demanda específica do empregador, alternando períodos de atividade e inatividade sem vínculo contínuo.
 
-Essa modalidade guarda semelhança conceitual com a natureza dos projetos arqueológicos, tipicamente de curta duração e vinculados a empreendimentos sujeitos ao licenciamento ambiental. Contudo, os dados indicam que o contrato intermitente formal não é a principal forma de contratação no setor. As empresas parecem recorrer a outros mecanismos de admissão laboral, possivelmente por razões tributárias, operacionais ou de adequação contratual com o empreendedor.
+Essa modalidade guarda semelhança conceitual com a natureza dos projetos arqueológicos vinculados aos estudos de impactos em empreendimentos sujeitos ao licenciamento ambiental, tipicamente de curta duração. Contudo, os dados indicam que o contrato intermitente formal não é a principal forma de contratação no setor. As empresas parecem recorrer a outros mecanismos de admissão laboral, possivelmente por razões tributárias, operacionais ou de adequação contratual com o empreendedor.
 
 Ainda assim, observa-se tendência gradual de crescimento dessa modalidade ao longo do período analisado, sugerindo que sua adoção vem se expandindo de forma incremental, possivelmente à medida que empregadores e trabalhadores se familiarizam com o instrumento legal.
 
@@ -2855,7 +2855,7 @@ browsable(tagList(titulo_html, fig))
 
 ## Remuneração dos Admitidos
 
-As tabelas a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados nulos.
+As tabelas a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados zero.
 
 ### Unidades de Pagamento
 
@@ -2863,7 +2863,7 @@ A base do Novo CAGED contém dados da unidade salarial contratada do vínculo ce
 
 Ao consolidar as informações em um resumo estatístico tabular, nota-se que são poucas as contratações pagas por dia. Essa categoria não teve dados declarados em 2022 e, devido à pequena quantidade de informações preenchidas, as medidas de posição mostraram-se uniformes ao longo do registro longitudinal.
 
-Os salários pagos por hora também apresentam poucas declarações. _Outliers_ são vistos nos anos de 2024 e 2025, com o valor máximo apresentando números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando a permanência de um trabalhador que recebe supersalário. Um padrão observado no valor mínimo e na mediana é que, nos anos iniciais, houve crescimento e, nos anos finais, houve desvalorização.
+Os salários pagos por hora também apresentam poucas declarações. _Outliers_ são vistos nos anos de 2024 e 2025, com o valor máximo apresentando números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando a permanência de um arqueólogo que recebe supersalário. Um padrão observado no valor mínimo e na mediana é que, nos anos iniciais, houve crescimento e, nos anos finais, houve desvalorização.
 
 Já na modalidade mensal - que concentra o maior número de contratações -, o número de declarações registrou crescimento em 2022 e 2023, mas nos anos subsequentes apresentou decremento no pagamento por essa categoria. 
 
@@ -3079,7 +3079,7 @@ O panorama revelado mostra um mercado de trabalho marcado por avanços pontuais 
 
 Geograficamente, a contratação de arqueólogos permanece concentrada na Região Sudeste. Contudo, o Nordeste emerge como polo de expansão, com destaque para Pernambuco, onde empresas locais vêm ampliando a oferta de empregos formais. Em contrapartida, a Região Norte apresenta as menores oportunidades de trabalho, e seus estabelecimentos carecem de competitividade para atrair profissionais frente às consultorias especializadas sediadas em outras regiões.
 
-O perfil de qualificação exigido pelo mercado formal também chama atenção. A maioria das vagas solicita apenas bacharelado, com pouca demanda por pós-graduados (mestrado ou doutorado). Esse padrão atrai um contingente jovem de arqueólogos, mas a ausência de estabilidade e o tempo de experiência adquirido leva muitos profissionais a migrar para a informalidade, abrir MEI ou abandonar a profissão. Os pós-graduados, sem espaço no setor privado, tendem a buscar a carreira acadêmica ou a prestar serviços autônomos. A jornada de trabalho frequentemente se estende aos finais de semana em regime 6×1, com horas extras para cumprimento de prazos de campo — fator que contribui para a insatisfação e a alta rotatividade.
+O perfil de qualificação exigido pelo mercado formal também chama atenção. A maioria das vagas solicita apenas bacharelado, com pouca demanda por pós-graduados (mestrado ou doutorado). Esse padrão atrai um contingente jovem de arqueólogos, mas a ausência de estabilidade e o tempo de experiência adquirido leva muitos profissionais a migrar para a informalidade, abrir MEI ou abandonar a profissão. Os pós-graduados, sem espaço no setor privado, tendem a buscar a carreira acadêmica ou a prestar serviços autônomos. A jornada de trabalho frequentemente se estende aos finais de semana em regime 6×1, com horas extras para cumprimento de prazos de campo - fator que contribui para a insatisfação e a alta rotatividade.
 
 No recorte por gênero, observa-se uma contradição relevante: os homens predominam em número de vínculos, mas as mulheres recebem os salários mais altos, e essa vantagem já se manifesta no momento da primeira admissão. Diante disso, a situação evidencia que o setor busca manter as arqueólogas em atividade, possivelmente em resposta à crescente insatisfação desse grupo com as condições de trabalho.
 
