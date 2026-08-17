@@ -279,9 +279,9 @@ rm(tmp5, tmp6, tmp7, tmp8, junta3, junta4, url5, url6, url7, url8)
 
 # RAIS
 
-A RAIS é uma das principais bases de dados do governo federal sobre o mercado de trabalho formal no Brasil. O sistema é alimentado anualmente por todos os estabelecimentos que mantêm vínculos empregatícios, abrangendo tanto trabalhadores regidos pela CLT (Consolidação das Leis do Trabalho) quanto empregados públicos contratados pelo regime celetista e servidores públicos. As informações são divulgadas anualmente e contêm dados detalhados referentes ao ano-base de todos os trabalhadores com vínculo formal. O último ano-base disponível é de 2025.
+A RAIS constitui uma das principais bases de dados do governo federal para o acompanhamento do mercado de trabalho formal no Brasil. Com a conclusão da transição para o eSocial em 2022, a forma de prestação das informações foi alterada: os empregadores deixaram de utilizar a declaração anual específica (GD‑RAIS) e passaram a ter seus dados extraídos diretamente dos eventos trabalhistas transmitidos mensalmente ao sistema eSocial. Apesar dessa mudança no fluxo de coleta, a divulgação dos resultados permanece anual, organizada por ano‑base. A abrangência da RAIS inclui trabalhadores celetistas do setor privado, empregados públicos regidos pela CLT, servidores estatutários e militares, o que a consolida como a fonte mais completa disponível sobre o estoque de vínculos formais de trabalho no país. O ano‑base mais recente disponível para consulta é de 2025.
 
-A tabela interativa abaixo exibe todas as declarações referentes à profissão de arqueólogo nas RAIS de 2022 a 2025.
+A tabela interativa abaixo exibe todas as declarações referentes à profissão de arqueólogo da RAIS de 2022 a 2025.
 
 ```{r tabela rais}
 #| label: tbl-tabela-geral-rais
@@ -407,7 +407,7 @@ Os gráficos a seguir foram gerados a partir das declarações cujo indicador de
 
 ### Distribuição por Região
 
-Na distribuição dos vínculos ativos por macrorregião, a Região Sudeste concentra sistematicamente o maior volume de declarações ao longo de toda a série histórica. A Região Nordeste ocupa a segunda posição e exibe trajetória de crescimento contínuo ao longo do período. A Região Norte, embora registre o menor número absoluto de vínculos, demonstra crescimento constante, atingindo o pico de contratações em 2025. Em contraste, a Região Centro-Oeste apresenta tendência de declínio, enquanto a Região Sul mantém padrão de estabilidade nos registros trabalhistas.
+Na distribuição dos vínculos ativos por macrorregião, a Região Sudeste concentra sistematicamente o maior volume de declarações ao longo de toda a série histórica. A Região Nordeste ocupa a segunda posição e exibe trajetória de crescimento contínuo ao longo do período. A Região Norte, embora registre o menor número absoluto de vínculos, demonstra crescimento constante, atingindo o maior estoque em 2025. Em contraste, a Região Centro-Oeste apresenta tendência de declínio, enquanto a Região Sul mantém um padrão de estabilidade nos registros trabalhistas.
 
 ```{r regiões}
 #| label: fig-regiao
@@ -455,6 +455,8 @@ Regiao |>
     ")
   )
 ```
+
+> A regionalização adotada nesta análise segue a unidade federativa do estabelecimento empregador, ou seja, corresponde ao endereço cadastrado no CNPJ que declara o vínculo trabalhista, e não ao local onde a atividade arqueológica é efetivamente executada. Isso significa que os dados descrevem a localização geográfica das empresas contratantes - suas sedes ou filiais formais - e não o território onde os arqueólogos realizam seus trabalhos de campo.
 
 ### Distribuição por Estados {#sec-ativos-estados}
 
@@ -518,7 +520,7 @@ browsable(tagList(titulo_html, grafico))
 
 No que se refere à natureza do vínculo, a participação da administração pública é minoritária: arqueólogos em órgãos públicos representam aproximadamente 16% do total de declarações ativas no período analisado. Observa-se crescimento modesto nesse segmento até 2024, embora não tenham sido identificados concursos públicos de destaques nesse intervalo que expliquem a tendência evidenciada.
 
-A exceção ocorre em 2025, quando o IPHAN publicou edital para contratação de 15 arqueólogos por meio de [Processo Seletivo Simplificado](https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293 "Link de acesso ao edital do PSS/IPHAN 2024"){target="_blank"} - mecanismo de contratação temporária previsto na legislação federal. Esse evento pode explicar, ao menos em parte, o incremento observado no setor público naquele ano.
+Em 2025, o IPHAN executou contratações de 15 arqueólogos derivados do [Processo Seletivo Simplificado](https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293 "Link de acesso ao edital do PSS/IPHAN 2024"){target="_blank"} - mecanismo de contratação temporária previsto na legislação federal. Contudo, esse evento não explica a variação observada no último ano, conforme será demonstrado no subitem seguinte.
 
 ```{r vínculo empregatício}
 #| label: fig-empregaticio
@@ -586,7 +588,7 @@ vinculos_empregaticio %>%
 
 A análise por esfera administrativa revela que o setor público estadual foi o principal responsável pelo crescimento nos vínculos públicos de 2023 e 2024. Em 2025, o impulso veio do setor público municipal, invertendo o padrão observado nos anos anteriores.
 
-Essa dinâmica suscita uma questão sobre a natureza desses registros. A continuidade do crescimento ao longo do período torna improvável que se trate de erro pontual na entrega das declarações, embora não elimine completamente essa possibilidade. Uma hipótese plausível - que demanda cruzamento de informações - é que determinados estados e municípios tenham recorrido a mecanismos de contratação temporária sem processo seletivo por edital. Se confirmada, essa prática poderia explicar parte do crescimento observado, possivelmente vinculado à demanda crescente proveniente do licenciamento ambiental.
+Essa dinâmica suscita uma questão sobre a natureza desses registros. A continuidade do crescimento ao longo do período torna improvável que se trate de erro pontual na entrega das declarações, embora não elimine completamente essa possibilidade. Uma hipótese plausível - que demanda cruzamento de informações - é que determinados estados e municípios tenham recorrido a mecanismos de contratações flexíveis que não demanda seleções editalícias. Se confirmada, essa prática poderia explicar parte do crescimento observado, possivelmente vinculado à demanda crescente proveniente do licenciamento ambiental.
 
 Destaca-se que o estoque do setor público federal permaneceu estável em 2025. Isso revela que o concurso temporário do IPHAN naquele ano - que contratou 15 arqueólogos via Processo Seletivo Simplificado - não impactou o código 2511-10 da [Classificação Brasileira de Ocupações (CBO/2002)](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/cbo "Link para mais informações sobre a CBO"){target="_blank"}, referente a identificação da ocupação de arqueólogo. Ocorre que as declarações desses profissionais foram registradas sob código CBO distinto, o que explica a ausência de efeito nos vínculos de âmbito federal. Esse procedimento contrasta com o ciclo de contratações temporárias anterior da mesma instituição (2014–2019), cujos registros foram corretamente classificados na CBO 2511-10, conforme documentado por [Machado e Mageste (2024)](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}.
 
@@ -683,7 +685,7 @@ Em segundo lugar aparece o grupamento _Administração Pública, Defesa e Seguri
 
 O setor de _Construção_ registrou expansão considerável, puxada pela subclasse _Obras de Alvenaria_. Esse movimento pode indicar uma tendência, ainda que incipiente, de construtoras contratarem arqueólogos diretamente, sem intermediação de consultorias especializadas.
 
-Chama atenção a alta pulverização de subgrupamentos com apenas 1 ou 2 eventos, espalhados em diversas atividades econômicas. Esses registros podem ser reflexos de vínculos atípicos ou mesmo ocorrências isoladas - arqueólogos ocupando cargos de gestão ou prestando consultoria pontual ou mesmo como proprietário de microempresa fora do segmento econômico principal. A análise sugere que se trata de ruído nos dados, e não de uma tendência de diversificação setorial.
+Chama atenção a alta pulverização de subgrupamentos com apenas 1 ou 2 eventos, espalhados em diversas atividades econômicas. Esses registros podem ser reflexos de vínculos atípicos ou mesmo ocorrências isoladas - arqueólogos ocupando cargos de gestão ou prestando consultoria pontual ou mesmo como proprietário de microempresa fora do segmento econômico principal. Entretanto, essa configuração não pode ser interpretada como uma real tendência de diversificação setorial.
 
 Um caso exemplar é a subclasse _Fabricação de Periféricos para Equipamentos de Informática_ - pertencente ao grupamento _Indústrias de Transformação_ -, que registrou 18 declarações em 2024 e 11 em 2025. Esse padrão atípico, sem precedentes no mercado arqueológico, indica provavelmente a atuação de um único grande empregador - e não o surgimento de um novo setor de empregabilidade para a profissão.
 
@@ -1003,7 +1005,9 @@ escolaridade %>%
 
 ### Faixa Etária
 
-A maioria das faixas etárias registrou crescimento no período analisado, com a faixa de 30 a 39 anos concentrando a maior parcela dos vínculos ativos. Nas faixas etárias superiores (40–49, 50–64 e +65), observa-se um declínio gradual nas declarações, o que pode refletir múltiplos fenômenos: aposentadoria, migração para consultorias informais, transição para cargos de gestão ou mudança de carreira. 
+A análise do perfil etário dos vínculos formais revela que a maioria das faixas registrou crescimento no período, sendo a faixa de 30 a 39 anos a que concentra a maior parcela dos profissionais ativos. Nas faixas etárias superiores - 40–49, 50–64 e acima de 65 anos - observa-se um declínio gradual nas declarações. Esse recuo pode ser explicado por múltiplos fatores: aposentadoria de profissionais mais velhos, migração para o trabalho informal ou consultorias autônomas, transição para cargos de gestão ou mesmo mudança de carreira.
+
+Outro elemento importante para compreender esse padrão é a própria história da formação acadêmica em Arqueologia no Brasil. A expansão relativamente recente dos cursos de graduação na área significa que as faixas mais velhas da profissão são, por natureza, menos numerosas. Assim, a estrutura etária atual reflete tanto fenômenos de mercado (aposentadoria, migração, transição ocupacional) quanto a trajetória histórica de crescimento dos cursos de graduação no país.
 
 ```{r faixa etária}
 #| label: fig-etario
@@ -1246,7 +1250,7 @@ sexo %>%
 
 ### Distribuição por Cor e Raça
 
-A autodeclaração de cor e raça indica que a maioria dos arqueólogos se declara parda, seguida por branca. As categorias preta, indígena e amarela têm participação minoritária no mercado formal.
+A declaração por cor e raça indica que a maioria dos arqueólogos se declara parda, seguida por branca. As categorias preta, indígena e amarela têm participação minoritária no mercado formal.
 
 Observa-se tendência de redução nos dados sem informação de cor e raça, o que pode indicar melhorias na cobertura e no preenchimento dos campos pelo eSocial.
 
@@ -1673,7 +1677,7 @@ dados_boxplot %>%
   )
 ```
 
-O boxplot da distribuição remuneratória confirma a assimetria positiva e permite visualizar o intervalo interquartil (IQR) - faixa que contém os 50% dos trabalhadores centrais. Em 2025, o IQR mostra recuperação após dois recuos consecutivos (2022→2023 e 2023→2024):
+O boxplot da distribuição remuneratória confirma a assimetria positiva e permite visualizar o intervalo interquartil (IQR) - faixa que contém os 50% dos trabalhadores no centro da distribuição. 
 
 | Ano-base | Q1 (1º quartil) | Var. Q1 | Q3 (3º quartil) | Var. Q3 | IQR         | Var. IQR |
 |----------|-----------------|---------|-----------------|---------|-------------|----------|
@@ -1682,7 +1686,7 @@ O boxplot da distribuição remuneratória confirma a assimetria positiva e perm
 | 2024     | R$ 3.060,36     | −3%     | R$ 6.219,63     | −2%     | R$ 3.159,27 | −0,9%    | 
 | 2025     | R$ 3.320,00     | +8,5%   | R$ 6.484,62     | +4,3%   | R$ 3.164,62 | +0,2%    |
 
-> A estabilidade do IQR indica que, embora Q1 e Q3 tenham obtido um desempenho em ritmos diferentes, a dispersão da faixa central permaneceu praticamente constante, sugerindo que a valorização salarial afetou proporcionalmente tanto os trabalhadores de menor remuneração (Q1) quanto os de faixa intermediária (Q3).
+> A estabilidade do IQR indica que, embora Q1 e Q3 tenham obtido um desempenho em ritmos diferentes, a dispersão da faixa central permaneceu praticamente constante, sugerindo que a valorização do salário mínimo afetou proporcionalmente tanto os trabalhadores de menor remuneração (Q1) quanto os de faixa superior (Q3).
 
 Para facilitar o entendimento de um boxplot, a figura abaixo ilustra como deve ser feito a leitura dessa representação gráfica.
 
@@ -1727,7 +1731,8 @@ salario.2022 <- remunera_corrigido %>%
       vl.rem.dez.nom.corrigido > (1212*15) & vl.rem.dez.nom.corrigido <= (1212*20) ~ "R$ 18.180 a R$ 24.240",
       vl.rem.dez.nom.corrigido > (1212*20) ~ "Acima de R$ 24.240",
       TRUE ~ NA_character_)) %>%
-  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor)
+  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor) %>% 
+  na.omit()
 
 resumo_salario.2022 <- salario.2022 %>% 
 group_by(faixa_SM, faixa_valor) %>%
@@ -2054,8 +2059,6 @@ O cenário se inverte nos extremos superiores. Em 2024, o máximo masculino atin
 
 Essa alternância revela que os supersalários são eventos episódicos, não atributos permanentes de indivíduos específicos. O máximo masculino de 2024 provavelmente corresponde a um contrato pontual de alto valor que não se repetiu em 2025. O máximo feminino, por sua vez, oscilou entre R$ 18.298,50 e R$ 27.103,79, sugerindo que as mulheres também acessam, mas não chegam a dominar os picos remuneratórios.
 
-Se os dados mostram uma posição mais favorável para as arqueólogas no centro e na base da distribuição salarial, isso indica que, talvez, haja uma maior concentração feminina na coordenação de projetos arqueológicos ou elas possuem maior tempo de experiência no trabalho ou mesmo condições vantajosas para sua permanência em regiões remotas.
-
 ```{r resumo estatístico por sexo}
 #| label: tbl-resumo-estatistico-sexo
 #| tbl-cap: "Medidas de posição das remunerações nominais de dezembro dos vínculos ativos por sexo"
@@ -2124,7 +2127,7 @@ Em 2023, o mercado de trabalho exibiu uma situação atípico de mobilidade volu
 
 Em 2024, o padrão retornou ao nível de 2022, com queda expressiva nos pedidos de demissão por iniciativa do empregado (36 → 23). A reversão indica que o pico de 2023 foi um evento conjuntural, não uma tendência estrutural. A estabilização indica uma menor disponibilidade de oportunidades vantajosas para os trabalhadores.
 
-Em 2025, o campo laboral se reconfigurou novamente: pedidos de encerramento de vínculos e demissões patronais voltaram a crescer, enquanto os términos de contrato por prazo determinado despencaram −59,4% em relação a 2024 (32 → 13). Essa queda abrupta sugere que houve novos contratos temporários formalizados ou convertidos em vínculos indeterminados antes do fechamento do ano.
+Em 2025, o campo laboral se reconfigurou novamente: pedidos de encerramento de vínculos e demissões patronais voltaram a crescer, enquanto os términos de contrato por prazo determinado despencaram −59,4% em relação a 2024 (32 → 13). Essa queda abrupta sugere que houve menos contratos temporários formalizados ou convertidos em vínculos indeterminados.
 
 Paralelamente, as transferências entre empregadores cresceram de forma constante, indicando uma maior articulação entre consultorias para alocação de profissionais especializados em projetos específicos. E as demissões por acordo mantiveram participação no quadriênio, sinalizando que a rescisão negociada também é um mecanismo utilizado na profissão.
 
@@ -2493,7 +2496,7 @@ browsable(tagList(titulo_html, fig))
 
 O Nordeste se consolida como polo de expansão sustentada, registrando saldo positivo em todos os anos analisados.
 
-A Região Sul apresenta um cenário oposto: saldo negativo persistente, revelando que os estabelecimentos sulistas enfrentam dificuldades de contratação e retenção de vínculos celetistas.
+A Região Sul apresenta um cenário oposto: saldo negativo persistente, revelando que os estabelecimentos sulistas encerram contratos em volume superior ao de novas admissões.
 
 O Centro-Oeste exibe um padrão mais volátil. Em 2023 concentrou o maior volume de vagas abertas - um pico que provavelmente reflete grandes projetos de infraestrutura ou licenciamentos ambientais específicos da região. Contudo, nos anos subsequentes, o saldo recuou acentuadamente, indicando que os postos criados eram majoritariamente temporários e não se converteram em vínculos duradouros.
 
@@ -2726,7 +2729,7 @@ Ambos os gêneros apresentaram saldo positivo entre 2022 e 2024, indicando cria�
 
 As arqueólogas se destacaram na ocupação dos postos criados ao longo do período, com saldo acumulado de +30. Contudo, o padrão de desligamentos femininos cresceu de forma consistente entre 2022 e 2024, culminando em saldo negativo em 2025.
 
-Os homens, por sua vez, concentram o maior volume absoluto de movimentações: 296 admissões e 275 desligamentos no período analisado (saldo acumulado de +21). Esse volume superior indica maior rotatividade nos vínculos masculinos.
+Os homens, por sua vez, concentram o maior volume absoluto de movimentações: 296 admissões e 275 desligamentos no período analisado (saldo acumulado de +21).
 
 ```{r movimenta sexo}
 #| label: fig-movimenta-sexo
@@ -2855,7 +2858,7 @@ browsable(tagList(titulo_html, fig))
 
 ## Remuneração dos Admitidos
 
-As tabelas a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados zero.
+As tabelas a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados nulos.
 
 ### Unidades de Pagamento
 
@@ -3013,7 +3016,7 @@ Acerca da distribuição salarial por gênero, merece destaque o valor máximo d
 
 Afastando o viés do _outlier_, a mediana revela o padrão real. A mediana feminina caiu de R$ 4.000 em 2022 para R$ 3.338 em 2025 (−16,6%), com o menor ponto em 2023 (R$ 3.135). A masculina oscilou sem tendência clara, fechando em R$ 3.322,27 em 2025, cujo desempenho é praticamente idêntico à feminina (diferença de apenas R$ 15,73).
 
-O primeiro quartil feminino superou o masculino em 2022 a 2024, e no ano seguinte ocorre simetria entre os gêneros, sinalizando que, mesmo entre os 25% menores salários, as arqueólogas recebem mais que os homens na mesma faixa. Como essa vantagem já se manifesta na admissão, ela não pode ser atribuída exclusivamente a maior senioridade ou tempo de carreira.
+Os 25% menores salários revelaram que as arqueólogas recebem mais que os homens na mesma faixa. Como essa vantagem já se manifesta na admissão, ela não pode ser atribuída exclusivamente a maior senioridade ou tempo de carreira.
 
 ```{r}
 #| label: tbl-resumo-estatistico-remunera-admitidos-sexo
@@ -3081,11 +3084,13 @@ Geograficamente, a contratação de arqueólogos permanece concentrada na Regiã
 
 O perfil de qualificação exigido pelo mercado formal também chama atenção. A maioria das vagas solicita apenas bacharelado, com pouca demanda por pós-graduados (mestrado ou doutorado). Esse padrão atrai um contingente jovem de arqueólogos, mas a ausência de estabilidade e o tempo de experiência adquirido leva muitos profissionais a migrar para a informalidade, abrir MEI ou abandonar a profissão. Os pós-graduados, sem espaço no setor privado, tendem a buscar a carreira acadêmica ou a prestar serviços autônomos. A jornada de trabalho frequentemente se estende aos finais de semana em regime 6×1, com horas extras para cumprimento de prazos de campo - fator que contribui para a insatisfação e a alta rotatividade.
 
-No recorte por gênero, observa-se uma contradição relevante: os homens predominam em número de vínculos, mas as mulheres recebem os salários mais altos, e essa vantagem já se manifesta no momento da primeira admissão. Diante disso, a situação evidencia que o setor busca manter as arqueólogas em atividade, possivelmente em resposta à crescente insatisfação desse grupo com as condições de trabalho.
+No recorte por gênero, observa-se uma contradição relevante: os homens predominam em número de vínculos, mas as mulheres recebem os salários mais altos, e essa vantagem já se manifesta no momento da primeira admissão. Diante disso, a constatação de que as arqueólogas ocupam posição mais favorável no centro e na base da distribuição salarial abre caminho para hipóteses que este mesmo conjunto de dados permite investigar, mas que não foram contempladas neste estudo. 
+
+É possível, por exemplo, que as mulheres estejam mais concentradas em vínculos do setor público e de instituições de ensino e pesquisa, cujas remunerações tendem a superar as praticadas pela consultoria privada. Outra possibilidade é o maior tempo médio de emprego, acumulando progressões e estabilidade que elevam seus rendimentos. Pode-se também supor que detenham escolaridade declarada superior - com maior proporção de mestras e doutoras - ou que estejam distribuídas de forma distinta entre as regiões do país, com presença mais acentuada em áreas economicamente mais dinâmicas. O cruzamento sistemático dessas variáveis com o sexo constitui a próxima etapa natural desta investigação e é justamente o que permitirá substituir conjecturas por evidências sobre as causas da diferença salarial observada.
 
 Quanto ao poder de compra, o crescimento salarial nominal observado no quadriênio não se traduziu necessariamente em ganho real. Um arqueólogo que recebia R$ 4.000 em 2022 estava na faixa de três a quatro salários mínimos; se esse mesmo profissional passa a receber R$ 4.500 em 2025, sua remuneração cai para a faixa de dois a três salários mínimos, dado o reajuste salarial nacional. Em termos relativos ao salário mínimo, houve rebaixamento de faixa, não ascensão.
 
-A dependência do licenciamento ambiental é o fio condutor que atravessa todas essas dinâmicas. O crescimento de vínculos e salários nominais concentra-se no setor privado, especialmente nas consultorias que atendem demandas de obras licenciáveis. Exceções existem, mas ainda não configuram novas fronteiras de empregabilidade. O setor público, por outro lado, responde por uma participação minoritária, com poucos concursos e baixa absorção de profissionais — um contrassenso diante da densidade do patrimônio arqueológico brasileiro. A predominância de projetos de curta duração gera um ciclo de alta rotatividade que impede a construção de estabilidade para a maioria dos trabalhadores.
+A dependência do licenciamento ambiental é o fio condutor que atravessa todas essas dinâmicas. O crescimento de vínculos e salários nominais concentra-se no setor privado, especialmente nas consultorias que atendem demandas de obras licenciáveis. Exceções existem, mas ainda não configuram novas fronteiras de empregabilidade. O setor público, por outro lado, responde por uma participação minoritária, com poucos concursos e baixa absorção de profissionais — um contrassenso diante da densidade do patrimônio arqueológico brasileiro e da necessidade de gestão desses bens culturais. A predominância de projetos de curta duração gera um ciclo de alta rotatividade que impede a construção de estabilidade para a maioria dos trabalhadores.
 
 Diante desse quadro, a mobilização coletiva surge como caminho necessário. O sindicato é a instância institucional mais adequada para articular estratégias que promovam maior presença de arqueólogos em instituições públicas, diversificação das fontes de contratação - incluindo editais de fomento cultural como a [Política Nacional Aldir Blanc de Fomento à Cultura (PNAB)](https://www.gov.br/cultura/pt-br/assuntos/acoes-programas-e-politicas/politica-nacional-aldir-blanc-de-fomento-a-cultura "Link da página da PNAB"){target="_blank"} -, proposição de pisos salariais e condições mínimas de trabalho. Sem essa articulação, a profissão continuará crescendo em número de vínculos, mas sem traduzir esse crescimento em segurança, estabilidade e valorização real para seus profissionais.
 
