@@ -456,7 +456,7 @@ Regiao |>
   )
 ```
 
-> A regionalização adotada nesta análise segue a unidade federativa do estabelecimento empregador, ou seja, corresponde ao endereço cadastrado no CNPJ que declara o vínculo trabalhista, e não ao local onde a atividade arqueológica é efetivamente executada. Isso significa que os dados descrevem a localização geográfica das empresas contratantes - suas sedes ou filiais formais - e não o território onde os arqueólogos realizam seus trabalhos de campo.
+> A regionalização adotada nesta análise segue a unidade federativa do estabelecimento empregador, ou seja, corresponde ao endereço cadastrado do CNPJ que declara o vínculo trabalhista, e não ao local onde a atividade arqueológica é efetivamente executada. Isso significa que os dados descrevem a localização geográfica das empresas contratantes - suas sedes ou filiais formais - e não o território onde os arqueólogos realizam seus trabalhos de campo.
 
 ### Distribuição por Estados {#sec-ativos-estados}
 
@@ -1317,20 +1317,22 @@ titulo_html <- tags$div(
 browsable(tagList(titulo_html, grafico))
 ```
 
-## Análise Remuneratória de Dezembro dos Vínculos Ativos
+## Análise Remuneratória dos Vínculos Ativos
 
 Para a análise dos valores remuneratórios de dezembro, foi necessário corrigir inconsistências na coluna `Vl.Rem.Dezembro.Nom`, onde alguns registros apresentavam excesso de dígitos (ex.: 350000 em vez de 3500) e outros com ausência do marcador decimal (ex.: 280049 em vez de 2800.49). A detecção dessas inconsistências foi realizada por comparação cruzada entre o valor nominal e a faixa salarial indicada na coluna `Faixa.Rem.Média..SM`.
 
-O procedimento de correção adotado foi o seguinte:
+Além disso, também foi necessário aplicar um ajuste prévio ao ano-base 2022, em razão de uma incompatibilidade específica nesse arquivo. As colunas `Faixa.Rem.Dez..SM` e `Faixa.Rem.Média..SM` estavam permutadas: a faixa registrada como correspondente à média remuneratória descrevia, na verdade, a remuneração de dezembro, e a faixa atribuída a dezembro referia-se à média remuneratória. A inversão foi identificada por meio da comparação com as colunas numéricas `Vl.Rem.Dezembro.Nom` e `Vl.Rem.Média.Nom`, que serviram como referência para a correção. 
+
+O ajuste foi aplicado exclusivamente ao ano-base 2022, restaurando a correspondência correta entre faixas e valores. A partir dessa correção, a remuneração de dezembro passa a ser parametrizada pela coluna `Faixa.Rem.Dez..SM`, que agora reflete fielmente a faixa salarial correspondente à variável corrigida.
+
+Desse modo, o procedimento corretivo adotado na inconsistências da coluna `Vl.Rem.Dezembro.Nom` foi o seguinte:
 
 1. Para cada registro inconsistente, verificou-se a faixa salarial e o valor do SM vigente (R$ 1.412 em 2024);
 2. Com base nessa referência, aplicou-se uma das duas operações abaixo:
    - Inserção do marcador decimal no local que tornava o valor coerente com a faixa salarial; ou
    - Remoção dos dois últimos algarismos, quando o valor parecia ter sido registrado com acréscimo de dois dígitos zeros sem separação decimal.
 
-A coluna `Faixa.Rem.Média..SM` - e não a `Faixa.Rem.Dez..SM` - mostrou-se o parâmetro mais confiável para orientar a correção, pois reflete a média remuneratória do vínculo ao longo do ano, reduzindo o ruído de variações pontuais.
-
-A tabela interativa abaixo apresenta os valores originais e corrigidos da coluna `Vl.Rem.Dezembro.Nom`, acompanhados de algumas variáveis para fins comparativos.
+A tabela interativa abaixo apresenta os valores originais e corrigidos da coluna `Vl.Rem.Dezembro.Nom`, acompanhados das faixas e remuneração média para fins comparativos.
 
 ```{r correção de valores remuneratórios}
 #| label: tbl-tabela-comparativo
@@ -1339,10 +1341,22 @@ A tabela interativa abaixo apresenta os valores originais e corrigidos da coluna
 #| fig-width: 12
 #| fig-height: 6
 
-remunera_corrigido <- Arqueo.RAIS.2022_2025 %>% # correção das casas decimais na coluna de Vl.Rem.Dezembro.Nom
+# correção das casas decimais na coluna de Vl.Rem.Dezembro.Nom
+remunera_corrigido <- Arqueo.RAIS.2022_2025 %>% 
   dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
-  mutate(valor_SM_fx_maximo_2024 = Faixa.Rem.Média..SM,
-         valor_SM_fx_maximo_2024 = recode(valor_SM_fx_maximo_2024, # correção a partir do valor do salário mínimo de 2024 (R$ 1.412,00)
+  # troca das faixas no ano-base 2022
+  mutate(
+    #cria variaveis temporárias com os valores originais
+    temp_faixaDez= Faixa.Rem.Dez..SM,
+    temp_faixaMedia= Faixa.Rem.Média..SM) |> 
+  mutate(
+    Faixa.Rem.Dez..SM= if_else(Ano==2022, temp_faixaMedia, Faixa.Rem.Dez..SM),
+    Faixa.Rem.Média..SM= if_else(Ano== 2022, temp_faixaDez, Faixa.Rem.Média..SM)) |> 
+    #remove as variáveis temporárias
+  dplyr::select(-c(temp_faixaDez, temp_faixaMedia)) |> 
+  # correção a partir do valor do salário mínimo de 2024 (R$ 1.412,00)
+  mutate(valor_SM_fx_maximo_2024 = Faixa.Rem.Dez..SM,
+         valor_SM_fx_maximo_2024 = recode(valor_SM_fx_maximo_2024, 
                 "Até 0,50 salários mínimos" = 706,
                 "0,51 a 1,00 salários mínimos" = 1412,
                 "1,01 a 1,50 salários mínimos" = (1412* 1.5),
@@ -1362,8 +1376,7 @@ remunera_corrigido <- Arqueo.RAIS.2022_2025 %>% # correção das casas decimais 
   mutate(Natureza.Jurídica = dplyr::recode(Natureza.Jurídica,
                                       "{ñ class}" = "Não identificado", 
                                       .missing = "Não identificado")) %>%
-        dplyr::select(Ano, Faixa.Rem.Dez..SM, valor_SM_fx_maximo_2024, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, 
-                      Faixa.Rem.Média..SM, Vl.Rem.Média.Nom, Vl.Rem.Média..SM, Sexo, UF.Estabelecimento, Natureza.Jurídica, Escolaridade.Após.2005, Qtd.Hora.Contr, Tempo.Emprego, Raça.Cor, Idade)
+        dplyr::select(Ano, Faixa.Rem.Dez..SM, valor_SM_fx_maximo_2024, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, Vl.Rem.Média.Nom, Faixa.Rem.Média..SM, Sexo)
 
 remunera_tabela <- remunera_corrigido %>% 
   mutate(Ano = as.factor(Ano),
@@ -1371,15 +1384,13 @@ remunera_tabela <- remunera_corrigido %>%
           Faixa.Rem.Dez..SM, 
                      levels = c("Até 0,50 salários mínimos", "0,51 a 1,00 salários mínimos", "1,01 a 1,50 salários mínimos", "1,51 a 2,00 salários mínimos", "2,01 a 3,00 salários mínimos", "3,01 a 4,00 salários mínimos", "4,01 a 5,00 salários mínimos", "5,01 a 7,00 salários mínimos", "7,01 a 10,00 salários mínimos", "10,01 a 15,00 salários mínimos", "15,01 a 20,00 salários mínimos", "Mais de 20,00 salários mínimos", "{ñ class}")),
           Faixa.Rem.Dez..SM =  dplyr::recode(Faixa.Rem.Dez..SM,
+           "{ñ class}" = "Não informado"),
+          Faixa.Rem.Média..SM = factor(
+            Faixa.Rem.Média..SM, 
+                     levels = c("Até 0,50 salários mínimos", "0,51 a 1,00 salários mínimos", "1,01 a 1,50 salários mínimos", "1,51 a 2,00 salários mínimos", "2,01 a 3,00 salários mínimos", "3,01 a 4,00 salários mínimos", "4,01 a 5,00 salários mínimos", "5,01 a 7,00 salários mínimos", "7,01 a 10,00 salários mínimos", "10,01 a 15,00 salários mínimos", "15,01 a 20,00 salários mínimos", "Mais de 20,00 salários mínimos", "{ñ class}")),
+          Faixa.Rem.Média..SM =  dplyr::recode(Faixa.Rem.Média..SM,
            "{ñ class}" = "Não informado")) |> 
-  dplyr::select(Ano, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, Faixa.Rem.Dez..SM, Sexo, Escolaridade.Após.2005, Idade, UF.Estabelecimento, Natureza.Jurídica, Qtd.Hora.Contr, Tempo.Emprego, Raça.Cor) |> 
-  mutate(Qtd.Hora.Contr = as.factor(Qtd.Hora.Contr),
-         Qtd.Hora.Contr =  dplyr::recode(Qtd.Hora.Contr,
-           "99" = "Não declarado"),
-         Escolaridade.Após.2005 = factor(
-          Escolaridade.Após.2005,
-           levels = c("SUP. COMP", "MESTRADO", "DOUTORADO", "ANALFABETO", "FUND COMPL", "MEDIO INCOMP", "MEDIO COMPL", "SUP. INCOMP")
-    )) |> 
+  dplyr::select(Ano, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, Faixa.Rem.Dez..SM, Vl.Rem.Média.Nom, Faixa.Rem.Média..SM) |>
   mutate(across(where(is.character), as.factor))
 
 #| column: page
@@ -1387,14 +1398,16 @@ DT::datatable(remunera_tabela, filter = 'top', options = list(
   pageLength = 5, autoWidth = TRUE,  
   columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
   scrollX = TRUE ),
-  colnames = c("Ano declarado", "Remuneração nominal de dezembro - original", "Remuneração nominal de dezembro - corrigido", "Faixa renda de dezembro em salário mínimo", " Sexo", "Escolaridade", "Idade", "UF do estabelecimento", "Natureza jurídica do estabelecimento", "Quantidade de horas declarada", "Tempo de emprego em meses", "Cor/raça"))
+  colnames = c("Ano-base", "Remuneração nominal de dezembro - original", "Remuneração nominal de dezembro - corrigido", "Faixa remuneratória de dezembro em salário mínimo", "Média remuneratória nominal", "Faixa remuneratória da média em salário mínimo"))
 ```
 
 ### Média Salarial
 
-A média remuneratória de dezembro cresceu de R$ 4.645,99 em 2022 para R$ 5.877,39 em 2025 - uma variação nominal de +26,5% ao longo de três anos. Contudo, esse crescimento não foi linear. A desaceleração em 2024 (crescimento de apenas +1,5%) contrasta com a expansão registrada de 2023 (+16,5%), enquanto 2025 retoma o ritmo de crescimento (+6,9%). 
+Ao longo de todo o quadriênio analisado, identificaram‑se vínculos ativos sem remuneração declarada no mês de dezembro, e essa parcela vem crescendo de forma consistente. Em números absolutos, os registros passaram de 39 em 2022 para 59 em 2023, 70 em 2024 e 80 em 2025, o que representa um aumento relativo de 13,3% para 20,9% do total de vínculos ativos no período. Há ainda uma diferença na forma de codificação desses casos entre os anos‑base: em 2022, os registros aparecem com valor de R$ 0,00; a partir de 2023, o campo de remuneração simplesmente fica em branco. A análise do perfil desses vínculos sugere que se trata e de afastamentos prolongados e não de erros de declaração, embora essa possibilidade não possa ser inteiramente descartada.
 
-Essa oscilação observada indica que o desempenho salarial da categoria foi sensível a fatores conjunturais ocorridos no biênio 2023-2024.
+Diante desse cenário, adotou‑se o critério de excluir todos os registros sem remuneração declarada em dezembro, aplicando essa mesma regra uniformemente a todos os anos‑base. Com esse ajuste, a média remuneratória de dezembro parte de R$ 5.356,55 em 2022 e alcança R$ 5.877,39 em 2025, o que corresponde a um crescimento nominal acumulado de 9,7% no período. Essa padronização foi essencial para garantir comparabilidade entre os anos e evitar que vínculos sem remuneração distorcessem a tendência salarial observada.
+
+Esse critério corretivo também foi aplicado nos procedimentos subsequentes.
 
 ```{r média salarial}
 #| label: fig-ativo-media
@@ -1403,6 +1416,7 @@ Essa oscilação observada indica que o desempenho salarial da categoria foi sen
 # Preparar dados
 media_anual_dezembro <- remunera_corrigido %>%
   group_by(Ano) %>%
+  dplyr::filter(vl.rem.dez.nom.corrigido>0) |> 
   summarise(media = round(mean(vl.rem.dez.nom.corrigido, na.rm = TRUE), 2)) %>%
   ungroup() %>%
   arrange(Ano) %>%
@@ -1505,7 +1519,7 @@ p_final
 
 ### Resumo Estatístico
 
-As medidas de posição remuneratórias revelam assimetria positiva na distribuição dos dados: a média é sistematicamente superior à mediana, indicando que uma minoria de remunerações elevadas puxa o valor médio para cima. No quadriênio analisado, a diferença entre a média e mediana foi ampliada de R$ 645,99 para R$ 935,61.
+As medidas de posição remuneratórias revelam assimetria positiva na distribuição dos dados: a média é sistematicamente superior à mediana, indicando que uma minoria de remunerações elevadas puxa o valor médio para cima. No quadriênio analisado, a diferença entre a média e mediana foi ampliada de R$ 881,26 para R$ 935,61.
 
 Nesse contexto, a mediana é o indicador mais representativo do salário típico dos arqueólogos, pois não é influenciada por valores extremos. A média, por outro lado, reflete a distribuição global, incluindo os supersalários que distorcem o valor central.
 
@@ -1515,8 +1529,9 @@ Nesse contexto, a mediana é o indicador mais representativo do salário típico
 
 resumo_remunera <- remunera_corrigido %>%
      group_by(Ano) %>%
+     dplyr::filter(vl.rem.dez.nom.corrigido>0) |> 
      summarise(
-       Mínimo = min(vl.rem.dez.nom.corrigido[vl.rem.dez.nom.corrigido > 0], na.rm = TRUE),
+       Mínimo = min(vl.rem.dez.nom.corrigido, na.rm = TRUE),
        Mediana = median(vl.rem.dez.nom.corrigido, na.rm = TRUE),
        Média = mean(vl.rem.dez.nom.corrigido, na.rm = TRUE),
        Máximo = max(vl.rem.dez.nom.corrigido, na.rm = TRUE)) %>%
@@ -1544,9 +1559,9 @@ tabela_remunera <- resumo_remunera2 %>%
 tabela_remunera
 ```
 
-> O ano-base 2022 apresentou dados com valor remuneratório de R$ 0,00 - fenômeno não observado nos demais anos da RAIS. Esses eventos foram excluídos da tabela ilustrativa para fins de visualização, mas mantidos nos cálculos das medidas de posição, pois integram o espaço amostral. Até o momento, não foi possível identificar as variáveis determinantes para o registro de remuneração zero, hipótese que pode envolver desde erro de preenchimento até licenças sem remuneração ou afastamentos legais.
+### Remuneração Média
 
-A figura abaixo mostra a distribuição dos valores remuneratórios de dezembro na forma de boxplot, uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (_outliers_).
+A variável `Vl.Rem.Média.Nom` armazena a média das remunerações mensais recebidas pelo trabalhador ao longo do ano-base. Com esse dado, é possível visualizar a distribuição dos valores da média nominal na forma de boxplot, uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (_outliers_).
 
 ```{r boxplot}
 #| label: fig-boxplot
@@ -1554,12 +1569,13 @@ A figura abaixo mostra a distribuição dos valores remuneratórios de dezembro 
 
 tabela <- remunera_corrigido %>%
   group_by(Ano) %>%
+  dplyr::filter(Vl.Rem.Média.Nom > 0) |> 
   summarise(
-    Mínimo = min(vl.rem.dez.nom.corrigido, na.rm = TRUE),
-    Q1 = quantile(vl.rem.dez.nom.corrigido, 0.25, na.rm = TRUE),
-    Mediana = median(vl.rem.dez.nom.corrigido, na.rm = TRUE),
-    Q3 = quantile(vl.rem.dez.nom.corrigido, 0.75, na.rm = TRUE),
-    Máximo = max(vl.rem.dez.nom.corrigido, na.rm = TRUE)
+    Mínimo = min(Vl.Rem.Média.Nom, na.rm = TRUE),
+    Q1 = quantile(Vl.Rem.Média.Nom, 0.25, na.rm = TRUE),
+    Mediana = median(Vl.Rem.Média.Nom, na.rm = TRUE),
+    Q3 = quantile(Vl.Rem.Média.Nom, 0.75, na.rm = TRUE),
+    Máximo = max(Vl.Rem.Média.Nom, na.rm = TRUE)
   ) %>%
   mutate(across(where(is.numeric), ~ round(., 2))) %>%
   mutate(Ano = as.character(Ano))  # chave para o objeto JS
@@ -1624,7 +1640,7 @@ tooltip_js <- sprintf("
 dados_boxplot %>%
   group_by(Ano) %>%
   e_charts(Ano) %>%
-  e_boxplot(vl.rem.dez.nom.corrigido) %>%
+  e_boxplot(Vl.Rem.Média.Nom) %>%
   e_y_axis(
     axisLabel = list(
       fontSize = 10,
@@ -1646,7 +1662,7 @@ dados_boxplot %>%
   ) %>%
   e_title(
     text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
-    subtext = "Boxplot da Remuneração de Dezembro dos Vínculos Ativos",
+    subtext = "Boxplot da Remuneração Média dos Vínculos Ativos",
     left = "center",
     textStyle = list(fontSize = 15, fontWeight = "bold"),
     subtextStyle = list(fontSize = 12, fontWeight = "bold")
@@ -1679,26 +1695,30 @@ dados_boxplot %>%
 
 O boxplot da distribuição remuneratória confirma a assimetria positiva e permite visualizar o intervalo interquartil (IQR) - faixa que contém os 50% dos trabalhadores no centro da distribuição. 
 
-| Ano-base | Q1 (1º quartil) | Var. Q1 | Q3 (3º quartil) | Var. Q3 | IQR         | Var. IQR |
-|----------|-----------------|---------|-----------------|---------|-------------|----------|
-| 2022     | R$ 2.809,88     |     -   | R$ 6.026,62     |    -    | R$ 3.216,74 |    -     |
-| 2023     | R$ 3.156,16     | +12,3%  | R$ 6.343,76     | +5,3%   | R$ 3.187,60 | −0,9%    |
-| 2024     | R$ 3.060,36     | −3%     | R$ 6.219,63     | −2%     | R$ 3.159,27 | −0,9%    | 
-| 2025     | R$ 3.320,00     | +8,5%   | R$ 6.484,62     | +4,3%   | R$ 3.164,62 | +0,2%    |
+Qual a interpretação das informações abaixo referente aos dados da média remuneratória mensal:
 
-> A estabilidade do IQR indica que, embora Q1 e Q3 tenham obtido um desempenho em ritmos diferentes, a dispersão da faixa central permaneceu praticamente constante, sugerindo que a valorização do salário mínimo afetou proporcionalmente tanto os trabalhadores de menor remuneração (Q1) quanto os de faixa superior (Q3).
+| Medida          | 2022            | 2023        | 2024        | 2025        | Variação acumulada |
+|-----------------|-----------------|-------------|-------------|-------------|--------------------|
+| Q1 (1º quartil) | R$ 3.224,18     | R$ 3.092,82 | R$ 2.952,50 | R$ 3.101,28 | -3,8%              |
+| Mediana         | R$ 4.159,08     | R$ 4.153,96 | R$ 4.206,30 | R$ 4.489,28 | 7,9%               |
+| Q3 (3º quartil) | R$ 5.893,90     | R$ 5.672,30 | R$ 5.864,77 | R$ 6.420,97 | 8,9%               |
+| IQR (Q3-Q1)     | R$ 2.669,72     | R$ 2.579,48 | R$ 2.912,27 | R$ 3.319,69 | 24,3%              |
+
+> Entre 2022 e 2025, a média remuneratória apresentou uma recuperação desigual. Enquanto o trabalhador típico (mediana) registrou ganho acumulado de 7,9%, chegando a R$ 4.489 em 2025, os trabalhadores de menor remuneração (Q1) ainda não recuperaram as perdas do período, encerrando com R$ 3.101 - 3,8% abaixo do patamar de 2022. Por outro lado, os arqueólogos de faixa superior (Q3) tiveram o melhor desempenho relativo, com variação acumulada de 8,9% e atingindo R$ 6.421 em 2025. Essa dinâmica ampliou a dispersão salarial: o intervalo interquartil (IQR), que mede a distância entre o topo e a base da distribuição, cresceu 24,3%, sinalizando um aumento expressivo da desigualdade remuneratória ao longo do período.
 
 Para facilitar o entendimento de um boxplot, a figura abaixo ilustra como deve ser feito a leitura dessa representação gráfica.
 
 ![Exemplo de leitura de [boxplot](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png "Link para acesso a fonte da figura boxplot"){target="_blank"}](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png){#fig-gif-boxplot fig-align="center"}
 
-### Distribuição por Faixa Salarial
+### Distribuição da Remuneração Média por Faixa Salarial*****---> rever
 
 A distribuição dos arqueólogos por faixa salarial em dezembro revela um padrão de redistribuição ao longo do período analisado. As faixas 2-3 SM e 3-4 SM concentraram, em conjunto, a maior parcela dos vínculos ativos em todos os anos. Até 2024, a faixa 3-4 SM ocupava a primeira posição e a faixa 2-3 SM a segunda colocação - ordem que se inverte em 2025, quando a faixa 2-3 SM assume a liderança.
 
 O destaque é a faixa 1-2 SM, cuja participação cresceu de 7,82% para 19,14% - um aumento de 2,45× ao longo da série histórica. Em contrapartida, a faixa 5-7 SM sofreu queda de 9,7 pontos percentuais (de 15,65% para 5,94%). A combinação de crescimento na faixa 1-2 SM e retração na faixa 5-7 SM sugere que a profissão vem perdendo poder aquisitivo em relação à valorização do salário mínimo. 
 
 Aliado a esse quadro, a presença de profissionais com remuneração abaixo de 1 SM indica contratos de curta duração formalizados ao final do ano - possivelmente trabalhos de campo sazonais, consultorias pontuais ou vínculos intermitentes.
+
+*******REVER e CORIGIR****************
 
 ```{r tabela faixas salariais}
 #| column: screen-inset
@@ -3086,11 +3106,11 @@ O perfil de qualificação exigido pelo mercado formal também chama atenção. 
 
 No recorte por gênero, observa-se uma contradição relevante: os homens predominam em número de vínculos, mas as mulheres recebem os salários mais altos, e essa vantagem já se manifesta no momento da primeira admissão. Diante disso, a constatação de que as arqueólogas ocupam posição mais favorável no centro e na base da distribuição salarial abre caminho para hipóteses que este mesmo conjunto de dados permite investigar, mas que não foram contempladas neste estudo. 
 
-É possível, por exemplo, que as mulheres estejam mais concentradas em vínculos do setor público e de instituições de ensino e pesquisa, cujas remunerações tendem a superar as praticadas pela consultoria privada. Outra possibilidade é o maior tempo médio de emprego, acumulando progressões e estabilidade que elevam seus rendimentos. Pode-se também supor que detenham escolaridade declarada superior - com maior proporção de mestras e doutoras - ou que estejam distribuídas de forma distinta entre as regiões do país, com presença mais acentuada em áreas economicamente mais dinâmicas. O cruzamento sistemático dessas variáveis com o sexo constitui a próxima etapa natural desta investigação e é justamente o que permitirá substituir conjecturas por evidências sobre as causas da diferença salarial observada.
+É possível, por exemplo, que as mulheres estejam mais concentradas em vínculos do setor público e de instituições de ensino e pesquisa, cujas remunerações tendem a superar as praticadas pela consultoria privada. Outra possibilidade é o maior tempo médio de emprego, acumulando progressões e estabilidade que elevam seus rendimentos. Pode-se também supor que detenham escolaridade declarada superior - com maior proporção de mestras e doutoras - ou que estejam distribuídas de forma distinta entre as regiões do país, com presença mais acentuada em empresas sediadas em áreas economicamente mais dinâmicas. O cruzamento sistemático dessas variáveis com o sexo constitui a próxima etapa natural desta investigação e é justamente o que permitirá substituir conjecturas por evidências sobre as causas da diferença salarial observada.
 
 Quanto ao poder de compra, o crescimento salarial nominal observado no quadriênio não se traduziu necessariamente em ganho real. Um arqueólogo que recebia R$ 4.000 em 2022 estava na faixa de três a quatro salários mínimos; se esse mesmo profissional passa a receber R$ 4.500 em 2025, sua remuneração cai para a faixa de dois a três salários mínimos, dado o reajuste salarial nacional. Em termos relativos ao salário mínimo, houve rebaixamento de faixa, não ascensão.
 
-A dependência do licenciamento ambiental é o fio condutor que atravessa todas essas dinâmicas. O crescimento de vínculos e salários nominais concentra-se no setor privado, especialmente nas consultorias que atendem demandas de obras licenciáveis. Exceções existem, mas ainda não configuram novas fronteiras de empregabilidade. O setor público, por outro lado, responde por uma participação minoritária, com poucos concursos e baixa absorção de profissionais — um contrassenso diante da densidade do patrimônio arqueológico brasileiro e da necessidade de gestão desses bens culturais. A predominância de projetos de curta duração gera um ciclo de alta rotatividade que impede a construção de estabilidade para a maioria dos trabalhadores.
+A dependência do licenciamento ambiental é o fio condutor que atravessa todas essas dinâmicas. O crescimento de vínculos e salários nominais concentra-se no setor privado, especialmente nas consultorias que atendem demandas de obras licenciáveis. Exceções existem, mas ainda não configuram novas fronteiras de empregabilidade. O setor público, por outro lado, responde por uma participação minoritária, com poucos concursos e baixa absorção de profissionais - um contrassenso diante da densidade do patrimônio arqueológico brasileiro e da necessidade de gestão desses bens culturais. A predominância de projetos de curta duração gera um ciclo de alta rotatividade que impede a construção de estabilidade para a maioria dos trabalhadores.
 
 Diante desse quadro, a mobilização coletiva surge como caminho necessário. O sindicato é a instância institucional mais adequada para articular estratégias que promovam maior presença de arqueólogos em instituições públicas, diversificação das fontes de contratação - incluindo editais de fomento cultural como a [Política Nacional Aldir Blanc de Fomento à Cultura (PNAB)](https://www.gov.br/cultura/pt-br/assuntos/acoes-programas-e-politicas/politica-nacional-aldir-blanc-de-fomento-a-cultura "Link da página da PNAB"){target="_blank"} -, proposição de pisos salariais e condições mínimas de trabalho. Sem essa articulação, a profissão continuará crescendo em número de vínculos, mas sem traduzir esse crescimento em segurança, estabilidade e valorização real para seus profissionais.
 
