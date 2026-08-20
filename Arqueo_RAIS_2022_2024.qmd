@@ -1565,7 +1565,7 @@ A variável `Vl.Rem.Média.Nom` armazena a média das remunerações mensais rec
 
 ```{r boxplot}
 #| label: fig-boxplot
-#| fig-cap: "Boxplot das remunerações nominais de dezembro dos vínculos ativos"
+#| fig-cap: "Boxplot das médias nominais dos vínculos ativos"
 
 tabela <- remunera_corrigido %>%
   group_by(Ano) %>%
@@ -1710,48 +1710,47 @@ Para facilitar o entendimento de um boxplot, a figura abaixo ilustra como deve s
 
 ![Exemplo de leitura de [boxplot](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png "Link para acesso a fonte da figura boxplot"){target="_blank"}](https://miro.medium.com/v2/1*r41SQj0LbdCV6rWoIos6mA.png){#fig-gif-boxplot fig-align="center"}
 
-### Distribuição da Remuneração Média por Faixa Salarial*****---> rever
+### Remuneração Média por Faixa Salarial
 
-A distribuição dos arqueólogos por faixa salarial em dezembro revela um padrão de redistribuição ao longo do período analisado. As faixas 2-3 SM e 3-4 SM concentraram, em conjunto, a maior parcela dos vínculos ativos em todos os anos. Até 2024, a faixa 3-4 SM ocupava a primeira posição e a faixa 2-3 SM a segunda colocação - ordem que se inverte em 2025, quando a faixa 2-3 SM assume a liderança.
+A distribuição dos arqueólogos por remuneração média revela um quadro de concentração salarial e perda de mobilidade ascendente. A maioria dos profissionais permanece ancorada na faixa de 2 a 3 salários mínimos, que funciona como um teto estrutural para a categoria. Paralelamente, a faixa de 1 a 2 salários mínimos dobrou de participação, passando de cerca de 10% para mais de 20% dos trabalhadores, sinalizando que uma parcela crescente de profissionais está sendo empurrada para remunerações mais baixas. No meio da distribuição, as faixas de 3 a 7 salários mínimos encolheram significativamente, especialmente a de 5 a 7 SM, que caiu de 14% para menos de 5%, indicando que o arqueólogo bem remunerado está desaparecendo. No topo, há uma polarização: a faixa de 7 a 10 SM cresceu de forma estável, mas as faixas acima de 15 salários mínimos praticamente desapareceram da amostra. 
 
-O destaque é a faixa 1-2 SM, cuja participação cresceu de 7,82% para 19,14% - um aumento de 2,45× ao longo da série histórica. Em contrapartida, a faixa 5-7 SM sofreu queda de 9,7 pontos percentuais (de 15,65% para 5,94%). A combinação de crescimento na faixa 1-2 SM e retração na faixa 5-7 SM sugere que a profissão vem perdendo poder aquisitivo em relação à valorização do salário mínimo. 
+O resultado é uma profissão com poucas oportunidades de ascensão salarial elevada, onde a maioria se amontoa nas faixas inferiores e apenas uma pequena fração consegue ultrapassar o patamar de 7 salários mínimos.
 
-Aliado a esse quadro, a presença de profissionais com remuneração abaixo de 1 SM indica contratos de curta duração formalizados ao final do ano - possivelmente trabalhos de campo sazonais, consultorias pontuais ou vínculos intermitentes.
+Aliado a esse cenário, a presença de profissionais com remuneração abaixo de 1 SM indica contratos de curta duração formalizados ao final do ano - possivelmente trabalhos de campo sazonais, consultorias pontuais ou vínculos intermitentes.
 
-*******REVER e CORIGIR****************
 
 ```{r tabela faixas salariais}
 #| column: screen-inset
 #| results: 'asis'
 
 salario.2022 <- remunera_corrigido %>% 
-  dplyr::filter(Ano==2022) %>% 
+  dplyr::filter(Ano==2022 & Vl.Rem.Média.Nom>0) %>% 
   mutate(
     faixa_SM = case_when(
-      vl.rem.dez.nom.corrigido <= 1212 ~ "Até 1 salário mínimo",
-      vl.rem.dez.nom.corrigido > 1212 & vl.rem.dez.nom.corrigido <= (1212*2) ~ "Entre 1 e 2 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1212*2) & vl.rem.dez.nom.corrigido <= (1212*3) ~ "Entre 2 e 3 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1212*3) & vl.rem.dez.nom.corrigido <= (1212*4) ~ "Entre 3 e 4 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1212*4) & vl.rem.dez.nom.corrigido <= (1212*5) ~ "Entre 4 e 5 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1212*5) & vl.rem.dez.nom.corrigido <= (1212*7) ~ "Entre 5 e 7 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1212*7) & vl.rem.dez.nom.corrigido <= (1212*10) ~ "Entre 7 e 10 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1212*10) & vl.rem.dez.nom.corrigido <= (1212*15) ~ "Entre 10 e 15 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1212*15) & vl.rem.dez.nom.corrigido <= (1212*20) ~ "Entre 15 e 20 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1212*20) ~ "Acima de 20 salários mínimos",
+      Vl.Rem.Média.Nom <= 1212 ~ "Até 1 salário mínimo",
+      Vl.Rem.Média.Nom > 1212 & Vl.Rem.Média.Nom <= (1212*2) ~ "Entre 1 e 2 salários mínimos",
+      Vl.Rem.Média.Nom > (1212*2) & Vl.Rem.Média.Nom <= (1212*3) ~ "Entre 2 e 3 salários mínimos",
+      Vl.Rem.Média.Nom > (1212*3) & Vl.Rem.Média.Nom <= (1212*4) ~ "Entre 3 e 4 salários mínimos",
+      Vl.Rem.Média.Nom > (1212*4) & Vl.Rem.Média.Nom <= (1212*5) ~ "Entre 4 e 5 salários mínimos",
+      Vl.Rem.Média.Nom > (1212*5) & Vl.Rem.Média.Nom <= (1212*7) ~ "Entre 5 e 7 salários mínimos",
+      Vl.Rem.Média.Nom > (1212*7) & Vl.Rem.Média.Nom <= (1212*10) ~ "Entre 7 e 10 salários mínimos",
+      Vl.Rem.Média.Nom > (1212*10) & Vl.Rem.Média.Nom <= (1212*15) ~ "Entre 10 e 15 salários mínimos",
+      Vl.Rem.Média.Nom > (1212*15) & Vl.Rem.Média.Nom <= (1212*20) ~ "Entre 15 e 20 salários mínimos",
+      Vl.Rem.Média.Nom > (1212*20) ~ "Acima de 20 salários mínimos",
       TRUE ~ NA_character_),
     faixa_valor = case_when(
-      vl.rem.dez.nom.corrigido <= 1212 ~ "Até R$ 1.212",
-      vl.rem.dez.nom.corrigido > 1212 & vl.rem.dez.nom.corrigido <= (1212*2) ~ "R$ 1.212 a R$ 2.424",
-      vl.rem.dez.nom.corrigido > (1212*2) & vl.rem.dez.nom.corrigido <= (1212*3) ~ "R$ 2.424 a R$ 3.636",
-      vl.rem.dez.nom.corrigido > (1212*3) & vl.rem.dez.nom.corrigido <= (1212*4) ~ "R$ 3.636 a R$ 4.848",
-      vl.rem.dez.nom.corrigido > (1212*4) & vl.rem.dez.nom.corrigido <= (1212*5) ~ "R$ 4.848 a R$ 6.060",
-      vl.rem.dez.nom.corrigido > (1212*5) & vl.rem.dez.nom.corrigido <= (1212*7) ~ "R$ 6.060 a R$ 8.484",
-      vl.rem.dez.nom.corrigido > (1212*7) & vl.rem.dez.nom.corrigido <= (1212*10) ~ "R$ 8.484 a R$ 12.120",
-      vl.rem.dez.nom.corrigido > (1212*10) & vl.rem.dez.nom.corrigido <= (1212*15) ~ "R$ 12.120 a R$ 18.180",
-      vl.rem.dez.nom.corrigido > (1212*15) & vl.rem.dez.nom.corrigido <= (1212*20) ~ "R$ 18.180 a R$ 24.240",
-      vl.rem.dez.nom.corrigido > (1212*20) ~ "Acima de R$ 24.240",
+      Vl.Rem.Média.Nom <= 1212 ~ "Até R$ 1.212",
+      Vl.Rem.Média.Nom > 1212 & Vl.Rem.Média.Nom <= (1212*2) ~ "R$ 1.212 a R$ 2.424",
+      Vl.Rem.Média.Nom > (1212*2) & Vl.Rem.Média.Nom <= (1212*3) ~ "R$ 2.424 a R$ 3.636",
+      Vl.Rem.Média.Nom > (1212*3) & Vl.Rem.Média.Nom <= (1212*4) ~ "R$ 3.636 a R$ 4.848",
+      Vl.Rem.Média.Nom > (1212*4) & Vl.Rem.Média.Nom <= (1212*5) ~ "R$ 4.848 a R$ 6.060",
+      Vl.Rem.Média.Nom > (1212*5) & Vl.Rem.Média.Nom <= (1212*7) ~ "R$ 6.060 a R$ 8.484",
+      Vl.Rem.Média.Nom > (1212*7) & Vl.Rem.Média.Nom <= (1212*10) ~ "R$ 8.484 a R$ 12.120",
+      Vl.Rem.Média.Nom > (1212*10) & Vl.Rem.Média.Nom <= (1212*15) ~ "R$ 12.120 a R$ 18.180",
+      Vl.Rem.Média.Nom > (1212*15) & Vl.Rem.Média.Nom <= (1212*20) ~ "R$ 18.180 a R$ 24.240",
+      Vl.Rem.Média.Nom > (1212*20) ~ "Acima de R$ 24.240",
       TRUE ~ NA_character_)) %>%
-  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor) %>% 
+  select(Ano, Vl.Rem.Média.Nom, faixa_SM, faixa_valor) %>% 
   na.omit()
 
 resumo_salario.2022 <- salario.2022 %>% 
@@ -1766,7 +1765,7 @@ tab.resumo_salario.2022 <- resumo_salario.2022 %>%
   dplyr::select(faixa_SM, faixa_valor, porcentagem) %>% 
   gt() %>%
   tab_header(
-    title = "Distribuição Salarial - Dezembro/2022",
+    title = "Distribuição Salarial - Média/2022",
     subtitle = "Salário mínimo de R$ 1.212") %>%
   fmt_number(
     columns = porcentagem,
@@ -1783,33 +1782,33 @@ tab.resumo_salario.2022 <- resumo_salario.2022 %>%
 )
 
 salario.2023 <- remunera_corrigido %>% 
-  dplyr::filter(Ano==2023) %>% 
+  dplyr::filter(Ano==2023 & Vl.Rem.Média.Nom>0) %>% 
   mutate(
     faixa_SM = case_when(
-      vl.rem.dez.nom.corrigido <= 1320 ~ "Até 1 salário mínimo",
-      vl.rem.dez.nom.corrigido > 1320 & vl.rem.dez.nom.corrigido <= (1320*2) ~ "Entre 1 e 2 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1320*2) & vl.rem.dez.nom.corrigido <= (1320*3) ~ "Entre 2 e 3 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1320*3) & vl.rem.dez.nom.corrigido <= (1320*4) ~ "Entre 3 e 4 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1320*4) & vl.rem.dez.nom.corrigido <= (1320*5) ~ "Entre 4 e 5 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1320*5) & vl.rem.dez.nom.corrigido <= (1320*7) ~ "Entre 5 e 7 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1320*7) & vl.rem.dez.nom.corrigido <= (1320*10) ~ "Entre 7 e 10 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1320*10) & vl.rem.dez.nom.corrigido <= (1320*15) ~ "Entre 10 e 15 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1320*15) & vl.rem.dez.nom.corrigido <= (1320*20) ~ "Entre 15 e 20 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1320*20) ~ "Acima de 20 salários mínimos",
+      Vl.Rem.Média.Nom <= 1320 ~ "Até 1 salário mínimo",
+      Vl.Rem.Média.Nom > 1320 & Vl.Rem.Média.Nom <= (1320*2) ~ "Entre 1 e 2 salários mínimos",
+      Vl.Rem.Média.Nom > (1320*2) & Vl.Rem.Média.Nom <= (1320*3) ~ "Entre 2 e 3 salários mínimos",
+      Vl.Rem.Média.Nom > (1320*3) & Vl.Rem.Média.Nom <= (1320*4) ~ "Entre 3 e 4 salários mínimos",
+      Vl.Rem.Média.Nom > (1320*4) & Vl.Rem.Média.Nom <= (1320*5) ~ "Entre 4 e 5 salários mínimos",
+      Vl.Rem.Média.Nom > (1320*5) & Vl.Rem.Média.Nom <= (1320*7) ~ "Entre 5 e 7 salários mínimos",
+      Vl.Rem.Média.Nom > (1320*7) & Vl.Rem.Média.Nom <= (1320*10) ~ "Entre 7 e 10 salários mínimos",
+      Vl.Rem.Média.Nom > (1320*10) & Vl.Rem.Média.Nom <= (1320*15) ~ "Entre 10 e 15 salários mínimos",
+      Vl.Rem.Média.Nom > (1320*15) & Vl.Rem.Média.Nom <= (1320*20) ~ "Entre 15 e 20 salários mínimos",
+      Vl.Rem.Média.Nom > (1320*20) ~ "Acima de 20 salários mínimos",
       TRUE ~ NA_character_),
     faixa_valor = case_when(
-      vl.rem.dez.nom.corrigido <= 1320 ~ "Até R$ 1.320",
-      vl.rem.dez.nom.corrigido > 1320 & vl.rem.dez.nom.corrigido <= (1320*2) ~ "R$ 1.320 a R$ 2.640",
-      vl.rem.dez.nom.corrigido > (1320*2) & vl.rem.dez.nom.corrigido <= (1320*3) ~ "R$ 2.640 a R$ 3.960",
-      vl.rem.dez.nom.corrigido > (1320*3) & vl.rem.dez.nom.corrigido <= (1320*4) ~ "R$ 3.960 a R$ 5.280",
-      vl.rem.dez.nom.corrigido > (1320*4) & vl.rem.dez.nom.corrigido <= (1320*5) ~ "R$ 5.280 a R$ 6.600",
-      vl.rem.dez.nom.corrigido > (1320*5) & vl.rem.dez.nom.corrigido <= (1320*7) ~ "R$ 6.600 a R$ 9.240",
-      vl.rem.dez.nom.corrigido > (1320*7) & vl.rem.dez.nom.corrigido <= (1320*10) ~ "R$ 9.240 a R$ 13.200",
-      vl.rem.dez.nom.corrigido > (1320*10) & vl.rem.dez.nom.corrigido <= (1320*15) ~ "R$ 13.200 a R$ 19.800",
-      vl.rem.dez.nom.corrigido > (1320*15) & vl.rem.dez.nom.corrigido <= (1320*20) ~ "R$ 19.800 a R$ 26.400",
-      vl.rem.dez.nom.corrigido > (1320*20) ~ "Acima de R$ 26.400",
+      Vl.Rem.Média.Nom <= 1320 ~ "Até R$ 1.320",
+      Vl.Rem.Média.Nom > 1320 & Vl.Rem.Média.Nom <= (1320*2) ~ "R$ 1.320 a R$ 2.640",
+      Vl.Rem.Média.Nom > (1320*2) & Vl.Rem.Média.Nom <= (1320*3) ~ "R$ 2.640 a R$ 3.960",
+      Vl.Rem.Média.Nom > (1320*3) & Vl.Rem.Média.Nom <= (1320*4) ~ "R$ 3.960 a R$ 5.280",
+      Vl.Rem.Média.Nom > (1320*4) & Vl.Rem.Média.Nom <= (1320*5) ~ "R$ 5.280 a R$ 6.600",
+      Vl.Rem.Média.Nom > (1320*5) & Vl.Rem.Média.Nom <= (1320*7) ~ "R$ 6.600 a R$ 9.240",
+      Vl.Rem.Média.Nom > (1320*7) & Vl.Rem.Média.Nom <= (1320*10) ~ "R$ 9.240 a R$ 13.200",
+      Vl.Rem.Média.Nom > (1320*10) & Vl.Rem.Média.Nom <= (1320*15) ~ "R$ 13.200 a R$ 19.800",
+      Vl.Rem.Média.Nom > (1320*15) & Vl.Rem.Média.Nom <= (1320*20) ~ "R$ 19.800 a R$ 26.400",
+      Vl.Rem.Média.Nom > (1320*20) ~ "Acima de R$ 26.400",
       TRUE ~ NA_character_)) %>%
-  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor) %>% 
+  select(Ano, Vl.Rem.Média.Nom, faixa_SM, faixa_valor) %>% 
   na.omit()
 
 resumo_salario.2023 <- salario.2023 %>% 
@@ -1824,7 +1823,7 @@ tab.resumo_salario.2023 <- resumo_salario.2023 %>%
   dplyr::select(faixa_SM, faixa_valor, porcentagem) %>% 
   gt() %>%
   tab_header(
-    title = "Distribuição Salarial - Dezembro/2023",
+    title = "Distribuição Salarial - Média/2023",
     subtitle = "Salário mínimo de R$ 1.320") %>%
   fmt_number(
     columns = porcentagem,
@@ -1841,33 +1840,33 @@ tab.resumo_salario.2023 <- resumo_salario.2023 %>%
 )
 
 salario.2024 <- remunera_corrigido %>% 
-  dplyr::filter(Ano==2024) %>% 
+  dplyr::filter(Ano==2024 & Vl.Rem.Média.Nom>0) %>% 
   mutate(
     faixa_SM = case_when(
-      vl.rem.dez.nom.corrigido <= 1412 ~ "Até 1 salário mínimo",
-      vl.rem.dez.nom.corrigido > 1412 & vl.rem.dez.nom.corrigido <= (1412*2) ~ "Entre 1 e 2 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1412*2) & vl.rem.dez.nom.corrigido <= (1412*3) ~ "Entre 2 e 3 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1412*3) & vl.rem.dez.nom.corrigido <= (1412*4) ~ "Entre 3 e 4 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1412*4) & vl.rem.dez.nom.corrigido <= (1412*5) ~ "Entre 4 e 5 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1412*5) & vl.rem.dez.nom.corrigido <= (1412*7) ~ "Entre 5 e 7 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1412*7) & vl.rem.dez.nom.corrigido <= (1412*10) ~ "Entre 7 e 10 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1412*10) & vl.rem.dez.nom.corrigido <= (1412*15) ~ "Entre 10 e 15 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1412*15) & vl.rem.dez.nom.corrigido <= (1412*20) ~ "Entre 15 e 20 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1412*20) ~ "Acima de 20 salários mínimos",
+      Vl.Rem.Média.Nom <= 1412 ~ "Até 1 salário mínimo",
+      Vl.Rem.Média.Nom > 1412 & Vl.Rem.Média.Nom <= (1412*2) ~ "Entre 1 e 2 salários mínimos",
+      Vl.Rem.Média.Nom > (1412*2) & Vl.Rem.Média.Nom <= (1412*3) ~ "Entre 2 e 3 salários mínimos",
+      Vl.Rem.Média.Nom > (1412*3) & Vl.Rem.Média.Nom <= (1412*4) ~ "Entre 3 e 4 salários mínimos",
+      Vl.Rem.Média.Nom > (1412*4) & Vl.Rem.Média.Nom <= (1412*5) ~ "Entre 4 e 5 salários mínimos",
+      Vl.Rem.Média.Nom > (1412*5) & Vl.Rem.Média.Nom <= (1412*7) ~ "Entre 5 e 7 salários mínimos",
+      Vl.Rem.Média.Nom > (1412*7) & Vl.Rem.Média.Nom <= (1412*10) ~ "Entre 7 e 10 salários mínimos",
+      Vl.Rem.Média.Nom > (1412*10) & Vl.Rem.Média.Nom <= (1412*15) ~ "Entre 10 e 15 salários mínimos",
+      Vl.Rem.Média.Nom > (1412*15) & Vl.Rem.Média.Nom <= (1412*20) ~ "Entre 15 e 20 salários mínimos",
+      Vl.Rem.Média.Nom > (1412*20) ~ "Acima de 20 salários mínimos",
       TRUE ~ NA_character_),
     faixa_valor = case_when(
-      vl.rem.dez.nom.corrigido <= 1412 ~ "Até R$ 1.412",
-      vl.rem.dez.nom.corrigido > 1412 & vl.rem.dez.nom.corrigido <= (1412*2) ~ "R$ 1.412 a R$ 2.824",
-      vl.rem.dez.nom.corrigido > (1412*2) & vl.rem.dez.nom.corrigido <= (1412*3) ~ "R$ 2.824 a R$ 4.236",
-      vl.rem.dez.nom.corrigido > (1412*3) & vl.rem.dez.nom.corrigido <= (1412*4) ~ "R$ 4.236 a R$ 5.648",
-      vl.rem.dez.nom.corrigido > (1412*4) & vl.rem.dez.nom.corrigido <= (1412*5) ~ "R$ 5.648 a R$ 7.060",
-      vl.rem.dez.nom.corrigido > (1412*5) & vl.rem.dez.nom.corrigido <= (1412*7) ~ "R$ 7.060 a R$ 9.884",
-      vl.rem.dez.nom.corrigido > (1412*7) & vl.rem.dez.nom.corrigido <= (1412*10) ~ "R$ 9.884 a R$ 14.120",
-      vl.rem.dez.nom.corrigido > (1412*10) & vl.rem.dez.nom.corrigido <= (1412*15) ~ "R$ 14.120 a R$ 21.180",
-      vl.rem.dez.nom.corrigido > (1412*15) & vl.rem.dez.nom.corrigido <= (1412*20) ~ "R$ 21.180 a R$ 28.240",
-      vl.rem.dez.nom.corrigido > (1412*20) ~ "Acima de R$ 28.240",
+      Vl.Rem.Média.Nom <= 1412 ~ "Até R$ 1.412",
+      Vl.Rem.Média.Nom > 1412 & Vl.Rem.Média.Nom <= (1412*2) ~ "R$ 1.412 a R$ 2.824",
+      Vl.Rem.Média.Nom > (1412*2) & Vl.Rem.Média.Nom <= (1412*3) ~ "R$ 2.824 a R$ 4.236",
+      Vl.Rem.Média.Nom > (1412*3) & Vl.Rem.Média.Nom <= (1412*4) ~ "R$ 4.236 a R$ 5.648",
+      Vl.Rem.Média.Nom > (1412*4) & Vl.Rem.Média.Nom <= (1412*5) ~ "R$ 5.648 a R$ 7.060",
+      Vl.Rem.Média.Nom > (1412*5) & Vl.Rem.Média.Nom <= (1412*7) ~ "R$ 7.060 a R$ 9.884",
+      Vl.Rem.Média.Nom > (1412*7) & Vl.Rem.Média.Nom <= (1412*10) ~ "R$ 9.884 a R$ 14.120",
+      Vl.Rem.Média.Nom > (1412*10) & Vl.Rem.Média.Nom <= (1412*15) ~ "R$ 14.120 a R$ 21.180",
+      Vl.Rem.Média.Nom > (1412*15) & Vl.Rem.Média.Nom <= (1412*20) ~ "R$ 21.180 a R$ 28.240",
+      Vl.Rem.Média.Nom > (1412*20) ~ "Acima de R$ 28.240",
       TRUE ~ NA_character_)) %>%
-  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor) %>% 
+  select(Ano, Vl.Rem.Média.Nom, faixa_SM, faixa_valor) %>% 
   na.omit()
 
 resumo_salario.2024 <- salario.2024 %>% 
@@ -1882,7 +1881,7 @@ tab.resumo_salario.2024 <- resumo_salario.2024 %>%
   dplyr::select(faixa_SM, faixa_valor, porcentagem) %>% 
   gt() %>%
   tab_header(
-    title = "Distribuição Salarial - Dezembro/2024",
+    title = "Distribuição Salarial - Média/2024",
     subtitle = "Salário mínimo de R$ 1.412") %>%
   fmt_number(
     columns = porcentagem,
@@ -1899,33 +1898,33 @@ tab.resumo_salario.2024 <- resumo_salario.2024 %>%
 )
 
 salario.2025 <- remunera_corrigido %>% 
-  dplyr::filter(Ano==2025) %>% 
+  dplyr::filter(Ano==2025 & Vl.Rem.Média.Nom>0) %>% 
   mutate(
     faixa_SM = case_when(
-      vl.rem.dez.nom.corrigido <= 1518 ~ "Até 1 salário mínimo",
-      vl.rem.dez.nom.corrigido > 1518 & vl.rem.dez.nom.corrigido <= (1518*2) ~ "Entre 1 e 2 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1518*2) & vl.rem.dez.nom.corrigido <= (1518*3) ~ "Entre 2 e 3 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1518*3) & vl.rem.dez.nom.corrigido <= (1518*4) ~ "Entre 3 e 4 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1518*4) & vl.rem.dez.nom.corrigido <= (1518*5) ~ "Entre 4 e 5 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1518*5) & vl.rem.dez.nom.corrigido <= (1518*7) ~ "Entre 5 e 7 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1518*7) & vl.rem.dez.nom.corrigido <= (1518*10) ~ "Entre 7 e 10 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1518*10) & vl.rem.dez.nom.corrigido <= (1518*15) ~ "Entre 10 e 15 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1518*15) & vl.rem.dez.nom.corrigido <= (1518*20) ~ "Entre 15 e 20 salários mínimos",
-      vl.rem.dez.nom.corrigido > (1518*20) ~ "Acima de 20 salários mínimos",
+      Vl.Rem.Média.Nom <= 1518 ~ "Até 1 salário mínimo",
+      Vl.Rem.Média.Nom > 1518 & Vl.Rem.Média.Nom <= (1518*2) ~ "Entre 1 e 2 salários mínimos",
+      Vl.Rem.Média.Nom > (1518*2) & Vl.Rem.Média.Nom <= (1518*3) ~ "Entre 2 e 3 salários mínimos",
+      Vl.Rem.Média.Nom > (1518*3) & Vl.Rem.Média.Nom <= (1518*4) ~ "Entre 3 e 4 salários mínimos",
+      Vl.Rem.Média.Nom > (1518*4) & Vl.Rem.Média.Nom <= (1518*5) ~ "Entre 4 e 5 salários mínimos",
+      Vl.Rem.Média.Nom > (1518*5) & Vl.Rem.Média.Nom <= (1518*7) ~ "Entre 5 e 7 salários mínimos",
+      Vl.Rem.Média.Nom > (1518*7) & Vl.Rem.Média.Nom <= (1518*10) ~ "Entre 7 e 10 salários mínimos",
+      Vl.Rem.Média.Nom > (1518*10) & Vl.Rem.Média.Nom <= (1518*15) ~ "Entre 10 e 15 salários mínimos",
+      Vl.Rem.Média.Nom > (1518*15) & Vl.Rem.Média.Nom <= (1518*20) ~ "Entre 15 e 20 salários mínimos",
+      Vl.Rem.Média.Nom > (1518*20) ~ "Acima de 20 salários mínimos",
       TRUE ~ NA_character_),
     faixa_valor = case_when(
-      vl.rem.dez.nom.corrigido <= 1518 ~ "Até R$ 1.518",
-      vl.rem.dez.nom.corrigido > 1518 & vl.rem.dez.nom.corrigido <= (1518*2) ~ "R$ 1.5181.518 a R$ 3.036",
-      vl.rem.dez.nom.corrigido > (1518*2) & vl.rem.dez.nom.corrigido <= (1518*3) ~ "R$ 3.036 a R$ 4.554",
-      vl.rem.dez.nom.corrigido > (1518*3) & vl.rem.dez.nom.corrigido <= (1518*4) ~ "R$ 4.554 a R$ 6.072",
-      vl.rem.dez.nom.corrigido > (1518*4) & vl.rem.dez.nom.corrigido <= (1518*5) ~ "R$ 6.072 a R$ 7.590",
-      vl.rem.dez.nom.corrigido > (1518*5) & vl.rem.dez.nom.corrigido <= (1518*7) ~ "R$ 7.590 a R$ 10.626",
-      vl.rem.dez.nom.corrigido > (1518*7) & vl.rem.dez.nom.corrigido <= (1518*10) ~ "R$ 10.626 a R$ 15.180",
-      vl.rem.dez.nom.corrigido > (1518*10) & vl.rem.dez.nom.corrigido <= (1518*15) ~ "R$ 15.180 a R$ 22.770",
-      vl.rem.dez.nom.corrigido > (1518*15) & vl.rem.dez.nom.corrigido <= (1518*20) ~ "R$ 22.770 a R$ 30.360",
-      vl.rem.dez.nom.corrigido > (1518*20) ~ "Acima de R$ 30.360",
+      Vl.Rem.Média.Nom <= 1518 ~ "Até R$ 1.518",
+      Vl.Rem.Média.Nom > 1518 & Vl.Rem.Média.Nom <= (1518*2) ~ "R$ 1.518 a R$ 3.036",
+      Vl.Rem.Média.Nom > (1518*2) & Vl.Rem.Média.Nom <= (1518*3) ~ "R$ 3.036 a R$ 4.554",
+      Vl.Rem.Média.Nom > (1518*3) & Vl.Rem.Média.Nom <= (1518*4) ~ "R$ 4.554 a R$ 6.072",
+      Vl.Rem.Média.Nom > (1518*4) & Vl.Rem.Média.Nom <= (1518*5) ~ "R$ 6.072 a R$ 7.590",
+      Vl.Rem.Média.Nom > (1518*5) & Vl.Rem.Média.Nom <= (1518*7) ~ "R$ 7.590 a R$ 10.626",
+      Vl.Rem.Média.Nom > (1518*7) & Vl.Rem.Média.Nom <= (1518*10) ~ "R$ 10.626 a R$ 15.180",
+      Vl.Rem.Média.Nom > (1518*10) & Vl.Rem.Média.Nom <= (1518*15) ~ "R$ 15.180 a R$ 22.770",
+      Vl.Rem.Média.Nom > (1518*15) & Vl.Rem.Média.Nom <= (1518*20) ~ "R$ 22.770 a R$ 30.360",
+      Vl.Rem.Média.Nom > (1518*20) ~ "Acima de R$ 30.360",
       TRUE ~ NA_character_)) %>%
-  select(Ano, vl.rem.dez.nom.corrigido, faixa_SM, faixa_valor) %>% 
+  select(Ano, Vl.Rem.Média.Nom, faixa_SM, faixa_valor) %>% 
   na.omit()
 
 resumo_salario.2025 <- salario.2025 %>% 
@@ -1940,7 +1939,7 @@ tab.resumo_salario.2025 <- resumo_salario.2025 %>%
   dplyr::select(faixa_SM, faixa_valor, porcentagem) %>% 
   gt() %>%
   tab_header(
-    title = "Distribuição Salarial - Dezembro/2025",
+    title = "Distribuição Salarial - Média/2025",
     subtitle = "Salário mínimo de R$ 1.518") %>%
   fmt_number(
     columns = porcentagem,
@@ -1974,15 +1973,15 @@ htmltools::tagList(
 
 ### Distribuição por Sexo
 
-A evolução da média salarial por sexo entre 2022 a 2025 revelou um padrão oscilatório inesperado, com duas inversões de vantagem e variações de magnitude significativa. A trajetória pode ser descrita em quatro momentos distintos:
+A evolução da média salarial de dezembro por sexo entre 2022 a 2025 revelou um padrão oscilatório inesperado, com duas inversões de vantagem e variações de magnitude significativa. A trajetória pode ser descrita em quatro momentos distintos:
 
-Em 2022, as arqueólogas apresentavam média salarial de R$ 5.151,87, contra R$ 4.282,11 dos arqueólogos - uma vantagem de R$ 869,76 que se manteve como a maior diferença do período. No ano seguinte, essa vantagem se reduziu para R$ 273,32 (R$ 5.563,63 vs. R$ 5.290,31), sugerindo que os homens estavam ganhando terreno de forma gradual.
+Em 2022, as arqueólogas apresentavam média salarial de R$ 5.708,83, contra R$ 5.085,01 dos arqueólogos - uma vantagem de R$ 623,82 que se manteve como a maior diferença do período. No ano seguinte, essa vantagem se reduziu para R$ 273,32 (R$ 5.563,63 vs. R$ 5.290,31), sugerindo que os homens estavam ganhando terreno de forma gradual.
 
 A primeira inversão ocorreu em 2024: a média masculina saltou para R$ 5.615,93, enquanto a feminina recuou para R$ 5.358,61 - uma diferença de −R$ 257,32 em favor dos homens. Essa mudança marcou a primeira vez, em toda a série, que os arqueólogos superaram as arqueólogas em média remuneratória.
 
 Contudo, a tendência não se consolidou. Em 2025, o padrão se reverteu de forma ainda mais acentuada: a média feminina disparou para R$ 6.144,29 (+14,6% em relação a 2024), enquanto a masculina avançou modestamente para R$ 5.648,15 (+0,6%). O resultado foi uma nova vantagem feminina de R$ 496,14.
 
-Esse vaivém sugere que a remuneração por sexo também se mostrou altamente sensível a fatores conjunturais ocorridos no biênio 2023-2024. A inversão de 2024 pode ter sido impulsionada por um conjunto específico de contratações masculinas em faixas salariais superiores, enquanto a reversão de 2025 indica que as arqueólogas se beneficiaram de reajustes ou novas contratações em patamares mais elevados. 
+Esse vaivém sugere que a remuneração por sexo se mostrou altamente sensível a fatores conjunturais ocorridos no biênio 2023-2024. A inversão de 2024 pode ter sido impulsionada por um conjunto específico de contratações masculinas em faixas salariais superiores, enquanto a reversão de 2025 indica que as arqueólogas se beneficiaram de reajustes ou novas contratações em patamares mais elevados. 
 
 A análise da distribuição salarial pode revelar novas informações desse padrão observado na média.
 
@@ -1991,12 +1990,12 @@ A análise da distribuição salarial pode revelar novas informações desse pad
 #| fig-cap: "Média remuneratória de dezembro por sexo"
 
 media_anual_dez_masc <- remunera_corrigido %>%
-  dplyr::filter(Sexo=="MASCULINO") %>% 
+  dplyr::filter(Sexo=="MASCULINO" & vl.rem.dez.nom.corrigido>0) %>% 
   group_by(Ano) %>%
   summarise_at(vars(vl.rem.dez.nom.corrigido), list(media_masculino = ~ round(mean(., na.rm = TRUE),2)))
 
 media_anual_dez_fem <- remunera_corrigido %>%
-  dplyr::filter(Sexo=="FEMININO") %>% 
+  dplyr::filter(Sexo=="FEMININO" & vl.rem.dez.nom.corrigido>0) %>% 
   group_by(Ano) %>%
   summarise_at(vars(vl.rem.dez.nom.corrigido), list(media_feminino = ~ round(mean(., na.rm = TRUE),2)))
 
@@ -2069,6 +2068,9 @@ media_sexos2 %>%
 
 ```
 
+
+************* CORRIGIR TEXTO APÓS AJUSTE NA TABELA *****************************
+
 Pela tabela abaixo, observa-se que as medidas de posição favorecem as mulheres na maior parte do período analisado, revelando um caso de valorização simultânea em todas as camadas de distribuição - com exceções localizadas em 2024 e no valor máximo. 
 
 No núcleo da distribuição, as mulheres lideram de forma consistente. O primeiro quartil (Q1) feminino parte de R$ 3.222,40 em 2022 e atinge R$ 3.564,68 em 2025, sempre acima do masculino (R$ 2.602,98 → R$ 2.996,22). A mediana feminina segue a mesma trajetória ascendente: R$ 4.040,91 → R$ 5.148,62 (+27,4% acumulado), enquanto a masculina acompanhou um saldo positivo até 2024 (R$ 4.000,00 → R$ 4.673,98), quando registra queda relativa em 2025 - R$ 4.673,98 → R$ 4.500 (-3,7%). O terceiro quartil (Q3) feminino se manteve constante nos quatro anos (R$ 6.802,71 → R$ 6.699,66 vs. R$ 5.329,66 → R$ 6.313,59). Esses dados indicam que a arqueóloga típica está inserida em faixas salariais mais elevadas que o arqueólogo típico.
@@ -2079,17 +2081,20 @@ O cenário se inverte nos extremos superiores. Em 2024, o máximo masculino atin
 
 Essa alternância revela que os supersalários são eventos episódicos, não atributos permanentes de indivíduos específicos. O máximo masculino de 2024 provavelmente corresponde a um contrato pontual de alto valor que não se repetiu em 2025. O máximo feminino, por sua vez, oscilou entre R$ 18.298,50 e R$ 27.103,79, sugerindo que as mulheres também acessam, mas não chegam a dominar os picos remuneratórios.
 
+************* CORRIGIR *****************************
+
 ```{r resumo estatístico por sexo}
 #| label: tbl-resumo-estatistico-sexo
 #| tbl-cap: "Medidas de posição das remunerações nominais de dezembro dos vínculos ativos por sexo"
 
 resumo_remunera_sexos <- remunera_corrigido %>%
+  dplyr::filter(vl.rem.dez.nom.corrigido>0) |> 
   mutate(Sexo = recode(Sexo,
                        "FEMININO" = "Feminino",
                        "MASCULINO" = "Masculino")) %>% 
   group_by(Ano, Sexo) %>%
   summarise(
-    Mínimo = min(vl.rem.dez.nom.corrigido[vl.rem.dez.nom.corrigido > 0], na.rm = TRUE),
+    Mínimo = min(vl.rem.dez.nom.corrigido, na.rm = TRUE),
     Q1 = quantile(vl.rem.dez.nom.corrigido, 0.25, na.rm = TRUE),
     Mediana = median(vl.rem.dez.nom.corrigido, na.rm = TRUE),
     Média = mean(vl.rem.dez.nom.corrigido, na.rm = TRUE),
