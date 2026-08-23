@@ -102,6 +102,8 @@ Os gráficos e tabelas foram gerados na linguagem de programação R. As visuali
 :::
 :::::
 
+Destaca-se que o estudo contou com o auxílio de Inteligência Artificial generativa para revisão textual, melhorias de script e identificação de padrões ocultos nos dados.
+
 # Carregando e Processando Dados
 
 Conforme mencionado anteriormente, os dados foram obtidos do repositório GitHub do autor e processados para gerar os gráficos e tabelas deste artigo. Para garantir transparência metodológica, cada visualização - gráfico ou tabela - inclui um botão no canto superior esquerdo rotulado "Mostrar código executado". Ao clicar, o leitor acessa diretamente o script R que produziu aquele resultado específico, permitindo verificação e reprodução dos procedimentos.
@@ -401,7 +403,7 @@ vinculos_31.12 %>%
   )
 ```
 
-## Análise dos Dados por Vínculos Ativos em 31/12
+## Análise dos Vínculos Ativos em 31/12
 
 Os gráficos a seguir foram gerados a partir das declarações cujo indicador de vínculo ativo em 31/12 apresenta o valor `"SIM"` - ou seja, referem-se exclusivamente a arqueólogos que permaneceram em seus postos de trabalho até o final de cada ano-base. A filtragem foi aplicada sobre a coluna `Ind.Vínculo.Ativo.31.12`, selecionando apenas os registros com status ativo no recorte temporal.
 
@@ -683,8 +685,6 @@ A segmentação por setores econômicos, segundo a Classificação Nacional de A
 
 Em segundo lugar aparece o grupamento _Administração Pública, Defesa e Seguridade Social_, seguido por _Educação_. Esses segmentos representam parcela menor e relativamente estável do mercado, composta por órgãos públicos e instituições de ensino públicas e privadas.
 
-O setor de _Construção_ registrou expansão considerável, puxada pela subclasse _Obras de Alvenaria_. Esse movimento pode indicar uma tendência, ainda que incipiente, de construtoras contratarem arqueólogos diretamente, sem intermediação de consultorias especializadas.
-
 Chama atenção a alta pulverização de subgrupamentos com apenas 1 ou 2 eventos, espalhados em diversas atividades econômicas. Esses registros podem ser reflexos de vínculos atípicos ou mesmo ocorrências isoladas - arqueólogos ocupando cargos de gestão ou prestando consultoria pontual ou mesmo como proprietário de microempresa fora do segmento econômico principal. Entretanto, essa configuração não pode ser interpretada como uma real tendência de diversificação setorial.
 
 Um caso exemplar é a subclasse _Fabricação de Periféricos para Equipamentos de Informática_ - pertencente ao grupamento _Indústrias de Transformação_ -, que registrou 18 declarações em 2024 e 11 em 2025. Esse padrão atípico, sem precedentes no mercado arqueológico, indica provavelmente a atuação de um único grande empregador - e não o surgimento de um novo setor de empregabilidade para a profissão.
@@ -925,7 +925,7 @@ intermintente  |>
 
 ### Escolaridade dos Arqueólogos
 
-A distribuição de escolaridade entre os vínculos ativos revela que os arqueólogos com graduação (como escolaridade máxima registrada) representam mais de 70% das declarações anuais. Profissionais com mestrado ou doutorado aparecem em proporção significativamente menor, o que pode refletir tanto a demanda do mercado - que frequentemente exige apenas a graduação - quanto a migração de pós-graduados para carreiras acadêmicas ou informais.
+A distribuição de escolaridade entre os vínculos ativos revela que os arqueólogos com graduação (como escolaridade máxima registrada) representam a maioria das declarações anuais. Profissionais com mestrado ou doutorado aparecem em proporção significativamente menor, o que pode refletir tanto a demanda do mercado - que frequentemente exige apenas a graduação - quanto a migração de pós-graduados para carreiras acadêmicas ou informais.
 
 Para o ano-base 2022, identificou-se um volume atípico de declarações com campos de escolaridade preenchidos com níveis incompatíveis com o exercício profissional da arqueologia - variando de "analfabeto" a "superior incompleto". Essas declarações foram agrupadas na categoria _Registros inconsistentes_. A presença desse grupo distorceu a distribuição dos demais níveis de escolaridade naquele ano, sub-representando as categorias de graduados e pós-graduados.
 
@@ -1005,9 +1005,13 @@ escolaridade %>%
 
 ### Faixa Etária
 
-A análise do perfil etário dos vínculos formais revela que a maioria das faixas registrou crescimento no período, sendo a faixa de 30 a 39 anos a que concentra a maior parcela dos profissionais ativos. Nas faixas etárias superiores - 40–49, 50–64 e acima de 65 anos - observa-se um declínio gradual nas declarações. Esse recuo pode ser explicado por múltiplos fatores: aposentadoria de profissionais mais velhos, migração para o trabalho informal ou consultorias autônomas, transição para cargos de gestão ou mesmo mudança de carreira.
+A análise do perfil etário dos vínculos formais revela que todas as faixas registrou crescimento no período, embora em ritmos distintos. A faixa de 30 a 39 anos é o grupo que concentra a maior parcela dos profissionais ativos. 
 
-Outro elemento importante para compreender esse padrão é a própria história da formação acadêmica em Arqueologia no Brasil. A expansão relativamente recente dos cursos de graduação na área significa que as faixas mais velhas da profissão são, por natureza, menos numerosas. Assim, a estrutura etária atual reflete tanto fenômenos de mercado (aposentadoria, migração, transição ocupacional) quanto a trajetória histórica de crescimento dos cursos de graduação no país.
+Nas faixas etárias superiores - 40–49, 50–64 e acima de 65 anos - observa-se na linha temporal um distanciamento nas declarações para posições inferiores. Essa amplitude pode ser explicado por múltiplos fatores: aposentadoria de profissionais mais velhos, migração para o trabalho informal ou consultorias autônomas, transição para cargos de gestão ou mesmo mudança de carreira.
+
+Para profissionais situados nas faixas inferiores - 18-24 e 25-29 -, nota-se que o mercado formal está absorvendo poucos arqueólogos recém-formados.
+
+Diante desse cenário, compreende-se que esse padrão reflete a própria história da formação acadêmica em Arqueologia no Brasil. A expansão relativamente recente dos cursos de graduação na área significa que as faixas mais velhas da profissão são, por natureza, menos numerosas. Assim, a estrutura etária atual reflete tanto fenômenos de mercado (aposentadoria, migração, transição ocupacional) quanto a trajetória histórica de crescimento dos cursos de graduação no país.
 
 ```{r faixa etária}
 #| label: fig-etario
@@ -1250,9 +1254,9 @@ sexo %>%
 
 ### Distribuição por Cor e Raça
 
-A declaração por cor e raça indica que a maioria dos arqueólogos se declara parda, seguida por branca. As categorias preta, indígena e amarela têm participação minoritária no mercado formal.
+A distribuição dos vínculos por cor e raça revela uma inversão entre os anos-base. Em 2022, a categoria branca era majoritária, com 100 registros contra 76 da categoria parda. A partir de 2023, contudo, os vínculos declarados como pardos passam a predominar. Esse movimento coincide com uma redução expressiva dos registros sem informação e nulos, que, juntos, caem de 112 para 21 ao longo do quadriênio. A queda sugere que parte significativa da inversão decorre de uma melhoria no preenchimento dos dados sob o eSocial: vínculos que antes permaneciam sem classificação passaram a ser devidamente declarados em categorias específicas. Assim, o deslocamento para a categoria parda reflete menos uma mudança demográfica real do setor e mais a migração de registros anteriormente não informados para grupos efetivamente declaradas.
 
-Observa-se tendência de redução nos dados sem informação de cor e raça, o que pode indicar melhorias na cobertura e no preenchimento dos campos pelo eSocial.
+Em relação as categorias preta, indígena e amarela, nota-se que elas possuem participação minoritária no mercado formal.
 
 ```{r cor/raça}
 #| label: fig-cor-raca
@@ -1332,7 +1336,7 @@ Desse modo, o procedimento corretivo adotado na inconsistências da coluna `Vl.R
    - Inserção do marcador decimal no local que tornava o valor coerente com a faixa salarial; ou
    - Remoção dos dois últimos algarismos, quando o valor parecia ter sido registrado com acréscimo de dois dígitos zeros sem separação decimal.
 
-A tabela interativa abaixo apresenta os valores originais e corrigidos da coluna `Vl.Rem.Dezembro.Nom`, acompanhados das faixas e remuneração média para fins comparativos.
+A tabela interativa abaixo apresenta os valores originais e corrigidos da coluna `Vl.Rem.Dezembro.Nom`, acompanhados das faixas, remuneração média e sexo para fins comparativos.
 
 ```{r correção de valores remuneratórios}
 #| label: tbl-tabela-comparativo
@@ -1390,7 +1394,7 @@ remunera_tabela <- remunera_corrigido %>%
                      levels = c("Até 0,50 salários mínimos", "0,51 a 1,00 salários mínimos", "1,01 a 1,50 salários mínimos", "1,51 a 2,00 salários mínimos", "2,01 a 3,00 salários mínimos", "3,01 a 4,00 salários mínimos", "4,01 a 5,00 salários mínimos", "5,01 a 7,00 salários mínimos", "7,01 a 10,00 salários mínimos", "10,01 a 15,00 salários mínimos", "15,01 a 20,00 salários mínimos", "Mais de 20,00 salários mínimos", "{ñ class}")),
           Faixa.Rem.Média..SM =  dplyr::recode(Faixa.Rem.Média..SM,
            "{ñ class}" = "Não informado")) |> 
-  dplyr::select(Ano, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, Faixa.Rem.Dez..SM, Vl.Rem.Média.Nom, Faixa.Rem.Média..SM) |>
+  dplyr::select(Ano, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, Faixa.Rem.Dez..SM, Vl.Rem.Média.Nom, Faixa.Rem.Média..SM, Sexo) |>
   mutate(across(where(is.character), as.factor))
 
 #| column: page
@@ -1398,12 +1402,12 @@ DT::datatable(remunera_tabela, filter = 'top', options = list(
   pageLength = 5, autoWidth = TRUE,  
   columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
   scrollX = TRUE ),
-  colnames = c("Ano-base", "Remuneração nominal de dezembro - original", "Remuneração nominal de dezembro - corrigido", "Faixa remuneratória de dezembro em salário mínimo", "Média remuneratória nominal", "Faixa remuneratória da média em salário mínimo"))
+  colnames = c("Ano-base", "Remuneração nominal de dezembro - original", "Remuneração nominal de dezembro - corrigido", "Faixa remuneratória de dezembro em salário mínimo", "Média remuneratória nominal", "Faixa remuneratória da média em salário mínimo", "Sexo do trabalhador"))
 ```
 
 ### Média Salarial
 
-Ao longo de todo o quadriênio analisado, identificaram‑se vínculos ativos sem remuneração declarada no mês de dezembro, e essa parcela vem crescendo de forma consistente. Em números absolutos, os registros passaram de 39 em 2022 para 59 em 2023, 70 em 2024 e 80 em 2025, o que representa um aumento relativo de 13,3% para 20,9% do total de vínculos ativos no período. Há ainda uma diferença na forma de codificação desses casos entre os anos‑base: em 2022, os registros aparecem com valor de R$ 0,00; a partir de 2023, o campo de remuneração simplesmente fica em branco. A análise do perfil desses vínculos sugere que se trata e de afastamentos prolongados e não de erros de declaração, embora essa possibilidade não possa ser inteiramente descartada.
+Ao longo de todo o quadriênio analisado, identificou‑se vínculos ativos sem remuneração declarada no mês de dezembro, e essa parcela vem crescendo de forma consistente. Em números absolutos, os registros passaram de 39 em 2022 para 59 em 2023, 70 em 2024 e 80 em 2025, o que representa um aumento relativo de 13,3% para 20,9% do total de vínculos ativos no período. Há ainda uma diferença na forma de codificação desses casos entre os anos‑base: em 2022, os registros aparecem com valor de R$ 0,00; a partir de 2023, o campo de remuneração simplesmente fica em branco. A análise do perfil desses vínculos sugere que se trata de afastamentos prolongados e não de erros de declaração, embora essa possibilidade não possa ser inteiramente descartada.
 
 Diante desse cenário, adotou‑se o critério de excluir todos os registros sem remuneração declarada em dezembro, aplicando essa mesma regra uniformemente a todos os anos‑base. Com esse ajuste, a média remuneratória de dezembro parte de R$ 5.356,55 em 2022 e alcança R$ 5.877,39 em 2025, o que corresponde a um crescimento nominal acumulado de 9,7% no período. Essa padronização foi essencial para garantir comparabilidade entre os anos e evitar que vínculos sem remuneração distorcessem a tendência salarial observada.
 
@@ -1595,6 +1599,7 @@ for(i in 1:nrow(tabela)) {
 tabela_json <- toJSON(tabela_list, auto_unbox = TRUE)
 
 dados_boxplot <- remunera_corrigido %>%
+  dplyr::filter(Vl.Rem.Média.Nom > 0) %>%
   mutate(Ano = factor(Ano, levels = c(2022, 2023, 2024, 2025)))
 
 tooltip_js <- sprintf("
@@ -1695,7 +1700,6 @@ dados_boxplot %>%
 
 O boxplot da distribuição remuneratória confirma a assimetria positiva e permite visualizar o intervalo interquartil (IQR) - faixa que contém os 50% dos trabalhadores no centro da distribuição. 
 
-Qual a interpretação das informações abaixo referente aos dados da média remuneratória mensal:
 
 | Medida          | 2022            | 2023        | 2024        | 2025        | Variação acumulada |
 |-----------------|-----------------|-------------|-------------|-------------|--------------------|
@@ -1712,12 +1716,11 @@ Para facilitar o entendimento de um boxplot, a figura abaixo ilustra como deve s
 
 ### Remuneração Média por Faixa Salarial
 
-A distribuição dos arqueólogos por remuneração média revela um quadro de concentração salarial e perda de mobilidade ascendente. A maioria dos profissionais permanece ancorada na faixa de 2 a 3 salários mínimos, que funciona como um teto estrutural para a categoria. Paralelamente, a faixa de 1 a 2 salários mínimos dobrou de participação, passando de cerca de 10% para mais de 20% dos trabalhadores, sinalizando que uma parcela crescente de profissionais está sendo empurrada para remunerações mais baixas. No meio da distribuição, as faixas de 3 a 7 salários mínimos encolheram significativamente, especialmente a de 5 a 7 SM, que caiu de 14% para menos de 5%, indicando que o arqueólogo bem remunerado está desaparecendo. No topo, há uma polarização: a faixa de 7 a 10 SM cresceu de forma estável, mas as faixas acima de 15 salários mínimos praticamente desapareceram da amostra. 
+A distribuição dos arqueólogos por remuneração média revela um quadro de concentração salarial e perda de mobilidade ascendente. A maior parcela dos profissionais concentra-se na faixa de 2 a 3 salários mínimos, que funciona como um teto estrutural para a categoria. Paralelamente, a faixa de 1 a 2 salários mínimos dobrou de participação, passando de cerca de 10% para mais de 20% dos trabalhadores, sinalizando que uma parcela crescente de profissionais está sendo empurrada para remunerações mais baixas. 
+
+No meio da distribuição, as faixas de 3 a 7 salários mínimos encolheram significativamente, especialmente a de 5 a 7 SM, que caiu de 14% para menos de 5%, indicando que o arqueólogo bem remunerado está desaparecendo. No topo, há uma polarização: a faixa de 7 a 10 SM cresceu de forma estável, mas as faixas acima de 15 salários mínimos praticamente desapareceram da amostra. 
 
 O resultado é uma profissão com poucas oportunidades de ascensão salarial elevada, onde a maioria se amontoa nas faixas inferiores e apenas uma pequena fração consegue ultrapassar o patamar de 7 salários mínimos.
-
-Aliado a esse cenário, a presença de profissionais com remuneração abaixo de 1 SM indica contratos de curta duração formalizados ao final do ano - possivelmente trabalhos de campo sazonais, consultorias pontuais ou vínculos intermitentes.
-
 
 ```{r tabela faixas salariais}
 #| column: screen-inset
@@ -1977,7 +1980,7 @@ A evolução da média salarial de dezembro por sexo entre 2022 a 2025 revelou u
 
 Em 2022, as arqueólogas apresentavam média salarial de R$ 5.708,83, contra R$ 5.085,01 dos arqueólogos - uma vantagem de R$ 623,82 que se manteve como a maior diferença do período. No ano seguinte, essa vantagem se reduziu para R$ 273,32 (R$ 5.563,63 vs. R$ 5.290,31), sugerindo que os homens estavam ganhando terreno de forma gradual.
 
-A primeira inversão ocorreu em 2024: a média masculina saltou para R$ 5.615,93, enquanto a feminina recuou para R$ 5.358,61 - uma diferença de −R$ 257,32 em favor dos homens. Essa mudança marcou a primeira vez, em toda a série, que os arqueólogos superaram as arqueólogas em média remuneratória.
+A primeira inversão ocorreu em 2024: a média masculina saltou para R$ 5.615,93, enquanto a feminina recuou para R$ 5.358,61 - uma diferença de −R$ 257,32 em favor dos homens.
 
 Contudo, a tendência não se consolidou. Em 2025, o padrão se reverteu de forma ainda mais acentuada: a média feminina disparou para R$ 6.144,29 (+14,6% em relação a 2024), enquanto a masculina avançou modestamente para R$ 5.648,15 (+0,6%). O resultado foi uma nova vantagem feminina de R$ 496,14.
 
@@ -2068,20 +2071,15 @@ media_sexos2 %>%
 
 ```
 
+Pela tabela abaixo, observa-se que a mediana alterna entre os sexos ao longo do período, com diferenças pequenas em 2023 e 2024. Apenas em 2025 que a vantagem feminina se torna expressiva (R$ 648,62 ou 14,4%), bem como a média feminina também ultrapassa a masculina - diferença já documentada na análise acima. 
 
-************* CORRIGIR TEXTO APÓS AJUSTE NA TABELA *****************************
+No quartil inferior (Q1), a vantagem feminina também se consolida em 2025, com as trabalhadoras recebendo cerca de 19% a mais que os homens nesse estrato (diferença de R$ 568,46) - indicando que, mesmo entre os menores salários, as arqueólogas estão em posição relativamente melhor. No terço superior (Q3), as mulheres mantêm uma diferença positiva e consistente ao longo de todo o período, mostrando que, quando alcançam o quartil superior, sua remuneração supera a dos homens nesse mesmo patamar.
 
-Pela tabela abaixo, observa-se que as medidas de posição favorecem as mulheres na maior parte do período analisado, revelando um caso de valorização simultânea em todas as camadas de distribuição - com exceções localizadas em 2024 e no valor máximo. 
-
-No núcleo da distribuição, as mulheres lideram de forma consistente. O primeiro quartil (Q1) feminino parte de R$ 3.222,40 em 2022 e atinge R$ 3.564,68 em 2025, sempre acima do masculino (R$ 2.602,98 → R$ 2.996,22). A mediana feminina segue a mesma trajetória ascendente: R$ 4.040,91 → R$ 5.148,62 (+27,4% acumulado), enquanto a masculina acompanhou um saldo positivo até 2024 (R$ 4.000,00 → R$ 4.673,98), quando registra queda relativa em 2025 - R$ 4.673,98 → R$ 4.500 (-3,7%). O terceiro quartil (Q3) feminino se manteve constante nos quatro anos (R$ 6.802,71 → R$ 6.699,66 vs. R$ 5.329,66 → R$ 6.313,59). Esses dados indicam que a arqueóloga típica está inserida em faixas salariais mais elevadas que o arqueólogo típico.
-
-A base remuneratória reforça essa vantagem: o mínimo feminino saltou de R$ 393,17 para R$ 1.518 (+286%) entre 2022 e 2025, enquanto o masculino cresceu apenas 55% (R$ 393,17 → R$ 610,89). Esse avanço sugere que novas arqueólogas estão sendo contratadas com salários iniciais mais competitivos.
+A base remuneratória também reforça essa vantagem: o mínimo feminino saltou de R$ 393,17 para R$ 1.518 (+286% no acumulado) entre 2022 e 2025, enquanto o masculino cresceu apenas 55% (R$ 393,17 → R$ 610,89).
 
 O cenário se inverte nos extremos superiores. Em 2024, o máximo masculino atinge R$ 33.710,08 - o maior valor declarado da série - enquanto o feminino cai para R$ 18.298,50. Essa disparidade elevou a média masculina acima da feminina naquele ano (R$ 5.615,93 vs. R$ 5.358,61), configurando a única inversão do período. Contudo, em 2025, o máximo masculino recua para R$ 30.597 (−9,2%), enquanto o feminino recupera para R$ 24.420,84 (+33,5%).
 
-Essa alternância revela que os supersalários são eventos episódicos, não atributos permanentes de indivíduos específicos. O máximo masculino de 2024 provavelmente corresponde a um contrato pontual de alto valor que não se repetiu em 2025. O máximo feminino, por sua vez, oscilou entre R$ 18.298,50 e R$ 27.103,79, sugerindo que as mulheres também acessam, mas não chegam a dominar os picos remuneratórios.
-
-************* CORRIGIR *****************************
+Uma hipótese para explicar a alternância observada nos extremos salariais é que os supersalários constituem eventos episódicos, e não atributos permanentes de indivíduos específicos. O máximo masculino de 2024 provavelmente corresponde a um contrato pontual de alto valor que não se repetiu em 2025. O máximo feminino, por sua vez, oscilou entre R$ 18.298,50 e R$ 27.103,79, sugerindo que as mulheres também acessam, mas não chegam a dominar os picos remuneratórios.
 
 ```{r resumo estatístico por sexo}
 #| label: tbl-resumo-estatistico-sexo
@@ -2140,7 +2138,7 @@ tabela_sexos <- resumo_remunera_sexos %>%
 tabela_sexos
 ```
 
-## Análise dos Dados por Vínculos Desligados em 31/12
+## Análise dos Vínculos Desligados em 31/12
 
 Os gráficos seguintes são relativos as declarações de trabalhadores que não permaneceram em seus postos de trabalho até o final do ano. Assim, a filtragem dos registros será dada pela coluna `Ind.Vínculo.Ativo.31.12 == "NÃO"`, em que o `NÃO` representa os vínculos desligados.
 
@@ -2148,7 +2146,7 @@ Os gráficos seguintes são relativos as declarações de trabalhadores que não
 
 A análise dos vínculos desligados revelou dinamismo na movimentação de desligamentos, cujos padrões se reconfiguraram em três fases distintas ao longo do período longitudinal.
 
-Em 2023, o mercado de trabalho exibiu uma situação atípico de mobilidade voluntária: os pedidos de demissão quase dobraram em relação a 2022 (22 → 36), enquanto as demissões por iniciativa do empregador e os términos de contrato por prazo determinado recuaram (78 → 63 e 32 → 24). Esse padrão sugere que a retomada pós-pandemia de grandes projetos de licenciamento ambiental ampliou as oportunidades de escolha dos profissionais ou que a migração para o regime MEI atraiu arqueólogos para fora do mercado formal.
+Em 2023, o mercado de trabalho exibiu uma situação atípico de mobilidade voluntária: os pedidos de demissão quase dobraram em relação a 2022 (22 → 36), enquanto as demissões por iniciativa do empregador e os términos de contrato por prazo determinado recuaram (78 → 63 e 32 → 24). Esse padrão sugere que a retomada pós-pandemia de grandes projetos de licenciamento ambiental ampliou as oportunidades de escolha dos profissionais ou que a migração para o regime MEI (Microempreendedor Individual) atraiu arqueólogos para fora do mercado formal.
 
 Em 2024, o padrão retornou ao nível de 2022, com queda expressiva nos pedidos de demissão por iniciativa do empregado (36 → 23). A reversão indica que o pico de 2023 foi um evento conjuntural, não uma tendência estrutural. A estabilização indica uma menor disponibilidade de oportunidades vantajosas para os trabalhadores.
 
@@ -2207,11 +2205,11 @@ desligados |>
 
 ### Desligamento por Sexo
 
-O desligamento por sexo revela um contraste entre os gêneros que reflete, em parte, a própria evolução dos vínculos ativos. Os arqueólogos lideram numericamente as saídas do mercado formal, mas essa liderança vem encolhendo progressivamente ao longo do período - um reflexo direto do crescimento dos vínculos ativos masculinos, que mantém mais homens no mercado e, consequentemente, reduz o volume de desligamentos. Essa relação inversa aponta que a permanência dos homens está se consolidando em ritmo acelerado.
+O desligamento por sexo revela um contraste entre os gêneros que reflete, em parte, a própria evolução dos vínculos ativos. Os arqueólogos lideram numericamente as saídas do mercado formal, mas essa liderança vem encolhendo progressivamente ao longo do período - um reflexo direto do crescimento dos vínculos ativos masculinos, que mantém mais homens no mercado e, consequentemente, reduz o volume de desligamentos.
 
 As arqueólogas, por outro lado, apresentaram um comportamento distinto. O aumento nos vínculos ativos femininos não se traduziu em redução proporcional nas saídas. Os desligamentos desse gênero sobem em ritmo acelerado (+46,8% no acumulado), indicando que a entrada de novas arqueólogas no mercado formal não está sendo acompanhada pela mesma taxa de retenção observada entre os homens. Esse padrão pode refletir maior rotatividade voluntária (transições entre projetos, busca por melhores condições, regimes alternativos) ou maior incidência de contratos temporários que se encerram após a finalização de campos curtos.
 
-Em 2025, os dois gêneros se cruzam, com os valores masculinos e femininos praticamente emparelhados. Esse estreitamento sugere que nos próximos anos as arqueólogas podem ultrapassar os homens em volume absoluto de desligamentos, caso a tendência atual persista.
+Em 2025, os dois gêneros se cruzam, com os valores masculinos e femininos praticamente emparelhados.
 
 ```{r motivo desligamento - sexo}
 #| label: fig-desliga-sexo
@@ -2306,7 +2304,7 @@ saldo_anual <- Arqueo.CAGED.2022_2025 %>%
   dplyr::filter(anocompetênciamov != "2021") %>% 
   group_by(anocompetênciamov, saldomovimentação) %>% 
   summarise(quantidade= n()) %>% 
-  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
   mutate(Saldo = Admitido - Desligado) %>% 
   pivot_longer(cols = c(Admitido, Desligado, Saldo),
                names_to = "saldomovimentação",
@@ -2402,7 +2400,7 @@ saldo_mensal <- Arqueo.CAGED.2022_2025 %>%
   dplyr::filter(anocompetênciamov != "2021") %>% 
   group_by(anocompetênciamov, mêscompetênciamov, saldomovimentação) %>% 
   summarise(quantidade = n(), .groups = "drop") %>% 
-  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
   mutate(Saldo = Admitido - Desligado) %>% 
   pivot_longer(cols = c(Admitido, Desligado, Saldo),
                names_to = "saldomovimentação",
@@ -2538,7 +2536,7 @@ saldo_região <- Arqueo.CAGED.2022_2025 %>%
   dplyr::filter(anocompetênciamov != "2021") %>% 
   group_by(anocompetênciamov, região, saldomovimentação) %>% 
   summarise(quantidade = n()) %>% 
-  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
   mutate(Saldo = Admitido - Desligado) %>% 
   pivot_longer(cols = c(Admitido, Desligado, Saldo),
                names_to = "saldomovimentação",
@@ -2662,7 +2660,7 @@ Na sequência encontra-se São Paulo, com saldo acumulado de +10 vagas, mas com 
 
 Goiás apresenta um padrão mais volátil: em 2023, registrou saldo de +24 vagas abertas - a maior quantidade individual entre os estados, mas em 2024 sofreu retração de −17 postos, resultando em saldo acumulado de −1. O comportamento sugere que o pico de 2023 foi impulsionado por projetos temporários (grandes obras de infraestrutura ou licenciamentos pontuais) que se encerraram no ano seguinte, sem se converterem em vínculos duradouros.
 
-Por fim, o Ceará lidera o ranking de saldo negativo acumulado (−18 postos no período). O desequilíbrio se concentrou em 2022, quando o estado declarou 23 desligamentos contra apenas 6 admissões - uma retração de −17 em um único ano. Esse padrão indica que contratos temporários ou consultorias locais encerraram operações naquele ano sem reposição imediata. 
+Por fim, o Ceará lidera o ranking de saldo negativo acumulado (−16 postos no período). O desequilíbrio se concentrou em 2022, quando o estado declarou 23 desligamentos contra apenas 6 admissões - uma retração de −17 em um único ano. Esse padrão indica que contratos temporários ou consultorias locais encerraram operações naquele ano sem reposição imediata. 
 
 ```{r movimenta estados}
 #| label: fig-movimenta-estados
@@ -2674,7 +2672,7 @@ saldo_estados <- Arqueo.CAGED.2022_2025 %>%
   mutate(uf= recode(uf, "Minas gerais" = "Minas Gerais")) |> 
   group_by(anocompetênciamov, uf, saldomovimentação) %>% 
   summarise(quantidade = n(), .groups = "drop") %>% 
-  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
   mutate(Saldo = Admitido - Desligado) %>% 
   pivot_longer(cols = c(Admitido, Desligado, Saldo),
                names_to = "saldomovimentação",
@@ -2710,7 +2708,22 @@ saldo_acumulado_estados %>%
   ) %>%
   e_flip_coords() %>%
   e_x_axis(
-    axisLabel = list(fontSize = 9),
+  axisLabel = list(
+    fontSize = 11,
+    rich = list(
+      red = list(color = "red")
+    ),
+    formatter = htmlwidgets::JS("
+      function(value) {
+        var formatted = Math.abs(value).toLocaleString('pt-BR');
+        if (value < 0) {
+          return '{red|-' + formatted + '}';
+        } else {
+          return formatted;
+        }
+      }
+    ")
+  ),  
     splitLine = list(show = FALSE),
     axisLine  = list(show = TRUE)
   ) %>%
@@ -2765,7 +2778,7 @@ saldo_sexo <- Arqueo.CAGED.2022_2025 %>%
   dplyr::filter(anocompetênciamov != "2021") %>% 
   group_by(anocompetênciamov, sexo, saldomovimentação) %>% 
   summarise(quantidade = n(), .groups = "drop") %>% 
-  pivot_wider(names_from = saldomovimentação, values_from = quantidade) %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
   mutate(Saldo = Admitido - Desligado) %>% 
   pivot_longer(cols = c(Admitido, Desligado, Saldo),
                names_to = "saldomovimentação",
@@ -2891,7 +2904,7 @@ A base do Novo CAGED contém dados da unidade salarial contratada do vínculo ce
 
 Ao consolidar as informações em um resumo estatístico tabular, nota-se que são poucas as contratações pagas por dia. Essa categoria não teve dados declarados em 2022 e, devido à pequena quantidade de informações preenchidas, as medidas de posição mostraram-se uniformes ao longo do registro longitudinal.
 
-Os salários pagos por hora também apresentam poucas declarações. _Outliers_ são vistos nos anos de 2024 e 2025, com o valor máximo apresentando números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando a permanência de um arqueólogo que recebe supersalário. Um padrão observado no valor mínimo e na mediana é que, nos anos iniciais, houve crescimento e, nos anos finais, houve desvalorização.
+Os salários pagos por hora também apresentam poucas declarações. _Outliers_ são vistos nos anos de 2024 e 2025, com o valor máximo apresentando números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando erro de preenchimento - o dado possui característica de remuneração mensal lançado no campo de salário-hora.
 
 Já na modalidade mensal - que concentra o maior número de contratações -, o número de declarações registrou crescimento em 2022 e 2023, mas nos anos subsequentes apresentou decremento no pagamento por essa categoria. 
 
@@ -3037,11 +3050,15 @@ tabela_remunera_caged2
 
 ### Valores Salariais por Sexo
 
-Acerca da distribuição salarial por gênero, merece destaque o valor máximo de R$ 404.199,41, repetido de forma idêntica em três registros distintos (Feminino/2024, Masculino/2024 e Masculino/2025). Essa informação declarada constitui um alerta crítico de qualidade de dados. A coincidência exata - inclusive nos centavos - é estatisticamente improvável como evento genuíno e aponta para erro de digitação, duplicação de registro ou lançamento incorreto de verba não salarial (rescisão, indenização ou 13º salário) no campo salarial. Diante dessa situação, a análise das médias de 2024 e 2025 estão comprometidas, impossibilitando formular uma conclusão desse indicador.
+Acerca da distribuição salarial por gênero, merece destaque o valor máximo de R$ 404.199,41, repetido de forma idêntica em três registros distintos (Feminino/2024, Masculino/2024 e Masculino/2025). Trata-se de um erro de declaração com mecanismo identificável - ver @tbl-tabela-geral-caged. Os três registros compartilham as mesmas características: unidade salarial registrada como hora, jornada de 44 horas semanais e salário-hora declarado de R$ 1.837,27.
 
-Afastando o viés do _outlier_, a mediana revela o padrão real. A mediana feminina caiu de R$ 4.000 em 2022 para R$ 3.338 em 2025 (−16,6%), com o menor ponto em 2023 (R$ 3.135). A masculina oscilou sem tendência clara, fechando em R$ 3.322,27 em 2025, cujo desempenho é praticamente idêntico à feminina (diferença de apenas R$ 15,73).
+No sistema do Novo CAGED, o campo `salário` é calculado automaticamente a partir da unidade informada pelo empregador. O erro, portanto, ocorreu a montante: um valor de natureza mensal foi inserido equivocadamente no campo destinado ao salário-hora. Quando o sistema converteu esse valor para a equivalência mensal, o resultado foi inflado para a cifra anômala observada. Diante dessa situação, a análise das médias de 2024 e 2025 estão comprometidas, impossibilitando formular uma conclusão desse indicador.
 
-Os 25% menores salários revelaram que as arqueólogas recebem mais que os homens na mesma faixa. Como essa vantagem já se manifesta na admissão, ela não pode ser atribuída exclusivamente a maior senioridade ou tempo de carreira.
+Afastando o viés do _outlier_, a mediana revela o padrão real. Em 2022, a mediana feminina de R$ 4.000 superava a masculina de R$ 3.509,75 em +13,9% - uma diferença expressiva. Em 2023, essa vantagem se reduziu para +4,5% (R$ 3.135 contra R$ 3.000), e em 2024 houve uma inversão, com os homens ficando −6,4% acima (R$ 3.740 contra R$ 3.500). Já em 2025, a paridade quase se restabelece, com as mulheres ligeiramente à frente por margem mínima de +0,5% (R$ 3.338 contra R$ 3.322,27). No conjunto, a mediana feminina prevalece na maior parte do período, sugerindo que as arqueólogas admitidas tendem a acessar postos com remuneração um pouco mais elevado.
+
+O fenômeno mais marcante, contudo, está no quartil inferior (Q1). Em 2022, as mulheres nesse estrato recebiam R$ 2.948,70 contra R$ 1.625,00 dos homens - uma diferença de +81,5%. Três anos depois, essa vantagem desabou para +0,65%, com ambos os sexos praticamente empatados em torno de R$ 2.000. A queda mais abrupta ocorreu entre 2023 e 2024, quando o Q1 feminino despencou de R$ 2.878,48 para R$ 1.958,50, uma redução de −31,7% em um único ano. Esse movimento sugere que as mulheres admitidas nas faixas mais baixas passaram a ser alocadas em postos com remuneração significativamente menor, enquanto os homens nesse mesmo estrato tiveram ganhos relativos expressivos.
+
+No terço superior (Q3), a disputa é mais equilibrada e oscilante. As mulheres partiram de uma vantagem de +15% em 2022 (R$ 4.680 contra R$ 4.070), mas perderam a liderança em 2023 (−4,3%), retomaram marginalmente em 2024 (+1,6%) e voltaram a ceder em 2025 (−5,6%). Essa alternância indica que, nos postos mais bem remunerados entre os admitidos, não há um padrão estável de domínio de um sexo - a composição das vagas abertas a cada ano parece ser o fator decisivo.
 
 ```{r}
 #| label: tbl-resumo-estatistico-remunera-admitidos-sexo
@@ -3103,17 +3120,19 @@ tabela_sexos_salario_caged
 
 A análise dos dados da RAIS e do Novo CAGED para o período de 2022 a 2025 permitiu mapear a dinâmica atual do mercado de trabalho formal da arqueologia no Brasil. O objetivo deste levantamento não foi esgotar todas as possibilidades analíticas desses bancos de dados, mas sim apresentar os principais padrões identificados por meio de gráficos interativos e tabelas. Para garantir transparência e reprodutibilidade, o script em R foi disponibilizado em cada painel, permitindo que outros pesquisadores verifiquem os procedimentos e explorem variáveis adicionais não contempladas aqui.
 
-O panorama revelado mostra um mercado de trabalho marcado por avanços pontuais seguidos de estagnação. A arqueologia formal demonstra alta sensibilidade a eventos conjunturais: as contratações crescem quando grandes projetos de licenciamento ambiental demandam vínculos celetistas, e encolhem quando obras são paralisadas ou concluídas, provocando perda da capacidade de retenção da força de trabalho. O biênio 2023–2024 ilustra bem essa oscilação: 2023 registrou um boom de contratações e maior poder de escolha para os profissionais, enquanto 2024 trouxe uma reversão desse cenário.
+O panorama revelado mostra um mercado de trabalho marcado por avanços pontuais seguido de retração. A arqueologia formal demonstra alta sensibilidade a eventos conjunturais: as contratações crescem quando grandes projetos de licenciamento ambiental demandam vínculos celetistas, e encolhem quando obras são paralisadas ou concluídas, provocando perda da capacidade de retenção da força de trabalho. O biênio 2023–2024 ilustra bem essa oscilação: 2023 registrou um boom de contratações e maior poder de escolha para os profissionais, enquanto 2024 trouxe uma reversão desse cenário.
 
-Geograficamente, a contratação de arqueólogos permanece concentrada na Região Sudeste. Contudo, o Nordeste emerge como polo de expansão, com destaque para Pernambuco, onde empresas locais vêm ampliando a oferta de empregos formais. Em contrapartida, a Região Norte apresenta as menores oportunidades de trabalho, e seus estabelecimentos carecem de competitividade para atrair profissionais frente às consultorias especializadas sediadas em outras regiões.
+Geograficamente, a contratação de arqueólogos permanece concentrada na Região Sudeste. Contudo, o Nordeste emerge como polo de expansão, com destaque para Pernambuco, onde empresas locais vêm ampliando a oferta de empregos formais. Em contrapartida, a Região Norte apresenta as menores oportunidades de trabalho, com seus estabelecimentos contendo poucos contratos que exigem vínculos celetista.
 
-O perfil de qualificação exigido pelo mercado formal também chama atenção. A maioria das vagas solicita apenas bacharelado, com pouca demanda por pós-graduados (mestrado ou doutorado). Esse padrão atrai um contingente jovem de arqueólogos, mas a ausência de estabilidade e o tempo de experiência adquirido leva muitos profissionais a migrar para a informalidade, abrir MEI ou abandonar a profissão. Os pós-graduados, sem espaço no setor privado, tendem a buscar a carreira acadêmica ou a prestar serviços autônomos. A jornada de trabalho frequentemente se estende aos finais de semana em regime 6×1, com horas extras para cumprimento de prazos de campo - fator que contribui para a insatisfação e a alta rotatividade.
+O perfil de qualificação exigido pelo mercado formal também chama atenção. A maioria das vagas solicita apenas bacharelado, com pouca demanda por pós-graduados (mestrado ou doutorado). Esse padrão atrai um contingente de arqueólogos entre 30 a 39 anos, mas a ausência de estabilidade e o tempo de experiência adquirido leva muitos profissionais acima de 40 anos a migrar para abrir suas próprias consultorias ou abandonar a profissão. A jornada de trabalho também contribui para essa insatisfação, frequentemente se estendendo aos finais de semana em regime 6×1, com horas extras pontuais para cumprimento de prazos de campo.
 
-No recorte por gênero, observa-se uma contradição relevante: os homens predominam em número de vínculos, mas as mulheres recebem os salários mais altos, e essa vantagem já se manifesta no momento da primeira admissão. Diante disso, a constatação de que as arqueólogas ocupam posição mais favorável no centro e na base da distribuição salarial abre caminho para hipóteses que este mesmo conjunto de dados permite investigar, mas que não foram contempladas neste estudo. 
+Situação um pouco diferente para os jovens arqueólogos recém-formados, que não acompanham a expansão da profissão. Há baixa contratação dessa faixa, o que empura essa categoria a buscar experiências fora do mercado formal. Como os jovens profissionais possuem menor reposição, a tendência é de envelhecimento na composição da força de trabalho formal. Por outro lado, os pós-graduados, sem espaço no setor privado, tendem a buscar a carreira acadêmica ou a prestar serviços autônomos. 
+
+No recorte por gênero, observa-se uma contradição relevante: os homens predominam em número de vínculos, mas as mulheres recebem os salários mais altos, e essa diferença já se manifesta na admissão. Diante disso, a constatação de que as arqueólogas ocupam posição mais favorável no centro e na base da distribuição salarial abre caminho para hipóteses que este mesmo conjunto de dados permite investigar, mas que não foram contempladas neste estudo. 
 
 É possível, por exemplo, que as mulheres estejam mais concentradas em vínculos do setor público e de instituições de ensino e pesquisa, cujas remunerações tendem a superar as praticadas pela consultoria privada. Outra possibilidade é o maior tempo médio de emprego, acumulando progressões e estabilidade que elevam seus rendimentos. Pode-se também supor que detenham escolaridade declarada superior - com maior proporção de mestras e doutoras - ou que estejam distribuídas de forma distinta entre as regiões do país, com presença mais acentuada em empresas sediadas em áreas economicamente mais dinâmicas. O cruzamento sistemático dessas variáveis com o sexo constitui a próxima etapa natural desta investigação e é justamente o que permitirá substituir conjecturas por evidências sobre as causas da diferença salarial observada.
 
-Quanto ao poder de compra, o crescimento salarial nominal observado no quadriênio não se traduziu necessariamente em ganho real. Um arqueólogo que recebia R$ 4.000 em 2022 estava na faixa de três a quatro salários mínimos; se esse mesmo profissional passa a receber R$ 4.500 em 2025, sua remuneração cai para a faixa de dois a três salários mínimos, dado o reajuste salarial nacional. Em termos relativos ao salário mínimo, houve rebaixamento de faixa, não ascensão.
+Quanto ao poder de compra, o crescimento salarial nominal observado no quadriênio não se traduziu necessariamente em ganho real. Um arqueólogo que recebia R$ 4.000 em 2022 estava na faixa de três a quatro salários mínimos; se esse mesmo profissional passa a receber R$ 4.500 em 2025, sua remuneração cai para a faixa de dois a três salários mínimos, dado o reajuste salarial nacional. Em termos relativos ao salário mínimo, houve rebaixamento de faixa, não ascensão. Nesse sentido, a categoria já se encontra em estado de desvalorização salarial, com a maioria recebendo menos de 3 salários mínimos.
 
 A dependência do licenciamento ambiental é o fio condutor que atravessa todas essas dinâmicas. O crescimento de vínculos e salários nominais concentra-se no setor privado, especialmente nas consultorias que atendem demandas de obras licenciáveis. Exceções existem, mas ainda não configuram novas fronteiras de empregabilidade. O setor público, por outro lado, responde por uma participação minoritária, com poucos concursos e baixa absorção de profissionais - um contrassenso diante da densidade do patrimônio arqueológico brasileiro e da necessidade de gestão desses bens culturais. A predominância de projetos de curta duração gera um ciclo de alta rotatividade que impede a construção de estabilidade para a maioria dos trabalhadores.
 
