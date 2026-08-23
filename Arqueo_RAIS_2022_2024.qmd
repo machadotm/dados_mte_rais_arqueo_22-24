@@ -2209,7 +2209,7 @@ O desligamento por sexo revela um contraste entre os gêneros que reflete, em pa
 
 As arqueólogas, por outro lado, apresentaram um comportamento distinto. O aumento nos vínculos ativos femininos não se traduziu em redução proporcional nas saídas. Os desligamentos desse gênero sobem em ritmo acelerado (+46,8% no acumulado), indicando que a entrada de novas arqueólogas no mercado formal não está sendo acompanhada pela mesma taxa de retenção observada entre os homens. Esse padrão pode refletir maior rotatividade voluntária (transições entre projetos, busca por melhores condições, regimes alternativos) ou maior incidência de contratos temporários que se encerram após a finalização de campos curtos.
 
-Em 2025, os dois gêneros se cruzam, com os valores masculinos e femininos praticamente emparelhados.
+Em 2025, os números absolutos de desligamentos se cruzam, com 69 saídas registradas para cada sexo. Contudo, interpretar esses valores absolutos isoladamente é enganoso, pois o estoque total de vínculos ativos cresceu 30,27% no quadriênio. Um volume estável de saídas sobre uma base maior significa, na verdade, menor rotatividade relativa. O melhor indicador comparável para essa análise é, portanto, a taxa de desligamento, conforme mostrado na @tbl-taxa-desligamento.
 
 ```{r motivo desligamento - sexo}
 #| label: fig-desliga-sexo
@@ -2258,6 +2258,72 @@ sexo.desligado %>%
       }
     ")
   )
+```
+
+Nesse recorte, o quadro se inverte. A taxa geral de desligamento recuou de 31,94% em 2022 para 26,49% em 2025, evidenciando que a rotatividade da categoria diminuiu em termos proporcionais, ainda que o número absoluto de saídas tenha permanecido praticamente estável em 138 registros nos dois extremos do período. Quando se desagrega por sexo, porém, os movimentos vão em sentidos opostos: a taxa masculina caiu de forma contínua, de 34,73% para 24,04%, enquanto a taxa feminina subiu, de 27,65% para 29,49%.
+
+É por isso que o aparente empate observado em 2025 (69 desligamentos) mascara uma realidade distinta: essas saídas incidem sobre bases muito desiguais - 234 declarações femininas contra 287 masculinas. Em outras palavras, a entrada crescente de arqueólogas no mercado formal não tem sido acompanhada pela mesma capacidade de retenção que o mercado oferece aos arqueólogos, resultando em uma taxa de rotatividade feminina que, ao contrário da masculina, vem se agravando ao longo do período.
+
+```{r taxa de desligamento}
+#| label: tbl-taxa-desligamento
+#| tbl-cap: "Taxa de desligamento dos vínculos declarados - geral e por sexo"
+ 
+taxa_geral <- Arqueo.RAIS.2022_2025 %>%
+  group_by(Ano) %>%
+  summarise(
+    Ativos     = sum(Ind.Vínculo.Ativo.31.12 == "SIM"),
+    Desligados = sum(Ind.Vínculo.Ativo.31.12 == "NÃO"),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    Total = Ativos + Desligados,
+    Taxa  = round(Desligados / Total * 100, 2),
+    Grupo = "Total"
+  )
+ 
+taxa_sexo <- Arqueo.RAIS.2022_2025 %>%
+  group_by(Ano, Sexo) %>%
+  summarise(
+    Ativos     = sum(Ind.Vínculo.Ativo.31.12 == "SIM"),
+    Desligados = sum(Ind.Vínculo.Ativo.31.12 == "NÃO"),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    Total = Ativos + Desligados,
+    Taxa  = round(Desligados / Total * 100, 2),
+    Grupo = dplyr::recode(Sexo, "FEMININO" = "Feminino", "MASCULINO" = "Masculino")
+  ) %>%
+  dplyr::select(-Sexo)
+ 
+tabela_taxa <- bind_rows(taxa_geral, taxa_sexo) %>%
+  mutate(Grupo = factor(Grupo, levels = c("Total", "Feminino", "Masculino"))) %>%
+  dplyr::select(Grupo, Ano, Ativos, Desligados, Total, Taxa) %>%
+  arrange(Grupo, Ano) %>%
+  gt(rowname_col = "Ano", groupname_col = "Grupo") %>%
+  tab_header(
+    title    = "Taxa de Desligamento",
+    subtitle = "Vínculos encerrados sobre o total de declarações do ano-base"
+  ) %>%
+  cols_label(
+    Ativos     = "Ativos em 31/12",
+    Desligados = "Desligados",
+    Total      = "Total declarado",
+    Taxa       = gt::html("Taxa de<br>desligamento")
+  ) %>%
+  fmt_integer(columns = c(Ativos, Desligados, Total), sep_mark = ".") %>%
+  fmt_number(columns = Taxa, decimals = 2, dec_mark = ",", pattern = "{x}%") %>%
+  cols_align(align = "center", columns = c(Ativos, Desligados, Total, Taxa)) %>%
+  tab_style(style = cell_text(weight = "bold"), locations = cells_row_groups()) %>%
+  tab_style(
+    style     = list(cell_text(weight = "bold", color = "#2c5f8a"),
+                     cell_fill(color = "#eef4fb")),
+    locations = cells_body(columns = Taxa)
+  ) %>%
+  tab_source_note(
+    source_note = gt::md("Taxa = desligados ÷ (ativos + desligados) × 100")
+  )
+ 
+tabela_taxa
 ```
 
 # Novo CAGED
