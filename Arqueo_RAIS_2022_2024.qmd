@@ -60,13 +60,13 @@ library(jsonlite)
 
 # Notas Introdutórias
 
-Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) e do Novo CAGED (Cadastro Geral de Empregados e Desempregados) para o período de 2022 a 2025, relativo à ocupação de arqueólogo. Os dados foram obtidos de registros tratados disponibilizados no [GitHub](https://github.com/machadotm/Novos_Dados_MTE_Arqueo "Link para acesso aos dados brutos e tratados"){target="_blank"}, manipulados e consolidados para a geração de gráficos e tabelas.
+Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) e do Novo CAGED (Cadastro Geral de Empregados e Desempregados) para o período de 2022 a 2025, relativo à ocupação de arqueólogo. Os dados foram obtidos de registros tratados disponibilizados no [GitHub](https://github.com/machadotm/Novos_Dados_MTE_Arqueo "Link para acesso aos dados brutos e tratados"){target="_blank"}, processados e consolidados para a geração de gráficos e tabelas.
 
 É importante esclarecer que esta análise não pretende comparar-se nem dar continuidade ao estudo de [Machado e Mageste (2024)](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}, que investigaram os mesmos dados para o intervalo temporal de 1994 a 2021. Essa decisão de não cruzar as duas séries históricas segue a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados da RAIS a partir de 2022 não devem ser comparados com os registros anteriores. 
 
 O MTE divulgou uma [nota técnica](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais/rais-2022/nota-tecnica-rais-2022.pdf "Link para acesso a nota técnica sobre os dados da RAIS 2022. Essa nota técnica apresenta os resultados das declarações trabalhistas daquele ano-base e informa a existência de quebra histórica nos dados da RAIS"){target="_blank"}, detalhando a transição metodológica na coleta dos registros trabalhistas, implementada gradualmente desde 2018 e concluída em 2022. O sistema tradicional GD-RAIS, de envio anual, foi substituído pelo [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"){target="_blank"}, de periodicidade mensal e contínua. O ano-base 2022, por ser o último da transição, contém declarações híbridas provenientes de ambos os sistemas, o que inviabiliza a comparabilidade com anos anteriores. Essa mesma ressalva se aplica ao Novo CAGED, conforme [apontado por pesquisadores](https://blogdoibre.fgv.br/posts/serie-nova-de-emprego-formal-do-caged-nao-deve-ser-comparada-com-antiga "Link para acesso a nota no blog do IBRE/FGV"){target="_blank"} no assunto.
 
-Neste estudo pretende-se analisar diferentes variáveis e o comportamento dessas informações ao longo do intervalo temporal (ver @sec-nota-unidade), que inclui:
+Neste estudo pretende-se [analisar diferentes variáveis](#sec-nota-unidade "A unidade de análise é o vínculo de trabalho formal, e não a pessoa física do trabalhador") e o comportamento dessas informações ao longo do intervalo temporal, que inclui:
 
 -   No caso da RAIS:
     -   Quantitativo de registros declarados e os tipos de vínculos em 31/12
@@ -97,7 +97,7 @@ Neste estudo pretende-se analisar diferentes variáveis e o comportamento dessas
         -   Sexo
     -   Remuneração dos admitidos
 
-Os gráficos e tabelas foram gerados na [linguagem de programação R](#sec-nota-ferramentas "ver mais no item sobre ferramentas utilizadas"). As visualizações são dinâmicas e interativas: ao passar o cursor sobre barras ou linhas, o usuário visualiza informações detalhadas; também é possível filtrar registros para exibir apenas os dados de interesse no painel.
+Os gráficos e tabelas foram gerados na [linguagem de programação R](#sec-nota-ferramentas "ver mais na nota metodológica sobre ferramentas utilizadas"). As visualizações são dinâmicas e interativas: ao passar o cursor sobre barras ou linhas, o usuário visualiza informações detalhadas; também é possível filtrar registros para exibir apenas os dados de interesse no painel.
 
 ::::: columns
 ::: {.column width="50%"}
@@ -1265,6 +1265,8 @@ sexo %>%
 
 A distribuição dos vínculos por cor e raça revela uma inversão entre os anos-base. Em 2022, a categoria branca era majoritária, com 100 registros contra 76 da categoria parda. A partir de 2023, contudo, os vínculos declarados como pardos passam a predominar. Esse movimento coincide com uma redução expressiva dos registros sem informação e nulos, que, juntos, caem de 112 para 21 ao longo do quadriênio. A queda sugere que parte significativa da inversão decorre de uma melhoria no preenchimento dos dados sob o eSocial: vínculos que antes permaneciam sem classificação passaram a ser devidamente declarados em categorias específicas. Assim, o deslocamento para a categoria parda reflete menos uma mudança demográfica real do setor e mais a migração de registros anteriormente não informados para grupos efetivamente declaradas.
 
+Ainda sobre essa melhoria de preenchimento da identidade racial do trabalhador, na [Nota Técnica da RAIS 2025](https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/acoes-e-programas/programas-projetos-acoes-obras-e-atividades/estatisticas-trabalho/rais/rais-2025/nota-tecnica-rais-2025.zip "Link de acesso ao conteúdo - arquivo Nota técnica 2025.pdf pg. 9") o MTE informa que foram aplicados diferentes procedimentos para a qualificação dessa informação, de modo a reduzir a ocorrência de dados não rotulados.
+
 Em relação as categorias preta, indígena e amarela, nota-se que elas possuem participação minoritária no mercado formal.
 
 ```{r cor/raça}
@@ -1418,7 +1420,7 @@ DT::datatable(remunera_tabela, filter = 'top', options = list(
 
 Ao longo de todo o quadriênio analisado, identificou‑se vínculos ativos sem remuneração declarada no mês de dezembro, e essa parcela vem crescendo de forma consistente. Em números absolutos, os registros passaram de 39 em 2022 para 59 em 2023, 70 em 2024 e 80 em 2025, o que representa um [aumento relativo de 13,3% para 20,9%](#sec-nota-variacao "variação (%) = (valor final ÷ valor inicial − 1) × 100") do total de vínculos ativos no período. Há ainda uma diferença na forma de codificação desses casos entre os anos‑base: em 2022, os registros aparecem com valor de R$ 0,00; a partir de 2023, o campo de remuneração simplesmente fica em branco. A análise do perfil desses vínculos sugere que se trata de afastamentos prolongados e não de erros de declaração, embora essa possibilidade não possa ser inteiramente descartada.
 
-Diante desse cenário, adotou‑se o critério de [excluir todos os registros](#sec-nota-exclusoes "ver também na nota sobre exclusão desses dados") sem remuneração declarada em dezembro, aplicando essa mesma regra uniformemente a todos os anos‑base. Com esse ajuste, a média remuneratória de dezembro parte de R$ 5.356,55 em 2022 e alcança R$ 5.877,39 em 2025, o que corresponde a um crescimento nominal acumulado de 9,7% no período. Essa padronização foi essencial para garantir comparabilidade entre os anos e evitar que vínculos sem remuneração distorcessem a tendência salarial observada.
+Diante desse cenário, adotou‑se o critério de [excluir todos os registros](#sec-nota-exclusoes "ver também na nota metodológica sobre exclusão desses dados") sem remuneração declarada em dezembro, aplicando essa mesma regra uniformemente a todos os anos‑base. Com esse ajuste, a média remuneratória de dezembro parte de R$ 5.356,55 em 2022 e alcança R$ 5.877,39 em 2025, o que corresponde a um crescimento nominal acumulado de 9,7% no período. Essa padronização foi essencial para garantir comparabilidade entre os anos e evitar que vínculos sem remuneração distorcessem a tendência salarial observada.
 
 Esse critério corretivo também foi aplicado nos procedimentos subsequentes.
 
@@ -1574,7 +1576,7 @@ tabela_remunera
 
 ### Remuneração Média
 
-A variável `Vl.Rem.Média.Nom` armazena a média das remunerações mensais recebidas pelo trabalhador ao longo do ano-base. Com esse dado, é possível visualizar a distribuição dos valores da média nominal na forma de [boxplot](#sec-nota-quartis "ver na nota sobre essa representação visual"), uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (_outliers_).
+A variável `Vl.Rem.Média.Nom` armazena a média das remunerações mensais recebidas pelo trabalhador ao longo do ano-base. Com esse dado, é possível visualizar a distribuição dos valores da média nominal na forma de [boxplot](#sec-nota-quartis "ver na nota metodológica sobre essa representação visual"), uma representação visual das medidas de posição e ideal para realizar comparações rápidas nos registros para identificar simetria/assimetria, dispersão e valores discrepantes/atípicos (_outliers_).
 
 ```{r boxplot}
 #| label: fig-boxplot
@@ -1717,7 +1719,7 @@ O boxplot da distribuição remuneratória confirma a assimetria positiva e perm
 | Q3 (3º quartil)   | R$ 5.893,90     | R$ 5.672,30 | R$ 5.864,77 | R$ 6.420,97 | 8,9%               |
 | IQR (Q3-Q1)       | R$ 2.669,72     | R$ 2.579,48 | R$ 2.912,27 | R$ 3.319,69 | 24,3%              |
 
-> Entre 2022 e 2025, a média remuneratória apresentou uma recuperação desigual. Enquanto o trabalhador típico (mediana) registrou ganho acumulado de 7,9%, chegando a R$ 4.489 em 2025, os trabalhadores de menor remuneração (Q1) ainda não recuperaram as perdas do período, encerrando com R$ 3.101 - 3,8% abaixo do patamar de 2022. Por outro lado, os arqueólogos de faixa superior (Q3) tiveram o melhor desempenho relativo, com variação acumulada de 8,9% e atingindo R$ 6.421 em 2025. Essa dinâmica ampliou a dispersão salarial: o intervalo interquartil (IQR), que mede a distância entre o topo e a base da distribuição, cresceu 24,3%. Da mesma forma, houve aumento na razão interquartílica sinalizando um aumento expressivo da desigualdade remuneratória ao longo do período.
+> Entre 2022 e 2025, a média remuneratória apresentou uma recuperação desigual. Enquanto o trabalhador típico (mediana) registrou ganho acumulado de 7,9%, chegando a R$ 4.489 em 2025, os trabalhadores de menor remuneração (Q1) ainda não recuperaram as perdas do período, encerrando com R$ 3.101 - 3,8% abaixo do patamar de 2022. Por outro lado, os arqueólogos de faixa superior (Q3) tiveram o melhor desempenho relativo, com variação acumulada de 8,9% e atingindo R$ 6.421 em 2025. Essa dinâmica ampliou a dispersão salarial: o intervalo interquartil (IQR), que mede a distância entre o topo e a base da distribuição, cresceu 24,3%, sinalizando um aumento expressivo da desigualdade remuneratória ao longo do período.
 
 Para facilitar o entendimento de um boxplot, a figura abaixo ilustra como deve ser feito a leitura dessa representação gráfica.
 
@@ -3197,7 +3199,7 @@ A análise dos dados da RAIS e do Novo CAGED para o período de 2022 a 2025 perm
 
 O panorama revelado mostra um mercado de trabalho marcado por avanços pontuais seguido de retração. A arqueologia formal demonstra alta sensibilidade a eventos conjunturais: as contratações crescem quando grandes projetos de licenciamento ambiental demandam vínculos celetistas, e encolhem quando obras são paralisadas ou concluídas, provocando perda da capacidade de retenção da força de trabalho. O biênio 2023–2024 ilustra bem essa oscilação: 2023 registrou um boom de contratações e maior poder de escolha para os profissionais, enquanto 2024 trouxe uma reversão desse cenário.
 
-Geograficamente, a contratação de arqueólogos permanece concentrada na Região Sudeste. Contudo, o Nordeste emerge como polo de expansão, com destaque para Pernambuco, onde empresas locais vêm ampliando a oferta de empregos formais. Em contrapartida, a Região Norte apresenta as menores oportunidades de trabalho, com seus estabelecimentos contendo poucos contratos que exigem vínculos celetista.
+Geograficamente, a contratação de arqueólogos permanece concentrada na Região Sudeste. Contudo, o Nordeste emerge como polo de expansão, com destaque para Pernambuco, onde empresas locais vêm ampliando a oferta de empregos formais. Em contrapartida, a Região Norte apresenta as menores oportunidades de trabalho, com seus estabelecimentos contendo poucos contratos que exigem vínculos celetista, embora esse cenário venha se alterando paulatinamente.
 
 O perfil de qualificação exigido pelo mercado formal também chama atenção. A maioria das vagas solicita apenas bacharelado, com pouca demanda por pós-graduados (mestrado ou doutorado). Esse padrão atrai um contingente de arqueólogos entre 30 a 39 anos, mas a ausência de estabilidade e o tempo de experiência adquirido leva muitos profissionais acima de 40 anos a migrar para abrir suas próprias consultorias ou abandonar a profissão. A jornada de trabalho também contribui para essa insatisfação, frequentemente se estendendo aos finais de semana em regime 6×1, com horas extras pontuais para cumprimento de prazos de campo.
 
@@ -3225,7 +3227,7 @@ Dessa forma, o leitor pode tomar os valores publicados, aplicar a fórmula indic
  
 **A unidade de análise é o vínculo de trabalho formal, e não a pessoa física do trabalhador**
  
-Um mesmo arqueólogo que tenha mantido dois contratos simultâneos ou sequenciais no mesmo ano aparecerá duas vezes na base de dados. Inversamente, arqueólogos que atuam como pessoa jurídica (MEI), bolsistas, autônomos ou que foram registrados sob códigos de ocupação distintos do código específico de arqueólogo (código CBO 2511-10) simplesmente não aparecem nos recortes apresentados. Assim, quando o estudo reporta *383 vínculos ativos em 2025*, está se referindo a 383 contratos formais de trabalho declarados sob o código de arqueólogo naquele ano — e não a *383 profissionais distintos em atividade no país*.
+Um mesmo arqueólogo que tenha mantido dois contratos simultâneos ou sequenciais no mesmo ano aparecerá duas vezes na base de dados. Inversamente, arqueólogos que atuam como pessoa jurídica (MEI), bolsistas, autônomos ou que foram registrados sob códigos de ocupação distintos do código específico de arqueólogo (código CBO 2511-10) simplesmente não aparecem nos recortes apresentados. Assim, quando o estudo reporta *383 vínculos ativos em 2025*, está se referindo a 383 contratos formais de trabalho declarados sob o código de arqueólogo naquele ano - e não a *383 profissionais distintos em atividade no país*.
 
 Duas métricas fundamentais são utilizadas ao longo da análise, e é crucial não confundi-las:
 
@@ -3233,7 +3235,19 @@ Duas métricas fundamentais são utilizadas ao longo da análise, e é crucial n
 
 - **Fluxo (Novo CAGED):** refere-se ao movimento mensal de abertura e encerramento de contratos ao longo do ano. Cada admissão e cada desligamento são registrados no mês em que ocorrem, gerando um saldo mensal (admissões menos desligamentos) que pode ser positivo ou negativo.
 
-Essas duas medidas operam em lógicas distintas e não se somam nem se comparam diretamente. O estoque de um ano é o resultado acumulado de todos os fluxos positivos e negativos que o precederam, além de eventuais reclassificações e correções. Por isso, é perfeitamente possível - e de fato ocorreu em 2025 - que o estoque de vínculos cresça enquanto o fluxo anual do CAGED seja negativo. Isso acontece quando o número de contratos encerrados no ano supera o de novas admissões, mas o saldo acumulado dos anos anteriores ainda sustenta um estoque maior do que o do ano anterior. Em resumo: o estoque é o resultado acumulado; o fluxo é o movimento incremental.
+|                    | RAIS                              | Novo CAGED                          |
+|--------------------|-----------------------------------|-------------------------------------|
+| Tipo de informação | Estoque (posição em 31/12)        | Fluxo (movimentação mensal)         |
+| Pergunta central   | Quantos empregos formais existiam<br> e quais suas características? | Quantas contratações e demissões<br> ocorreram no mês? | 
+| Periodicidade      | Anual                             | Mensal                              | 
+| Regime coberto     | CLT + estatutário + militares     | Apenas CLT                          | 
+| Unidade de análise | Vínculo ativo em 31/dez           | Movimentação (admissão ou demissão) |
+
+Essas duas medidas operam em lógicas distintas e não se somam nem se comparam diretamente. O estoque de um ano é o resultado acumulado de todos os fluxos positivos e negativos que o precederam, além de eventuais reclassificações e correções. Por isso, é perfeitamente possível - e de fato ocorreu em 2025 - que o estoque de vínculos cresça enquanto o fluxo anual do CAGED seja negativo. Isso acontece quando o número de contratos encerrados no ano supera o de novas admissões, mas o saldo acumulado dos anos anteriores ainda sustenta um estoque maior do que o do ano anterior. Em resumo: a RAIS diz quem está empregado; o Novo CAGED diz como as pessoas entram e saem do emprego. São bases complementares, mas nunca intercambiáveis.
+
+Simplificando por analogia: a RAIS é como o saldo bancário no último dia do ano; o Novo CAGED é o extrato mensal de créditos e débitos ao longo do ano. Você não soma o saldo de 31/dez com o extrato de janeiro - são grandezas de natureza diferente.
+
+Para mais informações, recomenda-se a leitura da [RAIS 50 anos](https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/acoes-e-programas/programas-projetos-acoes-obras-e-atividades/estatisticas-trabalho/rais/238506_lv_rais50anos_encarte_a3.pdf "link para acesso ao livro publicado pelo MTE"){target="_blank"}.
 
 ## Percentual de participação {#sec-nota-participacao}
  
