@@ -3243,9 +3243,9 @@ Duas métricas fundamentais são utilizadas ao longo da análise, e é crucial n
 | Regime coberto     | CLT + estatutário + militares     | Apenas CLT                          | 
 | Unidade de análise | Vínculo ativo em 31/dez           | Movimentação (admissão ou demissão) |
 
-Essas duas medidas operam em lógicas distintas e não se somam nem se comparam diretamente. O estoque de um ano é o resultado acumulado de todos os fluxos positivos e negativos que o precederam, além de eventuais reclassificações e correções. Por isso, é perfeitamente possível - e de fato ocorreu em 2025 - que o estoque de vínculos cresça enquanto o fluxo anual do CAGED seja negativo. Isso acontece quando o número de contratos encerrados no ano supera o de novas admissões, mas o saldo acumulado dos anos anteriores ainda sustenta um estoque maior do que o do ano anterior. Em resumo: a RAIS diz quem está empregado; o Novo CAGED diz como as pessoas entram e saem do emprego. São bases complementares, mas nunca intercambiáveis.
+Essas duas medidas operam em lógicas distintas e não se somam nem se comparam diretamente. O estoque de um ano é o resultado acumulado de todos os fluxos positivos e negativos que o precederam, além de eventuais reclassificações e correções. Por isso, é perfeitamente possível - e de fato ocorreu em 2025 - que o estoque de vínculos cresça enquanto o fluxo anual do CAGED seja negativo. Isso acontece quando o número de contratos encerrados no ano supera o de novas admissões, mas o saldo acumulado dos anos anteriores ainda sustenta um estoque maior do que o do ano anterior. 
 
-Simplificando por analogia: a RAIS é como o saldo bancário no último dia do ano; o Novo CAGED é o extrato mensal de créditos e débitos ao longo do ano. Você não soma o saldo de 31/dez com o extrato de janeiro - são grandezas de natureza diferente.
+Em resumo: a RAIS diz sobre quem está empregado; o Novo CAGED diz sobre quem entra e sai do emprego. São bases complementares, mas nunca intercambiáveis.
 
 Para mais informações, recomenda-se a leitura da [RAIS 50 anos](https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/acoes-e-programas/programas-projetos-acoes-obras-e-atividades/estatisticas-trabalho/rais/238506_lv_rais50anos_encarte_a3.pdf "link para acesso ao livro publicado pelo MTE"){target="_blank"}.
 
@@ -3460,6 +3460,8 @@ Os salários mínimos utilizados neste estudo são os **oficiais de cada ano**: 
 A conversão em salários mínimos não é uma correção de inflação no sentido técnico - ela não utiliza índices como INPC ou IPCA para medir a variação do poder de compra frente aos preços de consumo. Ainda assim, cumpre uma função análoga e tem uma vantagem prática: o salário mínimo é a unidade de referência usada nas negociações coletivas e na percepção social do que é uma remuneração digna. 
 
 Por isso, a conversão em SM é especialmente útil para avaliar se uma categoria está ganhando ou perdendo terreno em relação ao padrão mínimo da sociedade. Ela não substitui, porém, uma análise de poder de compra baseada em índices de preços - que capturaria a variação real do custo de vida, independentemente do valor do salário mínimo.
+
+As faixas utilizadas neste estudo se basearam nas categorias elencadas na variável `Faixa.Rem.Média..SM`, com ajustes nos seguintes grupos: *Até 0,50 salários mínimos*; *0,51 até 1,00 salários mínimos*; *1,01 a 1,50 salários mínimos*; e *1,51 a 2,00 salários mínimos*. As faixas *Até 0,50 salários mínimos* e *0,51 até 1,00 salários mínimos* foram agrupadas em "Até 1 salário mínimo"; e as faixas *1,01 a 1,50 salários mínimos* e *1,51 a 2,00 salários mínimos* foram agrupadas em "Entre 1 e 2 salários mínimos".
 
 ## Registros excluídos dos cálculos de salário {#sec-nota-exclusoes}
  
