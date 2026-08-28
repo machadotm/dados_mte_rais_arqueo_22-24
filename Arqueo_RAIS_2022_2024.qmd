@@ -3,12 +3,19 @@ title: "O Mercado de Trabalho Formal dos Arqueólogos"
 subtitle: "Análise dos Dados da RAIS e do Novo CAGED - 2022 a 2025"
 author: "Seu Nome"
 date: last-modified
-lang: pt
+bibliography: referencias.bib
+csl: abnt.csl 
+link-citations: true
+nocite: |
+  @rcore2026, @allaire2026quarto, @ibge2026cnae, @esocial2026, @mtemicrodados, @mtepdet, @nomefantasia, @minc2024pnab, iphan2024edital, mte2026cbo
+lang: pt-BR
 project:
   type: website
   output-dir: docs
 format: 
   html:
+    citations-hover: true
+    link-external-newwindow: true
     css: styles.css
     toc: true
     toc-depth: 3
@@ -60,11 +67,11 @@ library(jsonlite)
 
 # Notas Introdutórias
 
-Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) e do Novo CAGED (Cadastro Geral de Empregados e Desempregados) para o período de 2022 a 2025, relativo à ocupação de arqueólogo. Os dados foram obtidos de registros tratados disponibilizados no [GitHub](https://github.com/machadotm/Novos_Dados_MTE_Arqueo "Link para acesso aos dados brutos e tratados"){target="_blank"}, processados e consolidados para a geração de gráficos e tabelas.
+Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) e do Novo CAGED (Cadastro Geral de Empregados e Desempregados) para o período de 2022 a 2025, relativo à ocupação de arqueólogo. Os dados foram obtidos de registros tratados disponibilizados no GitHub [@machado2026dados], processados e consolidados para a geração de gráficos e tabelas.
 
-É importante esclarecer que esta análise não pretende comparar-se nem dar continuidade ao estudo de [Machado e Mageste (2024)](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}, que investigaram os mesmos dados para o intervalo temporal de 1994 a 2021. Essa decisão de não cruzar as duas séries históricas segue a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados da RAIS a partir de 2022 não devem ser comparados com os registros anteriores. 
+É importante esclarecer que esta análise não pretende comparar-se nem dar continuidade ao estudo de Machado e Mageste [-@machado2024arqueologos], que investigaram os mesmos dados para o intervalo temporal de 1994 a 2021. Essa decisão de não cruzar as duas séries históricas segue a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados da RAIS a partir de 2022 não devem ser comparados com os registros anteriores. 
 
-O MTE divulgou uma [nota técnica](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/rais/rais-2022/nota-tecnica-rais-2022.pdf "Link para acesso a nota técnica sobre os dados da RAIS 2022. Essa nota técnica apresenta os resultados das declarações trabalhistas daquele ano-base e informa a existência de quebra histórica nos dados da RAIS"){target="_blank"}, detalhando a transição metodológica na coleta dos registros trabalhistas, implementada gradualmente desde 2018 e concluída em 2022. O sistema tradicional GD-RAIS, de envio anual, foi substituído pelo [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"){target="_blank"}, de periodicidade mensal e contínua. O ano-base 2022, por ser o último da transição, contém declarações híbridas provenientes de ambos os sistemas, o que inviabiliza a comparabilidade com anos anteriores. Essa mesma ressalva se aplica ao Novo CAGED, conforme [apontado por pesquisadores](https://blogdoibre.fgv.br/posts/serie-nova-de-emprego-formal-do-caged-nao-deve-ser-comparada-com-antiga "Link para acesso a nota no blog do IBRE/FGV"){target="_blank"} no assunto.
+O MTE divulgou uma nota técnica [@mte2023notatecnicarais], detalhando a transição metodológica na coleta dos registros trabalhistas, implementada gradualmente desde 2018 e concluída em 2022. O sistema tradicional GD-RAIS, de envio anual, foi substituído pelo [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"){target="_blank"}, de periodicidade mensal e contínua. O ano-base 2022, por ser o último da transição, contém declarações híbridas provenientes de ambos os sistemas, o que inviabiliza a comparabilidade com anos anteriores. Essa mesma ressalva se aplica ao Novo CAGED, conforme apontado por pesquisadores no assunto [@ibre2021caged].
 
 Neste estudo pretende-se [analisar diferentes variáveis](#sec-nota-unidade "A unidade de análise é o vínculo de trabalho formal, e não a pessoa física do trabalhador") e o comportamento dessas informações ao longo do intervalo temporal, que inclui:
 
@@ -113,7 +120,7 @@ Destaca-se que o estudo contou com o auxílio de Inteligência Artificial genera
 
 # Carregando e Processando Dados
 
-Conforme mencionado anteriormente, os dados foram obtidos do repositório GitHub do autor e processados para gerar os gráficos e tabelas deste artigo. Para garantir transparência metodológica, cada visualização - gráfico ou tabela - inclui um botão no canto superior esquerdo rotulado "Mostrar código executado". Ao clicar, o leitor acessa diretamente o script R que produziu aquele resultado específico, permitindo verificação e reprodução dos procedimentos.
+Conforme mencionado anteriormente, os dados foram obtidos do repositório GitHub [@machado2026dados] do autor e processados para gerar os gráficos e tabelas deste artigo. Para garantir transparência metodológica, cada visualização - gráfico ou tabela - inclui um botão no canto superior esquerdo rotulado "Mostrar código executado". Ao clicar, o leitor acessa diretamente o script R que produziu aquele resultado específico, permitindo verificação e reprodução dos procedimentos.
 
 Todo o artigo foi produzido no [Quarto](https://quarto.org/ "Link para acesso ao Quarto"){target="_blank"}, uma ferramenta de publicação técnica de código aberto que integra código executável (R, Python, Julia e Observable) a documentos narrativos.
 
@@ -290,7 +297,7 @@ rm(tmp5, tmp6, tmp7, tmp8, junta3, junta4, url5, url6, url7, url8)
 
 # RAIS
 
-A RAIS constitui uma das principais bases de dados do governo federal para o acompanhamento do mercado de trabalho formal no Brasil. Com a conclusão da transição para o eSocial em 2022, a forma de prestação das informações foi alterada: os empregadores deixaram de utilizar a declaração anual específica (GD‑RAIS) e passaram a ter seus dados extraídos diretamente dos eventos trabalhistas transmitidos mensalmente ao sistema eSocial. Apesar dessa mudança no fluxo de coleta, a divulgação dos resultados permanece anual, organizada por ano‑base. A abrangência da RAIS inclui trabalhadores celetistas do setor privado, empregados públicos regidos pela CLT, servidores estatutários e militares, o que a consolida como a fonte mais completa disponível sobre o estoque de vínculos formais de trabalho no país. O ano‑base mais recente disponível para consulta é de 2025.
+A RAIS [@mte2026rais] constitui uma das principais bases de dados do governo federal para o acompanhamento do mercado de trabalho formal no Brasil. Com a conclusão da transição para o eSocial em 2022, a forma de prestação das informações foi alterada: os empregadores deixaram de utilizar a declaração anual específica (GD‑RAIS) e passaram a ter seus dados extraídos diretamente dos eventos trabalhistas transmitidos mensalmente ao sistema eSocial. Apesar dessa mudança no fluxo de coleta, a divulgação dos resultados permanece anual, organizada por ano‑base. A abrangência da RAIS inclui trabalhadores celetistas do setor privado, empregados públicos regidos pela CLT, servidores estatutários e militares, o que a consolida como a fonte mais completa disponível sobre o estoque de vínculos formais de trabalho no país. O ano‑base mais recente disponível para consulta é de 2025.
 
 A tabela interativa abaixo exibe todas as declarações referentes à profissão de arqueólogo da RAIS de 2022 a 2025.
 
@@ -304,10 +311,36 @@ rais_tabela <- Arqueo.RAIS.2022_2025 %>%
   mutate(across(where(is.character), as.factor)) |> 
   mutate(Ano = as.factor(Ano))
 
-DT::datatable(rais_tabela, filter = 'top', options = list(
-  pageLength = 5, autoWidth = TRUE,  
-  columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
-  scrollX = TRUE ))
+DT::datatable(
+  rais_tabela,
+  filter     = 'top',
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = list(
+      list(extend = 'copy',  text = 'Copiar'),
+      list(extend = 'csv',   text = 'Baixar CSV',
+           filename = 'RAIS_arqueologos_2022_2025'),
+      list(extend = 'excel', text = 'Baixar Excel',
+           filename = 'RAIS_arqueologos_2022_2025',
+           title    = 'RAIS — CBO 2511-10 — 2022 a 2025')
+    ),
+    language = list(
+       search        = "Filtrar:",
+       lengthMenu    = "Mostrar _MENU_ registros",
+       info          = "Mostrando _START_ a _END_ de _TOTAL_ registros",
+       infoEmpty     = "Nenhum registro",
+       infoFiltered  = "(filtrados de _MAX_ registros)",
+       zeroRecords   = "Nenhum registro encontrado",
+       paginate      = list(previous = "Anterior", `next` = "Próximo",
+                            first = "Primeiro", last = "Último")
+    ),
+    pageLength = 5,
+    autoWidth  = TRUE,
+    columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
+    scrollX    = TRUE
+  )
+)
 ```
 
 > Para o ano de 2025, há dados referentes a categoria do trabalhador (última coluna da tabela acima). No entanto, até o fechamento da escrita deste artigo, não houve atualização do dicionário de dados de modo a identificar a codificação dessa nova variável adicionada na base da RAIS.
@@ -531,7 +564,7 @@ browsable(tagList(titulo_html, grafico))
 
 No que se refere à natureza do vínculo, a participação da administração pública é minoritária: arqueólogos em órgãos públicos representam aproximadamente 16% do total de declarações ativas no período analisado. Observa-se crescimento modesto nesse segmento até 2024, embora não tenham sido identificados concursos públicos de destaques nesse intervalo que expliquem a tendência evidenciada.
 
-Em 2025, o IPHAN executou contratações de 15 arqueólogos derivados do [Processo Seletivo Simplificado](https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293 "Link de acesso ao edital do PSS/IPHAN 2024"){target="_blank"} - mecanismo de contratação temporária previsto na legislação federal. Contudo, esse evento não explica a variação observada no último ano, conforme será demonstrado no subitem seguinte.
+Em 2025, o IPHAN executou contratações de 15 arqueólogos derivados do [Processo Seletivo Simplificado](https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293 "Link do edital do PSS/IPHAN"){target="_blank"} - mecanismo de contratação temporária previsto na legislação federal [@brasil1993lei8745]. Contudo, esse evento não explica a variação observada no último ano, conforme será demonstrado no subitem seguinte.
 
 ```{r vínculo empregatício}
 #| label: fig-empregaticio
@@ -601,7 +634,7 @@ A análise por esfera administrativa revela que o setor público estadual foi o 
 
 Essa dinâmica suscita uma questão sobre a natureza desses registros. A continuidade do crescimento ao longo do período torna improvável que se trate de erro pontual na entrega das declarações, embora não elimine completamente essa possibilidade. Uma hipótese plausível - que demanda cruzamento de informações - é que determinados estados e municípios tenham recorrido a mecanismos de contratações flexíveis que não demanda seleções editalícias. Se confirmada, essa prática poderia explicar parte do crescimento observado, possivelmente vinculado à demanda crescente proveniente do licenciamento ambiental.
 
-Destaca-se que o estoque do setor público federal permaneceu estável em 2025. Isso revela que o concurso temporário do IPHAN naquele ano - que contratou 15 arqueólogos via Processo Seletivo Simplificado - não impactou o código 2511-10 da [Classificação Brasileira de Ocupações (CBO/2002)](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/cbo "Link para mais informações sobre a CBO"){target="_blank"}, referente a identificação da ocupação de arqueólogo. Ocorre que as declarações desses profissionais foram registradas sob código CBO distinto, o que explica a ausência de efeito nos vínculos de âmbito federal. Esse procedimento contrasta com o ciclo de contratações temporárias anterior da mesma instituição (2014–2019), cujos registros foram corretamente classificados na CBO 2511-10, conforme documentado por [Machado e Mageste (2024)](https://revista.sabnet.org/ojs/index.php/sab/article/view/1108 "Link para acesso ao artigo "Os arqueólogos no mercado de trabalho e a realidade profissional no Brasil""){target="_blank"}.
+Destaca-se que o estoque do setor público federal permaneceu estável em 2025. Isso revela que o concurso temporário do IPHAN naquele ano - que contratou 15 arqueólogos via Processo Seletivo Simplificado - não impactou o código 2511-10 da Classificação Brasileira de Ocupações ([CBO/2002](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/cbo "Link para acesso a página da CBO"){target="_blank"}), referente a identificação da ocupação de arqueólogo. Ocorre que as declarações desses profissionais foram registradas sob código CBO distinto, o que explica a ausência de efeito nos vínculos de âmbito federal. Esse procedimento contrasta com o ciclo de contratações temporárias anterior da mesma instituição (2014–2019), cujos registros foram corretamente classificados na CBO 2511-10, conforme documentado por Machado e Mageste [-@machado2024arqueologos].
 
 Para os empregadores do regime celetista, o quadro mostra tendências de estabilidade nas declarações trabalhistas.
 
@@ -690,7 +723,7 @@ browsable(tagList(titulo_html, grafico))
 
 ### Distribuição por Setores Econômicos
 
-A segmentação por setores econômicos, segundo a Classificação Nacional de Atividades Econômicas (CNAE versão 2.0, IBGE), identifica 19 grupamentos com vínculos ativos de arqueólogos. Dentre eles, o grupamento _Atividades Profissionais, Científicas e Técnicas_ concentra mais de [55% das contratações](#sec-nota-participacao "participação (%) = (quantidade do grupo ÷ total do ano) × 100"). Nesse grupo, a subclasse predominante é a _Pesquisa e Desenvolvimento Experimental em Ciências Sociais e Humanas_, seguida por _Serviços de Engenharia_. Esse padrão indica que a profissão está majoritariamente concentrada em empresas de consultoria especializada, frequentemente vinculadas a projetos de licenciamento ambiental. 
+A segmentação por setores econômicos, segundo a Classificação Nacional de Atividades Econômicas ([CNAE versão 2.0](https://concla.ibge.gov.br/classificacoes/por-tema/atividades-economicas/classificacao-nacional-de-atividades-economicas "Link para acesso a página da CNAE"){target="_blank"}, IBGE), identifica 19 grupamentos com vínculos ativos de arqueólogos. Dentre eles, o grupamento *Atividades Profissionais, Científicas e Técnicas* concentra mais de [55% das contratações](#sec-nota-participacao "participação (%) = (quantidade do grupo ÷ total do ano) × 100"). Nesse grupo, a subclasse predominante é a *Pesquisa e Desenvolvimento Experimental em Ciências Sociais e Humanas*, seguida por *Serviços de Engenharia*. Esse padrão indica que a profissão está majoritariamente concentrada em empresas de consultoria especializada, frequentemente vinculadas a projetos de licenciamento ambiental. 
 
 Em segundo lugar aparece o grupamento _Administração Pública, Defesa e Seguridade Social_, seguido por _Educação_. Esses segmentos representam parcela menor e relativamente estável do mercado, composta por órgãos públicos e instituições de ensino públicas e privadas.
 
@@ -890,7 +923,7 @@ tabela_setor
 
 ### Trabalho Intermitente
 
-O contrato de trabalho intermitente foi instituído pela Reforma Trabalhista (Lei nº 13.467/2017) como modalidade em que o trabalhador é convocado apenas quando há demanda específica do empregador, alternando períodos de atividade e inatividade sem vínculo contínuo.
+O contrato de trabalho intermitente foi instituído pela Reforma Trabalhista [@brasil2017lei13467] como modalidade em que o trabalhador é convocado apenas quando há demanda específica do empregador, alternando períodos de atividade e inatividade sem vínculo contínuo.
 
 Essa modalidade guarda semelhança conceitual com a natureza dos projetos arqueológicos vinculados aos estudos de impactos em empreendimentos sujeitos ao licenciamento ambiental, tipicamente de curta duração. Contudo, os dados indicam que o contrato intermitente formal não é a principal forma de contratação no setor. As empresas parecem recorrer a outros mecanismos de admissão laboral, possivelmente por razões tributárias, operacionais ou de adequação contratual com o empreendedor.
 
@@ -1265,7 +1298,7 @@ sexo %>%
 
 A distribuição dos vínculos por cor e raça revela uma inversão entre os anos-base. Em 2022, a categoria branca era majoritária, com 100 registros contra 76 da categoria parda. A partir de 2023, contudo, os vínculos declarados como pardos passam a predominar. Esse movimento coincide com uma redução expressiva dos registros sem informação e nulos, que, juntos, caem de 112 para 21 ao longo do quadriênio. A queda sugere que parte significativa da inversão decorre de uma melhoria no preenchimento dos dados sob o eSocial: vínculos que antes permaneciam sem classificação passaram a ser devidamente declarados em categorias específicas. Assim, o deslocamento para a categoria parda reflete menos uma mudança demográfica real do setor e mais a migração de registros anteriormente não informados para grupos efetivamente declaradas.
 
-Ainda sobre essa melhoria de preenchimento da identidade racial do trabalhador, na [Nota Técnica da RAIS 2025](https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/acoes-e-programas/programas-projetos-acoes-obras-e-atividades/estatisticas-trabalho/rais/rais-2025/nota-tecnica-rais-2025.zip "Link de acesso ao conteúdo - arquivo Nota técnica 2025.pdf pg. 9") o MTE informa que foram aplicados diferentes procedimentos para a qualificação dessa informação, de modo a reduzir a ocorrência de dados não rotulados.
+Ainda sobre essa melhoria de preenchimento da identidade racial do trabalhador, na nota técnica da RAIS 2025 [@mterais2025, p. 9] o MTE informa que foram aplicados diferentes procedimentos para a qualificação dessa informação, de modo a reduzir a ocorrência de dados não rotulados.
 
 Em relação as categorias preta, indígena e amarela, nota-se que elas possuem participação minoritária no mercado formal.
 
@@ -1409,11 +1442,36 @@ remunera_tabela <- remunera_corrigido %>%
   mutate(across(where(is.character), as.factor))
 
 #| column: page
-DT::datatable(remunera_tabela, filter = 'top', options = list(
-  pageLength = 5, autoWidth = TRUE,  
-  columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
-  scrollX = TRUE ),
-  colnames = c("Ano-base", "Remuneração nominal de dezembro - original", "Remuneração nominal de dezembro - corrigido", "Faixa remuneratória de dezembro em salário mínimo", "Média remuneratória nominal", "Faixa remuneratória da média em salário mínimo", "Sexo do trabalhador"))
+DT::datatable(
+  remunera_tabela,
+  filter     = 'top',
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = list(
+      list(extend = 'copy',  text = 'Copiar'),
+      list(extend = 'csv',   text = 'Baixar CSV',
+           filename = 'RAIS_arqueologos_remuneração_corrigida_2022_2025'),
+      list(extend = 'excel', text = 'Baixar Excel',
+           filename = 'RAIS_arqueologos_remuneração_corrigida_2022_2025',
+           title    = 'RAIS_Remuneração Corrigida — CBO 2511-10 — 2022 a 2025')
+    ),
+    language = list(
+       search        = "Filtrar:",
+       lengthMenu    = "Mostrar _MENU_ registros",
+       info          = "Mostrando _START_ a _END_ de _TOTAL_ registros",
+       infoEmpty     = "Nenhum registro",
+       infoFiltered  = "(filtrados de _MAX_ registros)",
+       zeroRecords   = "Nenhum registro encontrado",
+       paginate      = list(previous = "Anterior", `next` = "Próximo",
+                            first = "Primeiro", last = "Último")
+    ),
+    pageLength = 5,
+    autoWidth  = TRUE,
+    columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
+    scrollX    = TRUE),
+    colnames = c("Ano-base", "Remuneração nominal de dezembro - original", "Remuneração nominal de dezembro - corrigido", "Faixa remuneratória de dezembro em salário mínimo", "Média remuneratória nominal", "Faixa remuneratória da média em salário mínimo", "Sexo do trabalhador")
+)
 ```
 
 ### Média Salarial
@@ -2339,7 +2397,7 @@ tabela_taxa
 
 # Novo CAGED
 
-O Novo CAGED é a base de dados do governo federal que registra mensalmente as admissões e desligamentos de trabalhadores vinculados ao regime da CLT. Sua publicação tempestiva o consolida como o principal instrumento de monitoramento do mercado de trabalho formal brasileiro. A fonte contempla exclusivamente vínculos celetistas, não incluindo contratações sob regime estatutário.
+O Novo CAGED [@mte2026caged] é a base de dados do governo federal que registra mensalmente as admissões e desligamentos de trabalhadores vinculados ao regime da CLT. Sua publicação tempestiva o consolida como o principal instrumento de monitoramento do mercado de trabalho formal brasileiro. A fonte contempla exclusivamente vínculos celetistas, não incluindo contratações sob regime estatutário.
 
 O indicador-chave para esta análise é o saldo de emprego, calculado pela fórmula `Saldo=Admitidos−Desligamento`. Embora a base não forneça o saldo diretamente, ele é derivado da coluna `saldomovimentação`, que registra separadamente cada admissão e desligamento. O saldo funciona como um termômetro do dinamismo no contrato laboral: valores positivos indicam criação de vagas, enquanto os números negativos apontam fechamento de postos de trabalho.
 
@@ -2355,10 +2413,36 @@ caged_tabela <- Arqueo.CAGED.2022_2025 %>%
   mutate(across(where(is.character), as.factor)) |> 
   mutate(anocompetênciamov = as.factor(anocompetênciamov))
 
-DT::datatable(caged_tabela, filter = 'top', options = list(
-  pageLength = 5, autoWidth = TRUE,  
-  columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
-  scrollX = TRUE ))
+DT::datatable(
+  caged_tabela,
+  filter     = 'top',
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = list(
+      list(extend = 'copy',  text = 'Copiar'),
+      list(extend = 'csv',   text = 'Baixar CSV',
+           filename = 'Novo_CAGED_arqueologos_2022_2025'),
+      list(extend = 'excel', text = 'Baixar Excel',
+           filename = 'Novo_CAGED_arqueologos_2022_2025',
+           title    = 'Novo CAGED — CBO 2511-10 — 2022 a 2025')
+    ),
+    language = list(
+       search        = "Filtrar:",
+       lengthMenu    = "Mostrar _MENU_ registros",
+       info          = "Mostrando _START_ a _END_ de _TOTAL_ registros",
+       infoEmpty     = "Nenhum registro",
+       infoFiltered  = "(filtrados de _MAX_ registros)",
+       zeroRecords   = "Nenhum registro encontrado",
+       paginate      = list(previous = "Anterior", `next` = "Próximo",
+                            first = "Primeiro", last = "Último")
+    ),
+    pageLength = 5,
+    autoWidth  = TRUE,
+    columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
+    scrollX    = TRUE
+  )
+)
 ```
 
 ## Análise das Movimentações
@@ -2594,7 +2678,7 @@ browsable(tagList(titulo_html, fig))
 
 ### Movimentação por Região
 
-O Nordeste se consolida como polo de expansão sustentada, registrando saldo positivo em todos os anos analisados.
+O [Nordeste](#sec-nota-territorio "A localização do vínculo é determinada pelo endereço do contratante, e não onde a pesquisa arqueológica é executada") se consolida como polo de expansão sustentada, registrando saldo positivo em todos os anos analisados.
 
 A Região Sul apresenta um cenário oposto: saldo negativo persistente, revelando que os estabelecimentos sulistas encerram contratos em volume superior ao de novas admissões.
 
@@ -2729,7 +2813,7 @@ browsable(tagList(titulo_html, fig))
 
 ### Movimentação por Estados
 
-Assim como descrito no subitem [-@sec-ativos-estados], a distribuição das movimentações por unidade federativa também é fortemente assimétrica: nem todos os estados registraram saldo no período analisado, e alguns apresentaram apenas um ou dois eventos. Para viabilizar a comparação, os dados foram consolidados apenas para as UFs que obtiveram saldo em pelo menos um ano, possibilitando gerar um saldo acumulado que sintetize o desempenho de cada estado no quadriênio analisado.
+Assim como descrito no subitem [-@sec-ativos-estados], a distribuição das movimentações por [unidade federativa](#sec-nota-territorio "A localização do vínculo é determinada pelo endereço do contratante, e não onde a pesquisa arqueológica é executada") também é fortemente assimétrica: nem todos os estados registraram saldo no período analisado, e alguns apresentaram apenas um ou dois eventos. Para viabilizar a comparação, os dados foram consolidados apenas para as UFs que obtiveram saldo em pelo menos um ano, possibilitando gerar um saldo acumulado que sintetize o desempenho de cada estado no quadriênio analisado.
 
 Pernambuco se destaca como o principal polo de geração de vagas, com saldo acumulado de +42 postos de trabalho criados - o maior do país. O estado alcançou saldo positivo em todos os quatro anos, indicando que as empresas daquela unidade federativa mantém forte presença em projetos de licenciamento ambiental com exigências contratuais pelo regime celetista.
 
@@ -3193,9 +3277,9 @@ tabela_sexos_salario_caged <- resumo_salario_sexo_caged %>%
 tabela_sexos_salario_caged
 ```
 
-# Interligando Dados e Construindo narrativas
+# Interligando Dados e Construindo Narrativas
 
-A análise dos dados da RAIS e do Novo CAGED para o período de 2022 a 2025 permitiu mapear a dinâmica atual do mercado de trabalho formal da arqueologia no Brasil. O objetivo deste levantamento não foi esgotar todas as possibilidades analíticas desses bancos de dados, mas sim apresentar os principais padrões identificados por meio de gráficos interativos e tabelas. Para garantir transparência e reprodutibilidade, o script em R foi disponibilizado em cada painel, permitindo que outros pesquisadores verifiquem os procedimentos e explorem variáveis adicionais não contempladas aqui - ver @sec-notas.
+A análise dos dados da RAIS e do Novo CAGED para o período de 2022 a 2025 permitiu mapear a dinâmica atual do mercado de trabalho formal da arqueologia no Brasil. O objetivo deste levantamento não foi esgotar todas as possibilidades analíticas desses registros administrativos, mas sim apresentar os principais padrões identificados por meio de gráficos interativos e tabelas. Para garantir transparência e reprodutibilidade, o script em R foi disponibilizado em cada painel, permitindo que outros pesquisadores verifiquem os procedimentos e explorem variáveis adicionais não contempladas aqui - ver @sec-notas.
 
 O panorama revelado mostra um mercado de trabalho marcado por avanços pontuais seguido de retração. A arqueologia formal demonstra alta sensibilidade a eventos conjunturais: as contratações crescem quando grandes projetos de licenciamento ambiental demandam vínculos celetistas, e encolhem quando obras são paralisadas ou concluídas, provocando perda da capacidade de retenção da força de trabalho. O biênio 2023–2024 ilustra bem essa oscilação: 2023 registrou um boom de contratações e maior poder de escolha para os profissionais, enquanto 2024 trouxe uma reversão desse cenário.
 
@@ -3205,23 +3289,46 @@ O perfil de qualificação exigido pelo mercado formal também chama atenção. 
 
 Situação um pouco diferente para os jovens arqueólogos recém-formados, que não acompanham a expansão da profissão. Há baixa contratação dessa faixa, o que empura essa categoria a buscar experiências fora do mercado formal. Como os jovens profissionais possuem menor reposição, a tendência é de envelhecimento na composição da força de trabalho formal. Por outro lado, os pós-graduados, sem espaço no setor privado, tendem a buscar a carreira acadêmica ou a prestar serviços autônomos. 
 
-No recorte por gênero, observa-se uma contradição relevante: os homens predominam em número de vínculos, mas as mulheres recebem os salários mais altos, e essa diferença já se manifesta na admissão. Diante disso, a constatação de que as arqueólogas ocupam posição mais favorável no centro e na base da distribuição salarial abre caminho para hipóteses que este mesmo conjunto de dados permite investigar, mas que não foram contemplados neste estudo. 
+No recorte por gênero, os registros administrativos consultados revelam uma composição que exige leitura cuidadosa e contextualizada. Em 2025, os homens concentraram 56,9% dos vínculos formais, contra 43,1% das mulheres. Dentro desse universo formal, contudo, as arqueólogas ocupam posição mais favorável no centro e na base da distribuição salarial. 
 
-É possível, por exemplo, que as mulheres estejam mais concentradas em vínculos do setor público e de instituições de ensino e pesquisa, cujas remunerações tendem a superar as praticadas pelas consultorias privadas. Outra possibilidade é o maior tempo médio de emprego, acumulando progressões e estabilidade que elevam seus rendimentos. Pode-se também supor que detenham escolaridade declarada superior - com maior proporção de mestras e doutoras - ou que estejam distribuídas de forma distinta entre as regiões do país, com presença mais acentuada em empresas sediadas em áreas economicamente mais dinâmicas. O cruzamento sistemático dessas variáveis com o sexo constitui a próxima etapa natural desta investigação e é justamente o que permitirá substituir conjecturas por evidências sobre as causas da diferença salarial observada.
+Essa leitura, porém, descreve apenas o mercado formal. Duas pesquisas amostrais recentes, aplicadas diretamente à comunidade arqueológica, permitem situar esse achado em escala mais ampla - e ambas convergem para a mesma direção.
 
-Quanto à menor inserção feminina no mercado de trabalho formal - agravada pelo padrão crescente de desligamentos entre arqueólogas -, as limitações inerentes às bases administrativas consultadas impõem a necessidade de realizar estudos amostrais sistemáticos: esses registros captam apenas o setor formal e, portanto, não permitem investigar as condições de quem atua na informalidade, onde se concentra a maior parcela da força de trabalho da categoria.
+O primeiro levantamento, conduzido pelo Projeto Perfis com 506 respondentes e divulgado por Caromano *et al.* [-@caromano2025panorama] - mostram que 54% dos profissionais que atuam em arqueologia no Brasil se identificam como mulheres cisgênero, contra 42% de homens cisgênero; os demais se identificam como pessoas não binárias, outros e não responderam. A proporção é coerente com a estimativa populacional de 2.117 profissionais, dos quais aproximadamente 1.112 seriam mulheres [@gaspar2020arqueologia].
 
-Nesse sentido, a pesquisa de Machado e Mageste (2024) propôs uma metodologia para mapear arqueólogos que atuam como MEI. Contudo, a replicação dessa abordagem encontra um obstáculo objetivo: desde novembro de 2023, a Receita Federal descontinuou o campo “nome fantasia” nos registros de MEI, inviabilizando a estratégia de identificação baseada nesse atributo. Sem essa variável, a captura da presença de profissionais no universo do MEI tornou-se significativamente mais complexa.
+O segundo levantamento, realizado pelo Grupo de Trabalho de Licenciamento Ambiental da Sociedade de Arqueologia Brasileira (GTLA‑SAB) junto a 205 profissionais que atuam especificamente nesse mercado, chega a um resultado que espelha quase exatamente o dos registros administrativos: entre os profissionais autônomos no licenciamento ambiental, 54,7% são homens cisgênero e 41,9% são mulheres cisgênero [@gtla2025licenciamento]. Os próprios autores comentam que as arqueólogas não se destacam proporcionalmente ao tamanho populacional que representam na comunidade. 
 
-Ainda assim, pesquisas recentes aplicadas diretamente à comunidade arqueológica têm produzido evidências complementares. Um levantamento por questionário com 506 respondentes, cujos resultados foram divulgados por Caromano et al. (2025), corrobora as assimetrias de gênero identificadas neste artigo, reforçando a consistência dos achados. Porém, esse recorte reflete o panorama de 2022, o que evidencia outra limitação: sem continuidade temporal, as pesquisas amostrais captam apenas eventos instantâneos, não trajetórias.
+A convergência entre três fontes construídas por métodos que não se comunicam - registros administrativos preenchidos pelo empregador, questionário aberto à comunidade profissional e questionário dirigido ao nicho do licenciamento - descrevem o mesmo desenho:
 
-Diante desse cenário, torna-se imperativo que pesquisas amostrais como essas sejam realizadas de forma contínua e padronizada, constituindo um repositório histórico longitudinal. Somente com dados periódicos - tanto sobre o mercado formal quanto sobre a informalidade - será possível compreender a dinâmica temporal completa do trabalho arqueológico no Brasil, incluindo os fatores que condicionam a retenção, a transição e a precarização diferencial entre gêneros.
+| Fonte                    | O que mede                          | Homens | Mulheres |
+|--------------------------|-------------------------------------|--------|----------|
+| Gaspar *et al.* (2020)   | Comunidade arqueológica (n= 2.117)  | 47,3%  | 52,5%    |
+| Caromano *et al.* (2025) | Amostra da comunidade (n= 506)      | 42%    | 54%      |
+| RAIS (2025)              | Vínculos formais ativos (n= 383)    | 56,9%  | 43,1%    |
+| GTLA-SAB (2025)          | Autônomos no licenciamento (n= 148) | 54,7%  | 41,9%    |
 
-Em termos de poder de compra, o crescimento salarial nominal observado no quadriênio não se traduziu necessariamente em ganho real. Um arqueólogo que recebia R$ 4.000 em 2022 estava na faixa de três a quatro salários mínimos; se esse mesmo profissional passa a receber R$ 4.500 em 2025, sua remuneração cai para a faixa de dois a três salários mínimos, dado o reajuste salarial nacional. Em termos relativos ao salário mínimo, houve rebaixamento de faixa, não ascensão. Nesse sentido, a categoria vivencia desvalorização salarial, com a maioria recebendo menos de 3 salários mínimos e com poucas perspectivas de acesso a remunerações elevadas.
+As arqueólogas são, portanto, maioria na profissão e minoria nas relações de trabalho. A dissociação entre essas duas posições se materializa na pesquisa do Projeto Perfis: apenas 13% das mulheres declararam possuir vínculo celetista, contra 23% dos homens; e 11% delas se declararam desempregadas, frente a 8% deles. 
+
+O levantamento do GTLA‑SAB [@gtla2025licenciamento] investigou as razões dessa distância e encontrou relatos de assédio moral e sexual entre 6,2% dos profissionais autônomos, sendo que a quase totalidade dos relatos de assédio sexual parte de mulheres cisgênero. Os autores apontam ainda a interface com empresas de engenharia majoritariamente masculinas e a percepção recorrente de que mulheres seriam “não aptas a certos tipos de trabalhos arqueológicos”. Relatam que essas situações “podem explicar sua presença reduzida em relação aos homens neste âmbito”.
+
+Esse contraste reposiciona a interpretação da diferença salarial observada nas seções anteriores. É verdade que, entre os vínculos formais captados pela RAIS, as arqueólogas apresentaram remuneração mediana superior à dos arqueólogos em 2025. Porém, essa medida descreve um subconjunto selecionado: as profissionais que conseguiram emprego formal. Quando se observa o universo da categoria, o enquadramento muda: Caromano *et al.* [-@caromano2025panorama] registram que as mulheres predominam justamente na faixa de renda de 1 a 2 salários mínimos, superando os homens apenas de forma marginal nas faixas de 5 e 9 salários mínimos. A vantagem salarial feminina detectada nos registros administrativos, portanto, não representa a realidade da maioria das arqueólogas brasileiras; ela descreve a exceção do funil seletivo - a parcela que logrou ingressar e permanecer no mercado formal.
+
+A comparação entre as fontes permite dimensionar esse funil seletivo. Com 383 vínculos ativos em 2025 e um universo profissional estimado em 2.117 arqueólogos [@gaspar2020arqueologia] - estimativa de 2018, a mais recente disponível -, o mercado formal alcança cerca de um quinto da categoria. Tudo o que este artigo descreve refere-se a essa fração. Mais de quatro quintos da profissão permanecem invisíveis aos registros administrativos da ocupação de arqueólogo, dispersos entre MEIs, trabalhadores com código CBO distinto, consultores autônomos, docentes, profissionais em transição e desempregados.
+
+Delimitado esse quadro, a vantagem salarial feminina observada no mercado formal permanece como questão em aberto. Este situação possibilita testar hipóteses que este mesmo conjunto de dados permite investigar, mas que não foram contemplados neste estudo. É possível, por exemplo, que as mulheres estejam mais concentradas em vínculos do setor público e de instituições de ensino e pesquisa, cujas remunerações tendem a superar as praticadas pelas consultorias privadas. Outra possibilidade é o maior tempo médio de emprego, acumulando progressões e estabilidade que elevam seus rendimentos. Pode-se também supor que estejam distribuídas de forma distinta entre as regiões do país, com presença mais acentuada em empresas sediadas em áreas economicamente mais dinâmicas. O cruzamento sistemático dessas variáveis com o sexo constitui a próxima etapa natural desta investigação e é justamente o que permitirá substituir conjecturas por evidências sobre as causas da diferença salarial observada.
+
+Quanto à menor inserção feminina no mercado formal - agravada pelo aumento constante de desligamentos entre arqueólogas -, as limitações das bases administrativas impõem a necessidade de estudos amostrais sistemáticos para capturar dados de quem atua fora dos vínculos da ocupação de arqueólogo, onde se concentra a maior parcela da força de trabalho. Nesse sentido, a pesquisa de Machado e Mageste [-@machado2024arqueologos] propôs uma metodologia para mapear arqueólogos que atuam como MEI. Contudo, a replicação dessa abordagem encontra um obstáculo objetivo: desde novembro de 2023, a Receita Federal descontinuou o campo “nome fantasia” nos [registros de MEI](https://www.gov.br/empresas-e-negocios/pt-br/empreendedor/perguntas-frequentes/como-e-feita-a-formalizacao-do-mei/posso-cadastrar-no-nome-fantasia "link de acesso ao conteúdo"){target="_blank"}, inviabilizando a estratégia de identificação baseada nesse atributo.
+
+Cabe registrar as limitações inerentes às próprias pesquisas amostrais utilizadas. O questionário do Projeto Perfis esteve aberto entre junho e dezembro de 2022; o do GTLA‑SAB, entre maio e agosto de 2023. Ambos foram aplicados no formato digital, por convites via e-mail e divulgação em redes sociais. Contudo, sem continuidade temporal, pesquisas amostrais captam apenas retratos pontuais, não trajetórias. E sem elas, os registros administrativos descrevem somente a minoria formalizada. As duas fontes são complementares e indispensáveis: os microdados oficiais fornecem a série temporal e a granularidade do emprego formal; as pesquisas amostrais revelam o que acontece fora dele.
+
+Diante desse cenário, torna-se imperativo que pesquisas amostrais sejam realizadas de forma contínua, representativa e padronizada, constituindo um repositório histórico longitudinal. Somente com dados periódicos - tanto sobre o mercado formal quanto fora dele - será possível compreender a dinâmica temporal do trabalho arqueológico no Brasil, incluindo os fatores que condicionam a retenção, a transição e a precarização diferencial entre gêneros.
+
+Em termos de poder de compra, o crescimento salarial nominal observado no quadriênio não se traduziu necessariamente em ganho real. Um arqueólogo que recebia R$ 4.000 em 2022 estava na faixa de três a quatro salários mínimos; se esse mesmo profissional passa a receber R$ 4.500 em 2025, sua remuneração cai para a faixa de dois a três salários mínimos, dado o reajuste salarial nacional. Em posições relativas ao salário mínimo, houve rebaixamento de faixa, não ascensão. Nesse sentido, a categoria vivencia desvalorização salarial, com a maioria recebendo menos de 3 salários mínimos e com poucas perspectivas de acesso a remunerações elevadas.
 
 A dependência do licenciamento ambiental é o fio condutor que atravessa todas essas dinâmicas. O crescimento de vínculos e salários nominais concentra-se no setor privado, especialmente nas consultorias que atendem demandas de obras licenciáveis. Exceções existem, mas ainda não configuram novas fronteiras de empregabilidade. O setor público, por outro lado, responde por uma participação minoritária, com poucos concursos e baixa absorção de profissionais - um contrassenso diante da densidade do patrimônio arqueológico brasileiro e da necessidade de gestão desses bens culturais. A predominância de projetos de curta duração gera um ciclo de alta rotatividade que impede a construção de estabilidade para a maioria dos trabalhadores.
 
-Diante desse quadro, a mobilização coletiva surge como caminho necessário. O sindicato é a instância institucional mais adequada para articular estratégias que promovam maior presença de arqueólogos em instituições públicas, diversificação das fontes de contratação - incluindo editais de fomento cultural como a [Política Nacional Aldir Blanc de Fomento à Cultura (PNAB)](https://www.gov.br/cultura/pt-br/assuntos/acoes-programas-e-politicas/politica-nacional-aldir-blanc-de-fomento-a-cultura "Link da página da PNAB"){target="_blank"} -, proposição de pisos salariais, aplicação de pesquisas amostrais e condições mínimas de trabalho. Sem essa articulação, a profissão continuará crescendo em número de vínculos, mas sem traduzir esse crescimento em segurança, estabilidade e valorização real para seus profissionais.
+Diante desse quadro, a mobilização coletiva emerge como caminho necessário. O levantamento do GTLA‑SAB [@gtla2025licenciamento] revela que entre os profissionais autônomos que atuam no licenciamento ambiental, 74% apontaram a ausência de um sindicato ou conselho profissional como o principal problema da categoria. Essa percepção é acompanhada por queixas sobre salários e diárias insuficientes, instabilidade no emprego e acúmulo de funções. A convergência desses diagnósticos aponta para uma lacuna institucional: sem uma entidade de representação coletiva, a categoria carece de instrumentos para negociar pisos salariais, padronizar condições de trabalho e pressionar por políticas públicas de contratação.
+
+É precisamente por isso que o sindicato se apresenta como a instância institucional mais adequada para articular essas demandas. Por meio dele, é possível construir estratégias para ampliar a presença de arqueólogos em instituições públicas, diversificar as fontes de contratação - incluindo editais de fomento cultural como a Política Nacional Aldir Blanc de Fomento à Cultura ([PNAB](https://www.gov.br/cultura/pt-br/assuntos/acoes-programas-e-politicas/politica-nacional-aldir-blanc-de-fomento-a-cultura "Link de acesso para a PNAB"){target="_blank"}) -, propor e defender pisos salariais mínimos, fortalecer a transição de contratos informais para vínculos celetistas e instituir a realização periódica de pesquisas amostrais que monitorem a dinâmica do mercado. Sem essa articulação coletiva, a profissão continuará crescendo em número de vínculos, mas sem traduzir esse crescimento em segurança, estabilidade e valorização real para seus profissionais.
 
 # Notas Metodológicas {#sec-notas}
 
@@ -3255,7 +3362,7 @@ Essas duas medidas operam em lógicas distintas e não se somam nem se comparam 
 
 Em resumo: a RAIS diz sobre quem está empregado; o Novo CAGED diz sobre quem entra e sai do emprego. São bases complementares, mas nunca intercambiáveis.
 
-Para mais informações, recomenda-se a leitura da [RAIS 50 anos](https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/acoes-e-programas/programas-projetos-acoes-obras-e-atividades/estatisticas-trabalho/rais/238506_lv_rais50anos_encarte_a3.pdf "link para acesso ao livro publicado pelo MTE"){target="_blank"}.
+Para mais informações, recomenda-se a leitura da RAIS 50 anos [@rais50anos].
 
 ## Percentual de participação {#sec-nota-participacao}
  
@@ -3276,6 +3383,32 @@ participação (%) = (quantidade do grupo ÷ total do ano) × 100
 **O detalhe que muda a leitura:** o divisor é sempre o total de vínculos **daquele ano específico** - nunca a soma dos quatro anos do quadriênio. Por isso, os percentuais de cada ano fecham em 100% de forma independente. Essa abordagem tem implicação prática importante: um grupo pode *perder* participação percentual mesmo quando seu número absoluto cresce, desde que os demais grupos tenham crescido em ritmo mais acelerado. Inversamente, um grupo pode ganhar participação mesmo sem crescimento absoluto, se os outros encolherem. 
 
 A leitura correta exige, portanto, comparar simultaneamente a variação percentual e a variação absoluta para evitar interpretações equivocadas.
+
+## Onde o vínculo é contado no mapa {#sec-nota-territorio}
+ 
+**Responde:** o que a distribuição por estado e por região está de fato mostrando?
+ 
+**A localização geográfica de cada vínculo é determinada pelo endereço do contratante, e não pelo domicílio do trabalhador nem pelo local onde a pesquisa arqueológica é executada.**
+ 
+A RAIS e o Novo CAGED localizam cada vínculo pelo endereço do estabelecimento declarado no CNPJ do empregador. É o escritório que assina a carteira, e não o canteiro de obras, a área de prospecção ou a cidade onde o profissional mora.
+
+O cálculo é o mesmo percentual de participação da @sec-nota-participacao:
+ 
+```
+participação da UF (%) = (vínculos da UF ÷ total do ano) × 100
+```
+ 
+**Exemplo.** Em 2025, Pernambuco reunia 63 dos 383 vínculos ativos - 16,4% do país, a segunda maior participação. Desses 63, **61 estão registrados em Recife**:
+ 
+```
+(61 ÷ 63) × 100 = 96,8%
+```
+ 
+Praticamente todo o resultado pernambucano vem de estabelecimentos sediados na capital. Isso não significa que a arqueologia pernambucana se faça em Recife: significa que as empresas que contratam têm ali o seu endereço fiscal. As equipes que essas empresas mantêm em campo podem estar em qualquer município do estado - ou fora dele.
+
+**O detalhe que muda a leitura.** O mapa deste artigo mostra **onde o emprego é contratado**, não onde o trabalho é executado. As duas localizações podem coincidir quando o profissional atua na mesma cidade da sede da empresa. Mas divergem sempre que há deslocamento para campo - que é, justamente, a situação mais comum em projetos de licenciamento ambiental, nos quais as equipes são mobilizadas temporariamente para áreas de prospecção, salvamento e monitoramento que raramente coincidem com o endereço fiscal do empregador. Por isso, ao interpretar a distribuição geográfica dos vínculos neste estudo, é preciso ter em mente que o mapa retrata a localização das empresas contratantes - e não o território onde o fazer arqueológico de fato acontece.
+
+**Dados não preenchidos da localização do trabalho executado.** A RAIS prevê um campo de município de trabalho, distinto do município do estabelecimento, mas ele **não vem sendo preenchido pelos empregadores** nos arquivos utilizados: nos 383 vínculos ativos de 2025, nenhum registro traz essa informação. A base oferece essa informação, no entanto, ela não é declarada pelos empregadores.
 
 ## Variação no quadriênio: duas formas, dois significados {#sec-nota-variacao}
  
@@ -3542,7 +3675,7 @@ pacotes |>
     locations = cells_body(columns = Finalidade)
   ) |>
   tab_source_note(
-    source_note = "As versões são lidas do ambiente no momento em que o documento é gerado, de modo que a tabela acompanha automaticamente qualquer atualização"
+    source_note = "As versões são lidas do ambiente no momento em que o documento é gerado."
   )
 ```
  
@@ -3553,6 +3686,7 @@ A escolha por ferramentas de código aberto é deliberada: qualquer pessoa pode 
 
 xxxxxxx
 
-# Referências
-
-xxxxxxx
+# Referências {.unnumbered}
+ 
+::: {#refs}
+:::
