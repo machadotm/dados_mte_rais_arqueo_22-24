@@ -44,6 +44,11 @@ book:
   # ── repositório do projeto ─────────────────────────────────────────
   repo-url: https://github.com/machadotm/dados_mte_rais_arqueo_22-24
   repo-actions: [source, issue]
+  page-footer:
+    left: |
+      Microdados da [RAIS e do Novo CAGED](https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/acoes-e-programas/programas-projetos-acoes-obras-e-atividades/estatisticas-trabalho/microdados-rais-e-caged)
+    right: |
+      Construído com [Quarto](https://quarto.org/) e [R](https://www.R-project.org/)
 
 bibliography: referencias.bib
 csl: abnt.csl

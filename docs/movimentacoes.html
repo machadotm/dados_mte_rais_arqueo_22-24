@@ -988,7 +988,7 @@ BRASIL. MINISTÉRIO DO TRABALHO E EMPREGO. <strong>Classificação <span>Brasile
 INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA (IBGE). <strong>Classificação <span>Nacional</span> de <span>Atividades</span> <span>Econômicas</span> — <span>CNAE</span> 2.0</strong>. Disponível em: &lt;<a href="https://concla.ibge.gov.br/classificacoes/por-tema/atividades-economicas/classificacao-nacional-de-atividades-economicas">https://concla.ibge.gov.br/classificacoes/por-tema/atividades-economicas/classificacao-nacional-de-atividades-economicas</a>&gt;. Acesso em: 27 ago. 2026.
 </div>
 <div id="ref-iphan2024edital" class="csl-entry" role="listitem">
-INSTITUTO DO PATRIMÔNIO HISTÓRICO E ARTÍSTICO NACIONAL. <strong>Edital nº 1, de 3 de dezembro de 2024: Processo Seletivo Simplificado (PSS/IPHAN)</strong>. Diário Oficial da União (DOU), 2024. Disponível em: &lt;<a href="https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293">https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293</a>&gt;. Acesso em: 27 ago. 2026
+INSTITUTO DO PATRIMÔNIO HISTÓRICO E ARTÍSTICO NACIONAL (IPHAN). <strong>Edital nº 1, de 3 de dezembro de 2024: Processo Seletivo Simplificado (PSS/IPHAN)</strong>. Diário Oficial da União (DOU), 2024. Disponível em: &lt;<a href="https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293">https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293</a>&gt;. Acesso em: 27 ago. 2026
 </div>
 <div id="ref-rcore2026" class="csl-entry" role="listitem">
 R CORE TEAM. <strong><a href="https://www.R-project.org/">R: A Language and Environment for Statistical Computing</a></strong>. Vienna, Austria: R Foundation for Statistical Computing, 2026.
@@ -999,14 +999,15 @@ R CORE TEAM. <strong><a href="https://www.R-project.org/">R: A Language and Envi
 </main> <!-- /main -->
 <script>
 // ───────────────────────────────────────────────────────────────────────────
-//  Distribui as ações de repositório entre as duas colunas:
+//  Ações do repositório distribuídas entre as duas colunas:
 //
 //    esquerda, no pé da lista de capítulos → "Ver o código fonte"
-//                                            (apontando para a raiz do repo)
-//    direita, ao fim de "Nesta seção"      → as demais ações (ex.: issue)
+//                                            (encurtado para a raiz do repo)
+//    direita, ao fim de "Nesta seção"      → as demais ações (issue, edit…)
 //
-//  Também remove do cabeçalho o ícone duplicado que o Quarto cria a partir
-//  de repo-url, e faz os links externos abrirem em nova aba.
+//  Também: remove do cabeçalho o ícone duplicado gerado por repo-url,
+//  dá ícone às ações que o Quarto deixa sem, abre os links externos em nova
+//  aba e preserva a cópia do rodapé que serve às telas estreitas.
 // ───────────────────────────────────────────────────────────────────────────
 (function () {
 
@@ -1025,60 +1026,26 @@ R CORE TEAM. <strong><a href="https://www.R-project.org/">R: A Language and Envi
   function ajustar() {
     var barra  = document.getElementById('quarto-sidebar');
     var margem = document.getElementById('quarto-margin-sidebar');
-    var blocos = document.querySelectorAll('.toc-actions');
+    var blocos = Array.prototype.slice.call(document.querySelectorAll('.toc-actions'));
     if (!barra || !blocos.length) return;
 
-    var principal = blocos[0];
-
-    // remove as cópias que o Quarto repete no rodapé da página
-    for (var i = 1; i < blocos.length; i++) {
-      var pai = blocos[i].closest('.nav-footer-center, .nav-footer-left, .nav-footer-right');
-      (pai || blocos[i]).remove();
-    }
-
-    // ── separa o link do código fonte ────────────────────────────────────
-    var fonte = principal.querySelector('a[href*="/blob/"]');
-    if (fonte) {
-      var base = fonte.getAttribute('href').split('/blob/')[0];
-
+    // ── 1. encurta o link do código fonte em TODAS as cópias e tira o
+    //       ícone duplicado do cabeçalho ─────────────────────────────────
+    var base = null;
+    blocos.forEach(function (bloco) {
+      var f = bloco.querySelector('a[href*="/blob/"]');
+      if (!f) return;
+      base = base || f.getAttribute('href').split('/blob/')[0];
+      f.setAttribute('href', base);
+    });
+    if (base) {
       var icone = document.querySelector(
         '.sidebar-tools-main a.quarto-navigation-tool[href="' + base + '"]'
       );
       if (icone) icone.remove();
-
-      fonte.setAttribute('href', base);      // encurta para a raiz do repositório
-
-      var item = fonte.closest('li');
-      var caixa = document.createElement('div');
-      caixa.className = 'toc-actions';
-      var lista = document.createElement('ul');
-      lista.appendChild(item);               // move só este <li>
-      caixa.appendChild(lista);
-
-      var rodape = document.createElement('div');
-      rodape.className = 'sidebar-fonte';
-      rodape.appendChild(document.createElement('hr'));
-      rodape.appendChild(caixa);
-      barra.appendChild(rodape);
     }
 
-    // ── o que sobrou (issue, edit…) fica na coluna da direita ────────────
-    var restantes = principal.querySelectorAll('li');
-    if (!restantes.length) {
-      principal.remove();
-    } else if (margem && !margem.contains(principal)) {
-      // Capítulos sem subtítulos não têm sumário: o Quarto joga o bloco no
-      // rodapé da página e marca a margem — que estaria vazia — com
-      // "zindex-bottom" (z-index: -1). Trazido o bloco para lá, essa classe
-      // deixaria o link ATRÁS do contêiner da página: visível, porém não
-      // clicável. Por isso ela sai junto.
-      margem.classList.remove('zindex-bottom');
-      principal.classList.add('toc-actions-soltas');
-      margem.appendChild(principal);
-    }
-
-    // ── ícone: o Quarto só decora a primeira ação; as demais recebem
-    //    <i class="bi empty">. Copia aqui o mesmo ícone para todas. ────────
+    // ── 2. o Quarto só decora a primeira ação; copia o ícone para as demais
     var modelo = document.querySelector('.toc-actions i.bi:not(.empty)');
     var classe = 'bi-github';
     if (modelo) {
@@ -1091,8 +1058,48 @@ R CORE TEAM. <strong><a href="https://www.R-project.org/">R: A Language and Envi
       function (i) { i.classList.remove('empty'); i.classList.add(classe); }
     );
 
+    // ── 3. define qual bloco é o da coluna da direita ────────────────────
+    var principal = null;
+    blocos.forEach(function (b) { if (margem && margem.contains(b)) principal = b; });
+
+    if (!principal && margem) {
+      // Capítulos sem subtítulos não têm sumário: o Quarto põe o bloco só no
+      // rodapé. Clonamos para a margem e deixamos o original no rodapé,
+      // restrito às telas estreitas — que é como o Quarto faz nas demais
+      // páginas. Mover em vez de clonar sumiria com as ações no celular.
+      var origem = blocos[0];
+      principal = origem.cloneNode(true);
+      principal.classList.add('toc-actions-soltas');
+      origem.classList.add('d-sm-block', 'd-md-none');
+
+      // a margem vazia vem com "zindex-bottom" (z-index: -1): o conteúdo
+      // ficaria visível, porém atrás do contêiner da página e sem receber
+      // clique. A classe sai junto.
+      margem.classList.remove('zindex-bottom');
+      margem.appendChild(principal);
+    }
+
+    // ── 4. move o item do código fonte para o pé da barra esquerda ───────
+    if (principal) {
+      var fonte = principal.querySelector('a[href$="' + (base || '###') + '"]');
+      if (fonte) {
+        var caixa = document.createElement('div');
+        caixa.className = 'toc-actions';
+        var lista = document.createElement('ul');
+        lista.appendChild(fonte.closest('li'));
+        caixa.appendChild(lista);
+
+        var rodape = document.createElement('div');
+        rodape.className = 'sidebar-fonte';
+        rodape.appendChild(document.createElement('hr'));
+        rodape.appendChild(caixa);
+        barra.appendChild(rodape);
+      }
+      if (!principal.querySelectorAll('li').length) principal.remove();
+    }
+
     Array.prototype.forEach.call(
-      document.querySelectorAll('.sidebar-tools-main a, .toc-actions a'),
+      document.querySelectorAll('.sidebar-tools-main a, .toc-actions a, .nav-footer a'),
       novaAba
     );
   }
@@ -1520,8 +1527,21 @@ R CORE TEAM. <strong><a href="https://www.R-project.org/">R: A Language and Envi
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Microdados da <a href="https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/acoes-e-programas/programas-projetos-acoes-obras-e-atividades/estatisticas-trabalho/microdados-rais-e-caged">RAIS e do Novo CAGED</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/machadotm/dados_mte_rais_arqueo_22-24/blob/main/movimentacoes.qmd" class="toc-action"><i class="bi bi-github"></i>Código fonte do artigo</a></li><li><a href="https://github.com/machadotm/dados_mte_rais_arqueo_22-24/issues/new" class="toc-action"><i class="bi empty"></i>Relatar erro</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Construído com <a href="https://quarto.org/">Quarto</a> e <a href="https://www.R-project.org/">R</a></p>
+</div>
+  </div>
+</footer>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/machadotm/dados_mte_rais_arqueo_22-24/blob/main/movimentacoes.qmd" class="toc-action"><i class="bi bi-github"></i>Código fonte do artigo</a></li><li><a href="https://github.com/machadotm/dados_mte_rais_arqueo_22-24/issues/new" class="toc-action"><i class="bi empty"></i>Relatar erro</a></li></ul></div></div></div></footer></body></html>
+</body></html>
