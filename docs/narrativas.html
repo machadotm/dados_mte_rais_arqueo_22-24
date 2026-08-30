@@ -425,8 +425,12 @@ WITTMANN, Marcus A. S. <em>et al.</em> <a href="https://www.sabnet.org/download/
     if (!restantes.length) {
       principal.remove();
     } else if (margem && !margem.contains(principal)) {
-      // capítulos sem subtítulos não têm sumário: o Quarto joga o bloco no
-      // rodapé da página; aqui ele é trazido para a margem, como nos demais
+      // Capítulos sem subtítulos não têm sumário: o Quarto joga o bloco no
+      // rodapé da página e marca a margem — que estaria vazia — com
+      // "zindex-bottom" (z-index: -1). Trazido o bloco para lá, essa classe
+      // deixaria o link ATRÁS do contêiner da página: visível, porém não
+      // clicável. Por isso ela sai junto.
+      margem.classList.remove('zindex-bottom');
       principal.classList.add('toc-actions-soltas');
       margem.appendChild(principal);
     }
