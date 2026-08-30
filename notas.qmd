@@ -1,0 +1,351 @@
+# Notas Metodológicas {#sec-notas}
+
+{{< include _setup.qmd >}}
+
+Esta seção tem por objetivo explicitar o cálculo de cada indicador derivado no estudo, de modo que qualquer leitor possa reproduzir as contas utilizando exclusivamente os números já apresentados nos gráficos e tabelas, sem necessidade de consultar o script de processamento.
+
+A intenção é garantir transparência e reprodutibilidade: cada nota metodológica é estruturada em três partes. Primeiro, a pergunta que o indicador pretende responder. Em seguida, apresenta-se a fórmula utilizada, com a definição de cada termo e a indicação das colunas ou agregados envolvidos. Por fim, fornece-se um exemplo prático com dados extraídos do próprio estudo, demonstrando a operação passo a passo.
+
+Dessa forma, o leitor pode tomar os valores publicados, aplicar a fórmula indicada e chegar ao mesmo resultado reportado, conferindo autonomamente a consistência de cada indicador.
+
+## O que está sendo contado {#sec-nota-unidade}
+
+**A unidade de análise é o vínculo de trabalho formal, e não a pessoa física do trabalhador**
+
+Um mesmo arqueólogo que tenha mantido dois contratos simultâneos ou sequenciais no mesmo ano aparecerá duas vezes na base de dados. Inversamente, arqueólogos que atuam como pessoa jurídica (MEI), bolsistas, autônomos ou que foram registrados sob códigos de ocupação distintos do código específico de arqueólogo (código CBO 2511-10) simplesmente não aparecem nos recortes apresentados. Assim, quando o estudo reporta *383 vínculos ativos em 2025*, está se referindo a 383 contratos formais de trabalho declarados sob o código de arqueólogo naquele ano - e não a *383 profissionais distintos em atividade no país*.
+
+Duas métricas fundamentais são utilizadas ao longo da análise, e é crucial não confundi-las:
+
+-   **Estoque (RAIS):** trata-se de uma fotografia tirada em 31 de dezembro de cada ano. Representa o número de contratos que estavam formalmente ativos naquela data específica, independentemente de quando tenham sido iniciados. É uma medida estática - um retrato do que estava em exercício no fechamento do ano.
+
+-   **Fluxo (Novo CAGED):** refere-se ao movimento mensal de abertura e encerramento de contratos ao longo do ano. Cada admissão e cada desligamento são registrados no mês em que ocorrem, gerando um saldo mensal (admissões menos desligamentos) que pode ser positivo ou negativo.
+
+|   | RAIS | Novo CAGED |
+|------------------|--------------------------|----------------------------|
+| Tipo de informação | Estoque (posição em 31/12) | Fluxo (movimentação mensal) |
+| Pergunta central | Quantos empregos formais existiam<br> e quais suas características? | Quantas contratações e demissões<br> ocorreram no mês? |
+| Periodicidade | Anual | Mensal |
+| Regime coberto | CLT + estatutário + militares | Apenas CLT |
+| Unidade de análise | Vínculo ativo em 31/dez | Movimentação (admissão ou demissão) |
+
+Essas duas medidas operam em lógicas distintas e não se somam nem se comparam diretamente. O estoque de um ano é o resultado acumulado de todos os fluxos positivos e negativos que o precederam, além de eventuais reclassificações e correções. Por isso, é perfeitamente possível - e de fato ocorreu em 2025 - que o estoque de vínculos cresça enquanto o fluxo anual do CAGED seja negativo. Isso acontece quando o número de contratos encerrados no ano supera o de novas admissões, mas o saldo acumulado dos anos anteriores ainda sustenta um estoque maior do que o do ano anterior.
+
+Em resumo: a RAIS diz sobre quem está empregado; o Novo CAGED diz sobre quem entra e sai do emprego. São bases complementares, mas nunca intercambiáveis.
+
+Para mais informações, recomenda-se a leitura da RAIS 50 anos [@rais50anos].
+
+## Percentual de participação {#sec-nota-participacao}
+
+**Responde:** qual a proporção que determinado grupo representa em relação ao total de vínculos daquele ano-base?
+
+O percentual de participação é o indicador utilizado para todas as distribuições apresentadas no estudo. Ele expressa o peso relativo de cada subgrupo dentro do universo total de vínculos de um mesmo ano.
+
+```         
+participação (%) = (quantidade do grupo ÷ total do ano) × 100
+```
+
+**Exemplo.** Em 2025, 65 vínculos apresentaram remuneração média entre 1 e 2 salários mínimos, num total de 316 vínculos com remuneração declarada:
+
+```         
+(65 ÷ 316) × 100 = 20,57%
+```
+
+**O detalhe que muda a leitura:** o divisor é sempre o total de vínculos **daquele ano específico** - nunca a soma dos quatro anos do quadriênio. Por isso, os percentuais de cada ano fecham em 100% de forma independente. Essa abordagem tem implicação prática importante: um grupo pode *perder* participação percentual mesmo quando seu número absoluto cresce, desde que os demais grupos tenham crescido em ritmo mais acelerado. Inversamente, um grupo pode ganhar participação mesmo sem crescimento absoluto, se os outros encolherem.
+
+A leitura correta exige, portanto, comparar simultaneamente a variação percentual e a variação absoluta para evitar interpretações equivocadas.
+
+## Onde o vínculo é contado no mapa {#sec-nota-territorio}
+
+**Responde:** o que a distribuição por estado e por região está de fato mostrando?
+
+**A localização geográfica de cada vínculo é determinada pelo endereço do contratante, e não pelo domicílio do trabalhador nem pelo local onde a pesquisa arqueológica é executada.**
+
+A RAIS e o Novo CAGED localizam cada vínculo pelo endereço do estabelecimento declarado no CNPJ do empregador. É o escritório que assina a carteira, e não o canteiro de obras, a área de prospecção ou a cidade onde o profissional mora.
+
+O cálculo é o mesmo percentual de participação da @sec-nota-participacao:
+
+```         
+participação da UF (%) = (vínculos da UF ÷ total do ano) × 100
+```
+
+**Exemplo.** Em 2025, Pernambuco reunia 63 dos 383 vínculos ativos - 16,4% do país, a segunda maior participação. Desses 63, **61 estão registrados em Recife**:
+
+```         
+(61 ÷ 63) × 100 = 96,8%
+```
+
+Praticamente todo o resultado pernambucano vem de estabelecimentos sediados na capital. Isso não significa que a arqueologia pernambucana se faça em Recife: significa que as empresas que contratam têm ali o seu endereço fiscal. As equipes que essas empresas mantêm em campo podem estar em qualquer município do estado - ou fora dele.
+
+**O detalhe que muda a leitura.** O mapa deste artigo mostra **onde o emprego é contratado**, não onde o trabalho é executado. As duas localizações podem coincidir quando o profissional atua na mesma cidade da sede da empresa. Mas divergem sempre que há deslocamento para campo - que é, justamente, a situação mais comum em projetos de licenciamento ambiental, nos quais as equipes são mobilizadas temporariamente para áreas de prospecção, salvamento e monitoramento que raramente coincidem com o endereço fiscal do empregador. Por isso, ao interpretar a distribuição geográfica dos vínculos neste estudo, é preciso ter em mente que o mapa retrata a localização das empresas contratantes - e não o território onde o fazer arqueológico de fato acontece.
+
+**Dados não preenchidos da localização do trabalho executado.** A RAIS prevê um campo de município de trabalho, distinto do município do estabelecimento, mas ele **não vem sendo preenchido pelos empregadores** nos arquivos utilizados: nos 383 vínculos ativos de 2025, nenhum registro traz essa informação. A base oferece essa informação, no entanto, ela não é declarada pelos empregadores.
+
+## Variação no quadriênio: duas formas, dois significados {#sec-nota-variacao}
+
+**Responde:** quanto uma medida mudou entre o começo e o fim do período?
+
+Quando a variável é uma **quantidade** ou um **valor absoluto** (número de vínculos, remuneração em reais), utiliza-se a variação percentual:
+
+```         
+variação (%) = (valor final ÷ valor inicial − 1) × 100
+```
+
+**Exemplo.** Vínculos ativos passaram de 294 em 2022 para 383 em 2025:
+
+```         
+(383 ÷ 294 − 1) × 100 = 30,27%
+```
+
+Quando a variável é um **percentual** (proporção dentro de uma distribuição), a comparação correta é a subtração simples entre os dois percentuais. O resultado é expresso em **pontos percentuais** (p.p.):
+
+```         
+variação (p.p.) = percentual final − percentual inicial
+```
+
+**Exemplo.** A faixa de 5 a 7 salários mínimos caiu de 14,07% dos vínculos em 2022 para 4,75% em 2025:
+
+```         
+4,75 − 14,07 = −9,3 pontos percentuais
+```
+
+**Por que a distinção importa.** Essa mesma queda também pode ser descrita como variação relativa:
+
+```         
+(4,75 ÷ 14,07 − 1) × 100 = −66,2%
+```
+
+As duas leituras estão corretas, mas dizem coisas diferentes. A queda de 9,3 pontos percentuais informa que a faixa encolheu em 9,3 pontos na distribuição total. Já a queda de 66,2% expressa que a faixa perdeu dois terços do tamanho que tinha - ou seja, restringiu-se a um terço do seu volume original. Confundir uma com a outra - por exemplo, afirmar que "a faixa caiu 9,3%" quando na verdade se quer dizer que caiu 9,3 pontos percentuais - é o erro mais comum na interpretação desse tipo de tabela e pode levar a conclusões drasticamente equivocadas.
+
+**Arredondamento.** Alguns percentuais apresentados no artigo são arredondados para uma casa decimal, seguindo a regra usual: dígitos iguais ou superiores a 5 arredondam-se para cima. Assim, 13,96% é apresentado como 14%, e não como 13,9%. Os valores monetários mantêm duas casas decimais. Todos os cálculos, porém, são realizados com os valores completos, sendo o arredondamento aplicado apenas na etapa de exibição. Por isso, a soma dos percentuais arredondados de uma tabela pode eventualmente apresentar diferença de alguns centésimos em relação ao total de 100% indicado.
+
+## Diferença relativa entre dois grupos {#sec-nota-diferenca}
+
+**Responde:** quanto um grupo recebe a mais, ou a menos, que outro no mesmo momento?
+
+É a conta usada em *Valores Salariais por Sexo* e no recorte de sexo da RAIS. Este indicador **compara dois grupos em um mesmo ano-base**, em vez de comparar o mesmo grupo em dois momentos distintos. A aritmética é idêntica à da variação temporal, mas o significado é diferente. A expressão é.
+
+```         
+diferença (%) = (valor do grupo A ÷ valor do grupo B − 1) × 100
+```
+
+No presente artigo, o grupo de referência - aquele que ocupa o divisor - é sempre o **masculino**. Assim, um resultado positivo indica que as arqueólogas recebem mais que os arqueólogos naquele recorte; um resultado negativo indica que recebem menos.
+
+**Exemplo.** No primeiro quartil dos salários de admissão de 2022, as mulheres recebiam R\$ 2.948,70 e os homens R\$ 1.625,00:
+
+```         
+(2.948,70 ÷ 1.625,00 − 1) × 100 = +81,5%
+```
+
+**A armadilha desta conta.** O resultado depende de quem está no divisor, e os dois números **não são simétricos**. Tomando as mulheres como referência, a mesma diferença de 2022 vira:
+
+```         
+(1.625,00 ÷ 2.948,70 − 1) × 100 = −44,9%
+```
+
+Dizer "as mulheres recebiam 81,5% a mais" e "os homens recebiam 44,9% a menos" descreve exatamente o mesmo par de salários. Por isso o grupo de referência é fixado e informado - e, quando a diferença é pequena, ela também é apresentada em reais para não gerar ambiguidade. Em 2025, por exemplo, o primeiro quartil feminino superava o masculino em apenas 0,65%, o equivalente a **R\$ 13,00**.
+
+## Taxa de desligamento {#sec-nota-taxa}
+
+**Responde:** que proporção dos contratos de um grupo foi encerrada no ano?
+
+O número absoluto de desligamentos, isoladamente, é enganoso para comparar grupos de tamanhos distintos. Cem contratos encerrados entre mil trabalhadores representam 10% de rotatividade - um nível moderado. As mesmas cem saídas entre duzentos trabalhadores equivalem a 50% - uma crise de retenção. Para que a comparação seja significativa, é preciso relacionar o número de saídas ao tamanho do universo de contratos que poderiam ter sido encerrados. A taxa de desligamento faz exatamente isso:
+
+```         
+taxa de desligamento (%) = desligados ÷ (ativos + desligados) × 100
+```
+
+em que **desligados** são os contratos encerrados ao longo do ano-base e **ativos** os que continuavam em seus postos de traalho em 31 de dezembro. A soma dos dois é o total de contratos declarados naquele ano.
+
+**Exemplo.** Em 2025 houve 138 desligamentos e 383 vínculos ativos:
+
+```         
+138 ÷ (383 + 138) × 100 = 26,49%
+```
+
+Ou seja: pouco mais de um em cada quatro contratos declarados em 2025 foi encerrado ao longo do ano.
+
+No recorte por sexo, dividendo e divisor ficam restritos ao respectivo grupo, de modo que cada taxa descreve a **dinâmica interna** daquele recorte. Em 2025, entre as arqueólogas houve 69 desligamentos e 165 vínculos ativos:
+
+```         
+69 ÷ (165 + 69) × 100 = 29,49%
+```
+
+**Por que isso importa.** Em 2025, arqueólogos e arqueólogas registraram o mesmo número absoluto de desligamentos - 69 para cada grupo. Mas os homens têm uma base maior (287 vínculos declarados, contra 234 das mulheres), de modo que o mesmo número representa proporções bem diferentes: 24,04% entre arqueólogos e 29,49% entre arqueólogas. O empate aparente esconde uma diferença real.
+
+## Saldo de movimentações {#sec-nota-saldo}
+
+**Responde:** o mercado criou ou fechou postos de trabalho no período?
+
+O saldo de movimentações é a diferença entre o número de contratos iniciados (admissões) e o número de contratos encerrados (desligamentos) em um mesmo recorte temporal:
+
+```         
+saldo = admissões − desligamentos
+```
+
+Um saldo positivo indica que mais contratos começaram do que terminaram - ou seja, o mercado expandiu seu estoque de vínculos naquele período. Um saldo negativo sinaliza o oposto: mais saídas do que entradas, com redução líquida do estoque.
+
+**Exemplo.** Em 2023, o Novo CAGED registrou 168 admissões e 127 desligamentos na ocupação de arqueólogo:
+
+```         
+168 − 127 = +41 postos
+```
+
+**Uma ressalva de cálculo.** Em recortes mais granulares - como meses ou estados - é comum que apareçam apenas admissões (sem desligamentos) ou apenas desligamentos (sem admissões). Nesses casos, o valor ausente é tratado como zero antes da subtração. Sem esse cuidado, o recorte simplesmente desapareceria da análise em vez de aparecer com saldo integralmente positivo ou negativo.
+
+O saldo acumulado de um período é a soma dos saldos de cada ano.
+
+## Quartis e a faixa central da distribuição {#sec-nota-quartis}
+
+**Respondem:** Como os salários se distribuem entre os arqueólogos, do piso ao topo, e qual o grau de dispersão na metade central da categoria?
+
+Para mapear a dispersão salarial, basta imaginar todos os arqueólogos alinhados do menor para o maior salário e dividir essa fila em quatro partes iguais. Três pontos de corte marcam as fronteiras entre essas partes:
+
+-   **Q1 (primeiro quartil):** o salário que separa o quarto mais mal remunerado da categoria. Um em cada quatro arqueólogos ganha menos que esse valor.
+-   **Mediana (segundo quartil):** o salário exatamente no meio da distribuição. Metade dos profissionais ganha menos; metade ganha mais.
+-   **Q3 (terceiro quartil):** o salário que separa o quarto mais bem remunerado do restante. Um em cada quatro arqueólogos ganha mais que esse valor.
+
+Entre Q1 e Q3 situa-se a **metade central da categoria** - os profissionais que não estão nem entre os 25% mais mal pagos nem entre os 25% mais bem pagos. A distância entre esses dois pontos define o **intervalo interquartil** (IQR), a medida-padrão de dispersão para a faixa central:
+
+```         
+IQR = Q3 − Q1
+```
+
+**Exemplo.** Em 2025, Q1 foi de R\$ 3.101,28 e Q3 de R\$ 6.420,97:
+
+```         
+6.420,97 − 3.101,28 = R$ 3.319,69
+```
+
+**Como ler.** O intervalo interquartil revela o grau de desigualdade dentro da faixa central. Quando o IQR cresce, a distância entre os salários mais baixos e mais altos da metade central aumenta - ou seja, os dois extremos dessa faixa se afastam, e a dispersão interna se amplia. Quando o IQR encolhe, os salários da metade central convergem.
+
+Neste estudo, o IQR passou de R\$ 2.669,72 em 2022 para R\$ 3.319,69 em 2025 - um crescimento de 24,3%. A faixa central da categoria ficou, portanto, mais desigual ao longo do quadriênio: a distância entre o piso e o teto dos 50% do meio aumentou significativamente.
+
+O IQR é também o que o boxplot desenha: a caixa vai de Q1 a Q3, e a linha dentro dela é a mediana.
+
+## Assimetria positiva {#sec-nota-assimetria}
+
+**Responde:** por que a média e a mediana são diferentes, e qual delas usar?
+
+Numa distribuição equilibrada, a média e a mediana coincidem: o valor central é o mesmo que a média de todos os pontos. Nas distribuições salariais, porém, essa coincidência é exceção, não regra. O motivo está na estrutura do próprio mercado: os salários têm um piso - na prática, ninguém recebe abaixo do salário mínimo -, mas não possuem teto. Quando um pequeno número de profissionais recebe valores muito acima da maioria, esses poucos salários elevados puxam a média para cima. A mediana, por sua vez, permanece ancorada no meio da fila ordenada - ela não se altera pelo quão distantes estão os extremos, mas apenas pela posição do profissional central.
+
+Esse desequilíbrio se chama **assimetria positiva**, e seu sinal é simples:
+
+```         
+quando a média é maior que a mediana → assimetria positiva
+```
+
+**Exemplo.** Em 2025, a média das remunerações de dezembro foi de R\$ 5.877,39 e a mediana, de R\$ 4.941,78:
+
+```         
+5.877,39 − 4.941,78 = R$ 935,61 de diferença
+```
+
+A média está R\$ 935,61 acima da mediana, e essa distância cresceu ao longo do período - era de R\$ 881,26 em 2022.
+
+**A consequência prática.** Como a média é sensível a poucos valores muito altos, ela superestima o que a **maioria efetivamente recebe**. A mediana, ao contrário, reflete o salário do profissional que ocupa exatamente o meio da fila - metade ganha menos, metade ganha mais.
+
+Por esse motivo, sempre que este artigo se refere ao salário *típico* da categoria, o indicador utilizado é a mediana. A média aparece quando é necessário descrever o conjunto completo - incluindo os extremos - ou quando se comparam resultados com fontes externas que divulgam apenas médias.
+
+No boxplot, a assimetria positiva aparece de duas formas: a linha da mediana fica mais próxima da base da caixa do que do topo, e a haste superior é mais longa que a inferior, com pontos isolados acima dela.
+
+## Conversão em salários mínimos {#sec-nota-sm}
+
+**Responde:** a remuneração melhorou ou piorou em relação ao salário mínimo?
+
+```         
+valor em salários mínimos = valor em reais ÷ salário mínimo do ano
+```
+
+Os salários mínimos utilizados neste estudo são os **oficiais de cada ano**: R\$ 1.212,00 em 2022, R\$ 1.320,00 em 2023, R\$ 1.412,00 em 2024 e R\$ 1.518,00 em 2025. É crucial que o divisor seja sempre o salário mínimo do mesmo ano do dado que se está convertendo - usar o mínimo de outro ano distorceria completamente a leitura.
+
+**Exemplo.** A mediana da remuneração média anual foi de R\$ 4.159,08 em 2022 e de R\$ 4.489,28 em 2025:
+
+```         
+2022:  4.159,08 ÷ 1.212 = 3,43 salários mínimos
+2025:  4.489,28 ÷ 1.518 = 2,96 salários mínimos
+```
+
+**Por que isso importa.** Em termos nominais, o salário mediano cresceu 7,9% no quadriênio (de R\$ 4.159,08 para R\$ 4.489,28). Porém, medido em salários mínimos, ele caiu 13,7% - de 3,43 para 2,96 SM. Não há contradição: os dois indicadores medem coisas diferentes. O crescimento em reais mostra que o trabalhador passou a receber mais dinheiro; a queda em salários mínimos revela que esse aumento foi superado pela valorização mais rápida do mínimo nacional. Em outras palavras, o salário da categoria cresceu mais devagar que o salário mínimo, e por isso perdeu posição relativa. É a diferença entre receber mais dinheiro e receber mais valor.
+
+A conversão em salários mínimos não é uma correção de inflação no sentido técnico - ela não utiliza índices como INPC ou IPCA para medir a variação do poder de compra frente aos preços de consumo. Ainda assim, cumpre uma função análoga e tem uma vantagem prática: o salário mínimo é a unidade de referência usada nas negociações coletivas e na percepção social do que é uma remuneração digna.
+
+Por isso, a conversão em SM é especialmente útil para avaliar se uma categoria está ganhando ou perdendo terreno em relação ao padrão mínimo da sociedade. Ela não substitui, porém, uma análise de poder de compra baseada em índices de preços - que capturaria a variação real do custo de vida, independentemente do valor do salário mínimo.
+
+As faixas utilizadas neste estudo se basearam nas categorias elencadas na variável `Faixa.Rem.Média..SM`, com ajustes nos seguintes grupos: *Até 0,50 salários mínimos*; *0,51 até 1,00 salários mínimos*; *1,01 a 1,50 salários mínimos*; e *1,51 a 2,00 salários mínimos*. As faixas *Até 0,50 salários mínimos* e *0,51 até 1,00 salários mínimos* foram agrupadas em "Até 1 salário mínimo"; e as faixas *1,01 a 1,50 salários mínimos* e *1,51 a 2,00 salários mínimos* foram agrupadas em "Entre 1 e 2 salários mínimos".
+
+## Registros excluídos dos cálculos de salário {#sec-nota-exclusoes}
+
+Para garantir a comparabilidade entre os anos-base, todos os vínculos ativos **sem remuneração declarada** foram excluídos dos cálculos de média, mediana e quartis em todo o período analisado. Essa exclusão abrange 39 registros em 2022, 59 em 2023, 70 em 2024 e 80 em 2025 — o que representa uma parcela crescente da base, variando de 13,3% a 20,9% dos vínculos ativos.
+
+O perfil desses registros indica que não se trata de salários efetivamente zerados, mas de afastamentos prolongados. São, portanto, contratos em que o vínculo formal permanece ativo, mas o trabalhador está temporariamente sem remuneração.
+
+A necessidade de um critério uniforme decorre de uma inconsistência de codificação entre os anos-base. Em 2022, esses casos aparecem com o valor R\$ 0,00 no campo salarial; a partir de 2023, o mesmo campo surge em branco. Se esses registros fossem mantidos apenas em 2022 e excluídos nos anos seguintes, a base de comparação ficaria artificialmente rebaixada no início do período, inflando o crescimento salarial aparente nos anos subsequentes.
+
+Para evitar esse viés, a exclusão foi aplicada de forma idêntica a todos os anos-base, assegurando que as séries comparativas de média, mediana e quartis sejam calculadas sobre populações equivalentes - vínculos com remuneração efetivamente registrada.
+
+## De onde vêm os dados {#sec-nota-fontes}
+
+Todos os números apresentados neste estudo derivam de duas bases oficiais do Ministério do Trabalho e Emprego, filtradas pelo código 2511-10 da Classificação Brasileira de Ocupações (CBO), correspondente à ocupação de arqueólogo:
+
+-   **RAIS**, anos-base 2022 a 2025 - o estoque de vínculos formais em 31 de dezembro de cada ano.
+-   **Novo CAGED**, competências de janeiro de 2022 a dezembro de 2025 - as admissões e os desligamentos mês a mês, restritos ao regime celetista.
+
+Os arquivos brutos tratados a partir dessas duas bases estão disponíveis em repositório GitHub, garantindo transparência e reprodutibilidade. Além disso, o código que gera cada gráfico e cada tabela pode ser consultado pelo botão “Mostrar código executado” no canto de cada painel, permitindo que qualquer leitor verifique integralmente os procedimentos de filtragem, limpeza e cálculo aplicados.
+
+## Ferramentas utilizadas {#sec-nota-ferramentas}
+
+Todo o processamento, os cálculos e as visualizações deste artigo foram feitos na linguagem **R**, dentro do sistema de publicação **Quarto**, que combina texto e código no mesmo arquivo - é o que permite que cada painel exiba o script que o produziu.
+
+O botão “Mostrar código executado”, posicionado no canto de cada painel, revela o trecho de código responsável por aquele gráfico ou tabela específica. Contudo, esse botão exibe apenas o script do painel individual - não inclui o carregamento inicial dos pacotes, que ocorre uma única vez no cabeçalho do documento. Para suprir essa lacuna e permitir a reprodução integral, a tabela abaixo relaciona todos os pacotes utilizados, a função que cada um desempenhou no fluxo de trabalho e a versão efetivamente empregada na geração desta página.
+
+```{r ferramentas}
+#| label: tbl-ferramentas
+#| tbl-cap: "Pacotes de R utilizados na produção do artigo"
+ 
+pacotes <- tibble::tribble(
+  ~Pacote,       ~Finalidade,
+  "tidyverse",   "Conjunto de pacotes para manipulação de dados: filtragem, agrupamento, cálculo de resumos e reorganização de tabelas",
+  "httr",        "Faz o download dos arquivos de dados hospedados no repositório GitHub.",
+  "readxl",      "Lê as planilhas em formato Excel da RAIS e do Novo CAGED.",
+  "echarts4r",   "Gera a maior parte dos gráficos interativos, com informações exibidas ao passar o cursor",
+  "plotly",      "Gera os gráficos interativos organizados em painéis múltiplos, como a distribuição mensal e a regional",
+  "gt",          "Monta as tabelas de resumo estatístico",
+  "flextable",   "Monta a tabela de setores econômicos, que exige mesclagem de células e bordas por grupo",
+  "officer",     "Fornece os elementos de formatação (bordas e estilos) usados pelo flextable",
+  "DT",          "Monta as tabelas interativas com busca e filtro por coluna",
+  "htmltools",   "Compõe os títulos e a organização visual em torno dos gráficos",
+  "htmlwidgets", "Permite personalizar o comportamento interativo dos gráficos, como o formato dos valores exibidos",
+  "jsonlite",    "Converte dados para o formato lido pelos gráficos interativos",
+  "knitr",       "Executa os blocos de código e integra os resultados ao texto"
+)
+ 
+pacotes$Versão <- vapply(
+  pacotes$Pacote,
+  function(p) tryCatch(as.character(utils::packageVersion(p)), error = function(e) "—"),
+  character(1)
+)
+ 
+pacotes |>
+  dplyr::select(Pacote, Versão, Finalidade) |>
+  gt() |>
+  tab_header(
+    title    = "Ferramentas utilizadas",
+    subtitle = paste0("Pacotes de R e versões usadas nesta edição — ", R.version.string)
+  ) |>
+  cols_label(Pacote = "Pacote", Versão = "Versão", Finalidade = "Para que serve") |>
+  cols_align(align = "left",   columns = c(Pacote, Finalidade)) |>
+  cols_align(align = "center", columns = Versão) |>
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_body(columns = Pacote)
+  ) |>
+  tab_style(
+    style     = cell_text(size = px(13)),
+    locations = cells_body(columns = Finalidade)
+  ) |>
+  tab_source_note(
+    source_note = "As versões são lidas do ambiente no momento em que o documento é gerado."
+  )
+```
+
+A escolha por ferramentas de código aberto possibilita que qualquer pessoa possa instalar os mesmos programas, baixar os mesmos arquivos e refazer integralmente os cálculos apresentados aqui, sem custo de licença e sem depender de acesso concedido pelo autor.

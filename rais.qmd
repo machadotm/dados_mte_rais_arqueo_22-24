@@ -1,0 +1,151 @@
+# RAIS
+
+{{< include _setup.qmd >}}
+
+A RAIS [@mte2026rais] constitui uma das principais bases de dados do governo federal para o acompanhamento do mercado de trabalho formal no Brasil. Com a conclusão da transição para o eSocial em 2022, a forma de prestação das informações foi alterada: os empregadores deixaram de utilizar a declaração anual específica (GD‑RAIS) e passaram a ter seus dados extraídos diretamente dos eventos trabalhistas transmitidos mensalmente ao sistema eSocial. Apesar dessa mudança no fluxo de coleta, a divulgação dos resultados permanece anual, organizada por ano‑base. A abrangência da RAIS inclui trabalhadores celetistas do setor privado, empregados públicos regidos pela CLT, servidores estatutários e militares, o que a consolida como a fonte mais completa disponível sobre o estoque de vínculos formais de trabalho no país. O ano‑base mais recente disponível para consulta é de 2025.
+
+A tabela interativa abaixo exibe todas as declarações referentes à profissão de arqueólogo da RAIS de 2022 a 2025.
+
+```{r tabela rais}
+#| label: tbl-tabela-geral-rais
+#| tbl-cap: "Conjunto geral de dados da RAIS 2022 a 2025"
+#| column: page
+
+# Converte todas as colunas de texto para fator
+rais_tabela <- Arqueo.RAIS.2022_2025 %>%
+  mutate(across(where(is.character), as.factor)) |> 
+  mutate(Ano = as.factor(Ano))
+
+DT::datatable(
+  rais_tabela,
+  filter     = 'top',
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = list(
+      list(extend = 'copy',  text = 'Copiar'),
+      list(extend = 'csv',   text = 'Baixar CSV',
+           filename = 'RAIS_arqueologos_2022_2025'),
+      list(extend = 'excel', text = 'Baixar Excel',
+           filename = 'RAIS_arqueologos_2022_2025',
+           title    = 'RAIS — CBO 2511-10 — 2022 a 2025')
+    ),
+    language = list(
+       search        = "Filtrar:",
+       lengthMenu    = "Mostrar _MENU_ registros",
+       info          = "Mostrando _START_ a _END_ de _TOTAL_ registros",
+       infoEmpty     = "Nenhum registro",
+       infoFiltered  = "(filtrados de _MAX_ registros)",
+       zeroRecords   = "Nenhum registro encontrado",
+       paginate      = list(previous = "Anterior", `next` = "Próximo",
+                            first = "Primeiro", last = "Último")
+    ),
+    pageLength = 5,
+    autoWidth  = TRUE,
+    columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
+    scrollX    = TRUE
+  )
+)
+```
+
+> Para o ano de 2025, há dados referentes a categoria do trabalhador (última coluna da tabela acima). No entanto, até o fechamento da escrita deste artigo, não houve atualização do dicionário de dados de modo a identificar a codificação dessa nova variável adicionada na base da RAIS.
+
+## Dados Gerais
+
+As declarações trabalhistas para a profissão de arqueólogo registraram crescimento contínuo no período analisado. É possível que essa tendência seja reflexo das mudanças metodológicas implementadas pelo eSocial, que ampliaram a abrangência da captação de dados.
+
+```{r total de vínculos}
+#| label: fig-vinculos
+#| fig-cap: "Quantitativo geral de declarações"
+
+geral.anual <- Arqueo.RAIS.2022_2025 %>%
+  group_by(Ano) %>%
+  summarise(total = n()) |> 
+  mutate(Ano = as.factor(Ano))
+
+# Gráfico interativo com echarts4r
+geral.anual %>%
+  e_charts(Ano) %>%
+  e_bar(total, name = "Vínculos") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].value[0];
+        var total = params[0].value[1];
+        return 'Ano: ' + ano + '<br/>Vínculos: ' + total;
+      }
+    ")
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    subtext = "Total de Vínculos Declarados",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_y_axis(
+    min = 0, 
+    splitLine = list(show = TRUE),
+    axisLabel = list(fontSize = 11),
+    scale = TRUE,
+    axisLine = list(show = TRUE)
+  ) %>%
+  e_grid(containLabel = TRUE) %>%
+  e_legend(show = FALSE) |> 
+  e_color("#E74C3C")
+  
+```
+
+Na segmentação por tipo de vínculo, considerando a data de corte de 31/12 de cada ano, os vínculos ativos representam a parcela predominante, [acumulando crescimento de 30,27%](notas.html#sec-nota-variacao "variação (%) = (valor final ÷ valor inicial − 1) × 100") ao longo do período. As declarações de desligamento, por sua vez, exibem relativa estabilidade, com variações modestas e mantendo-se em patamar significativamente inferior ao do grupo de vínculos ativos no quadriênio analisado.
+
+```{r vínculos ativos em 31/12}
+#| label: fig-vinculos-ativos
+#| fig-cap: "Declarações por modalidades de vínculos em 31/12"
+
+vinculos_31.12 <- Arqueo.RAIS.2022_2025 %>%
+  group_by(Ano, Ind.Vínculo.Ativo.31.12) %>%
+  summarise(quant.tipo.vinculo = n(), .groups = "drop") %>%
+  mutate(Ind.Vínculo.Ativo.31.12 = dplyr::recode(Ind.Vínculo.Ativo.31.12,
+                                                  SIM = "ATIVOS",
+                                                  NÃO = "DESLIGADOS")) %>%
+  mutate(Ind.Vínculo.Ativo.31.12 = factor(Ind.Vínculo.Ativo.31.12, 
+                                          levels = c("ATIVOS", "DESLIGADOS"))) %>%
+  arrange(Ano, Ind.Vínculo.Ativo.31.12) |> 
+  mutate(Ano = as.factor(Ano))
+
+vinculos_31.12 %>%
+  group_by(Ind.Vínculo.Ativo.31.12) %>%
+  e_charts(Ano, timeline = FALSE) %>%
+  e_bar(quant.tipo.vinculo, stack = FALSE) %>%
+  e_flip_coords() %>%
+  e_y_axis(inverse = TRUE, axisLabel = list(fontSize = 9)) %>%
+  e_x_axis(
+    axisLabel = list(fontSize = 9),
+    splitLine = list(show = FALSE), axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    subtext = "Tipo de Vínculos em 31/12",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#1874CD", "#FF4040")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "5%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[0] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+```

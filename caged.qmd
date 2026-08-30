@@ -1,0 +1,51 @@
+# Novo CAGED
+
+{{< include _setup.qmd >}}
+
+O Novo CAGED [@mte2026caged] é a base de dados do governo federal que registra mensalmente as admissões e desligamentos de trabalhadores vinculados ao regime da CLT. Sua publicação tempestiva o consolida como o principal instrumento de monitoramento do mercado de trabalho formal brasileiro. A fonte contempla exclusivamente vínculos celetistas, não incluindo contratações sob regime estatutário.
+
+O indicador-chave para esta análise é o saldo de emprego, calculado pela fórmula `Saldo=Admitidos−Desligamento`. Embora a base não forneça o saldo diretamente, ele é derivado da coluna `saldomovimentação`, que registra separadamente cada admissão e desligamento. O saldo funciona como um termômetro do dinamismo no contrato laboral: valores positivos indicam criação de vagas, enquanto os números negativos apontam fechamento de postos de trabalho.
+
+A tabela interativa abaixo exibe todas as declarações referentes à ocupação de arqueólogo no Novo CAGED de 2022 a 2025.
+
+```{r tabela caged}
+#| label: tbl-tabela-geral-caged 
+#| tbl-cap: "Conjunto geral de dados do Novo CAGED 2022 a 2025"
+#| column: page
+
+# Converte todas as colunas de texto para fator
+caged_tabela <- Arqueo.CAGED.2022_2025 %>%
+  mutate(across(where(is.character), as.factor)) |> 
+  mutate(anocompetênciamov = as.factor(anocompetênciamov))
+
+DT::datatable(
+  caged_tabela,
+  filter     = 'top',
+  extensions = 'Buttons',
+  options = list(
+    dom = 'Bfrtip',
+    buttons = list(
+      list(extend = 'copy',  text = 'Copiar'),
+      list(extend = 'csv',   text = 'Baixar CSV',
+           filename = 'Novo_CAGED_arqueologos_2022_2025'),
+      list(extend = 'excel', text = 'Baixar Excel',
+           filename = 'Novo_CAGED_arqueologos_2022_2025',
+           title    = 'Novo CAGED — CBO 2511-10 — 2022 a 2025')
+    ),
+    language = list(
+       search        = "Filtrar:",
+       lengthMenu    = "Mostrar _MENU_ registros",
+       info          = "Mostrando _START_ a _END_ de _TOTAL_ registros",
+       infoEmpty     = "Nenhum registro",
+       infoFiltered  = "(filtrados de _MAX_ registros)",
+       zeroRecords   = "Nenhum registro encontrado",
+       paginate      = list(previous = "Anterior", `next` = "Próximo",
+                            first = "Primeiro", last = "Último")
+    ),
+    pageLength = 5,
+    autoWidth  = TRUE,
+    columnDefs = list(list(className = 'dt-nowrap', targets = "_all")),
+    scrollX    = TRUE
+  )
+)
+```

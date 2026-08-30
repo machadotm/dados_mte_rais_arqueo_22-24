@@ -1,7 +1,14 @@
+# ─── RStudio / R ──────────────────────────────────────────────────────────
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-
+ 
+# ─── Quarto ───────────────────────────────────────────────────────────────
 /.quarto/
 **/*.quarto_ipynb
+ 
+# ─── Cache local dos dados (_setup.qmd) ───────────────────────────────────
+# Arquivo derivado: reconstruído no primeiro render a partir do repositório
+# de dados. Não versionar.
+_cache/

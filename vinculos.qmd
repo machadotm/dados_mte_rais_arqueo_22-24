@@ -1,0 +1,921 @@
+# Vínculos Ativos em 31/12 -- RAIS
+
+{{< include _setup.qmd >}}
+
+Os gráficos a seguir foram gerados a partir das declarações cujo indicador de vínculo ativo em 31/12 apresenta o valor `"SIM"` - ou seja, referem-se exclusivamente a arqueólogos que permaneceram em seus postos de trabalho até o final de cada ano-base. A filtragem foi aplicada sobre a coluna `Ind.Vínculo.Ativo.31.12`, selecionando apenas os registros com status ativo no recorte temporal.
+
+## Distribuição por Região
+
+Na distribuição dos vínculos ativos por macrorregião, a Região Sudeste concentra sistematicamente o maior volume de declarações ao longo de toda a série histórica. A Região Nordeste ocupa a segunda posição e exibe trajetória de crescimento contínuo ao longo do período. A Região Norte, embora registre o menor número absoluto de vínculos, demonstra crescimento constante, atingindo o maior estoque em 2025. Em contraste, a Região Centro-Oeste apresenta tendência de declínio, enquanto a Região Sul mantém um padrão de estabilidade nos registros trabalhistas.
+
+```{r regiões}
+#| label: fig-regiao
+#| fig-cap: "Declarações ativas por região"
+
+Regiao <- Arqueo.RAIS.2022_2025 %>% 
+  filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>% 
+  mutate(regioes = UF.Estabelecimento) %>% 
+  mutate(regioes = recode(regioes,
+                          AC = "NORTE", AM = "NORTE", AP = "NORTE", PA = "NORTE", 
+                          RO = "NORTE", RR = "NORTE", TO = "NORTE",
+                          MA = "NORDESTE", PI = "NORDESTE", CE = "NORDESTE", 
+                          RN = "NORDESTE", PB = "NORDESTE", PE = "NORDESTE", 
+                          AL = "NORDESTE", SE = "NORDESTE", BA = "NORDESTE",
+                          GO = "CENTRO-OESTE", DF = "CENTRO-OESTE", MT = "CENTRO-OESTE", 
+                          MS = "CENTRO-OESTE",
+                          MG = "SUDESTE", SP = "SUDESTE", RJ = "SUDESTE", ES = "SUDESTE",
+                          PR = "SUL", SC = "SUL", RS = "SUL")) %>% 
+  mutate(regioes = factor(regioes, 
+                          levels = c("NORTE", "NORDESTE", "CENTRO-OESTE",
+                                     "SUDESTE", "SUL"))) %>% 
+  group_by(Ano, regioes) %>% 
+  summarise(quant.regioes = n(), .groups = "drop") |> 
+  mutate(Ano = as.factor(Ano))
+
+Regiao |>
+  group_by(regioes) |>
+  e_charts(Ano) |>
+  e_bar(quant.regioes) |>
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    subtext = "Distribuição dos Vínculos Ativos por Região",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    ")
+  )
+```
+
+> A regionalização adotada nesta análise segue a unidade federativa do estabelecimento empregador, ou seja, corresponde ao endereço cadastrado do CNPJ que declara o vínculo trabalhista, e não ao local onde a atividade arqueológica é efetivamente executada. Isso significa que os dados descrevem a localização geográfica das empresas contratantes - suas sedes ou filiais formais - e não o território onde os arqueólogos realizam seus trabalhos de campo.
+
+## Distribuição por Estados {#sec-ativos-estados}
+
+A desagregação regional por estados revela que nem todas as unidades federativas registraram vínculos ativos de arqueólogos no período analisado. A ausência é mais pronunciada nos estados da Região Norte, indicando menor inserção formal dessa profissão naquela macrorregião.
+
+Em contrapartida, os estados de São Paulo, Pernambuco e Santa Catarina concentram as maiores quantidades de vínculos ativos, configurando polos regionais de demanda por mão de obra arqueológica. Esse padrão evidencia assimetria geográfica na distribuição das oportunidades de emprego formal, com a maior parte dos vínculos concentrada em poucas unidades federativas.
+
+```{r estados}
+#| label: fig-estados
+#| fig-cap: "Declarações ativas por estados"
+#| column: page
+#| fig-width: 12
+#| fig-height: 6
+
+estados <- Arqueo.RAIS.2022_2025 %>% 
+dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>% 
+group_by(Ano, UF.Estabelecimento) %>% 
+  summarise(quant.uf= n(), .groups = "drop") |> 
+  mutate(Ano = as.factor(Ano))
+
+grafico <- estados |>
+  group_by(UF.Estabelecimento) |>
+  e_charts(Ano) |>
+  e_bar(quant.uf) |>
+  e_facet(rows = 4, cols = 6, legend_pos = "bottom", legend_space = 12) |>
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+# Título externo ao gráfico
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Estados",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+
+```
+
+## Tipo de Vínculo Empregatício
+
+No que se refere à natureza do vínculo, a participação da administração pública é minoritária: arqueólogos em órgãos públicos representam aproximadamente 16% do total de declarações ativas no período analisado. Observa-se crescimento modesto nesse segmento até 2024, embora não tenham sido identificados concursos públicos de destaques nesse intervalo que expliquem a tendência evidenciada.
+
+Em 2025, o IPHAN executou contratações de 15 arqueólogos derivados do [Processo Seletivo Simplificado](https://www.in.gov.br/web/dou/-/edital-n-1-de-3-de-dezembro-de-2024-599671293 "Link do edital do PSS/IPHAN") - mecanismo de contratação temporária previsto na legislação federal [@brasil1993lei8745]. Contudo, esse evento não explica a variação observada no último ano, conforme será demonstrado no subitem seguinte.
+
+```{r vínculo empregatício}
+#| label: fig-empregaticio
+#| fig-cap: "Declarações ativas por modalidades de contratação"
+
+vinculos_empregaticio <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>% 
+  mutate(Tipo.Vínculo = dplyr::recode(Tipo.Vínculo,
+                                      "CLT R/PJ IND" = "CELETISTA",
+                                      "CLT U/PF IND" = "CELETISTA",
+                                      "CLT U/PJ DET" = "CELETISTA",
+                                      "CLT U/PJ IND" = "CELETISTA",
+                                      "CONT LEI EST" = "ESTATUTÁRIO",
+                                      "CONT LEI MUN" = "ESTATUTÁRIO",
+                                      "CONT PRZ DET" = "CELETISTA",
+                                      "ESTAT N/EFET" = "ESTATUTÁRIO",
+                                      "ESTAT RGPS" = "ESTATUTÁRIO",
+                                      "ESTATUTARIO" = "ESTATUTÁRIO",
+                                      "TEMPORARIO" = "CELETISTA",
+                                      "CLT R/PF IND"= "CELETISTA")) %>% 
+  group_by(Ano, Tipo.Vínculo) %>%
+  summarise(quant.tipo.vinculo= n(), .groups = "drop") %>% 
+  mutate(Tipo.Vínculo = factor(Tipo.Vínculo, 
+                                          levels = c("CELETISTA", "ESTATUTÁRIO"))) %>% 
+  arrange(Ano, Tipo.Vínculo) |> 
+  mutate(Ano = as.factor(Ano))
+
+vinculos_empregaticio %>%
+  group_by(Tipo.Vínculo) %>%
+  e_charts(Ano, timeline = FALSE) %>%
+  e_bar(quant.tipo.vinculo, stack = FALSE) %>%
+  e_flip_coords() %>%
+  e_y_axis(inverse = TRUE, axisLabel = list(fontSize = 9)) %>%
+  e_x_axis(
+    axisLabel = list(fontSize = 9),
+    splitLine = list(show = FALSE), axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    subtext = "Distribuição dos Vínculos Ativos por Tipo de Vínculo Empregatício",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#4682B4", "#FF8C00")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "5%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[0] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+```
+
+## Natureza Jurídica do Empregador
+
+A análise por esfera administrativa revela que o setor público estadual foi o principal responsável pelo crescimento nos vínculos públicos de 2023 e 2024. Em 2025, o impulso veio do setor público municipal, invertendo o padrão observado nos anos anteriores.
+
+Essa dinâmica suscita uma questão sobre a natureza desses registros. A continuidade do crescimento ao longo do período torna improvável que se trate de erro pontual na entrega das declarações, embora não elimine completamente essa possibilidade. Uma hipótese plausível - que demanda cruzamento de informações - é que determinados estados e municípios tenham recorrido a mecanismos de contratações flexíveis que não demanda seleções editalícias. Se confirmada, essa prática poderia explicar parte do crescimento observado, possivelmente vinculado à demanda crescente proveniente do licenciamento ambiental.
+
+Destaca-se que o estoque do setor público federal permaneceu estável em 2025. Isso revela que o concurso temporário do IPHAN naquele ano - que contratou 15 arqueólogos via Processo Seletivo Simplificado - não impactou o código 2511-10 da Classificação Brasileira de Ocupações ([CBO/2002](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/cbo "Link para acesso a página da CBO")), referente a identificação da ocupação de arqueólogo. Ocorre que as declarações desses profissionais foram registradas sob código CBO distinto, o que explica a ausência de efeito nos vínculos de âmbito federal. Esse procedimento contrasta com o ciclo de contratações temporárias anterior da mesma instituição (2014–2019), cujos registros foram corretamente classificados na CBO 2511-10, conforme documentado por Machado e Mageste [-@machado2024arqueologos].
+
+Para os empregadores do regime celetista, o quadro mostra tendências de estabilidade nas declarações trabalhistas.
+
+```{r natureza jurídica}
+#| label: fig-juridico
+#| fig-cap: "Declarações ativas por natureza jurídica do contratante"
+
+natureza_juridica <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  mutate(Natureza.Jurídica = dplyr::recode(Natureza.Jurídica,
+                                      "AUTARQ EST" = "Setor Público Estadual",
+                                      "AUTARQ FED" = "Setor Público Federal",
+                                      "CONS EMPRES" = "Entidades Empresariais",
+                                      "FRM MER IND" = "Entidades Empresariais",
+                                      "FUNDAC FED" = "Setor Público Federal",
+                                      "FUNDAC MUN" = "Setor Público Municipal",
+                                      "MUNICIPIO" = "Setor Público Municipal",
+                                      "ORG AUT FED" = "Setor Público Federal",
+                                      "OUT FUND PR" = "Entidades sem Fins Lucrativos",
+                                      "OUTR ORG" = "Entidades sem Fins Lucrativos",
+                                      "POD EXEC ES" = "Setor Público Estadual",
+                                      "POD EXEC FE" ="Setor Público Federal",
+                                      "POD EXEC MU" = "Setor Público Municipal",
+                                      "POD LEG MUN" = "Setor Público Municipal",
+                                      "SA ABERTA" = "Entidades Empresariais",
+                                      "SA FECH" = "Entidades Empresariais",
+                                      "SERV SOC AU" = "Entidades sem Fins Lucrativos",
+                                      "SOC MISTA" = "Entidades Empresariais",
+                                      "SOC QT LTDA" = "Entidades Empresariais",
+                                      "SOC SIMP LTD" = "Entidades Empresariais",
+                                      "SOC SIMP PUR" = "Entidades Empresariais",
+                                      "{ñ class}"= "Não identificado e outros",
+                                      "FUNDO ADM DIRET MUN"= "Setor Público Municipal",
+                                      "EMP IND IMO"= "Não identificado e outros",
+                                      "COOPERATIVA"= "Entidades Empresariais",
+                                      .missing= "Não identificado e outros")) %>% 
+  group_by(Ano, Natureza.Jurídica) %>%
+  summarise(quant.nat.jur= n(), .groups = "drop") %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Natureza.Jurídica, quant.nat.jur) %>% 
+  mutate(Natureza.Jurídica = factor(Natureza.Jurídica, 
+                             levels = c("Setor Público Federal", "Setor Público Estadual",
+                                        "Setor Público Municipal", "Entidades Empresariais",
+                                        "Entidades sem Fins Lucrativos", "Não identificado e outros"))) |> 
+  mutate(Ano = as.factor(Ano))
+
+
+grafico <- natureza_juridica |>
+  group_by(Natureza.Jurídica) |>
+  e_charts(Ano) |>
+  e_bar(quant.nat.jur) |>
+  e_facet(rows = 2, cols=3, legend_pos = "bottom", legend_space = 12) |> 
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Natureza Jurídica do Empregador",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+```
+
+> Em 2025 houve o registro de *Empresa Individual Imobiliária*, pertencente a categoria jurídica de *Pessoas Físicas*. Como se trata de um único dado declarado, optou-se por incluí-lo no grupo de "Não identificado e outros" do gráfico acima.
+
+## Distribuição por Setores Econômicos
+
+A segmentação por setores econômicos, segundo a Classificação Nacional de Atividades Econômicas ([CNAE versão 2.0](https://concla.ibge.gov.br/classificacoes/por-tema/atividades-economicas/classificacao-nacional-de-atividades-economicas "Link para acesso a página da CNAE"), IBGE), identifica 19 grupamentos com vínculos ativos de arqueólogos. Dentre eles, o grupamento *Atividades Profissionais, Científicas e Técnicas* concentra mais de [55% das contratações](notas.html#sec-nota-participacao "participação (%) = (quantidade do grupo ÷ total do ano) × 100"). Nesse grupo, a subclasse predominante é a *Pesquisa e Desenvolvimento Experimental em Ciências Sociais e Humanas*, seguida por *Serviços de Engenharia*. Esse padrão indica que a profissão está majoritariamente concentrada em empresas de consultoria especializada, frequentemente vinculadas a projetos de licenciamento ambiental.
+
+Em segundo lugar aparece o grupamento *Administração Pública, Defesa e Seguridade Social*, seguido por *Educação*. Esses segmentos representam parcela menor e relativamente estável do mercado, composta por órgãos públicos e instituições de ensino públicas e privadas.
+
+Chama atenção a alta pulverização de subgrupamentos com apenas 1 ou 2 eventos, espalhados em diversas atividades econômicas. Esses registros podem ser reflexos de vínculos atípicos ou mesmo ocorrências isoladas - arqueólogos ocupando cargos de gestão ou prestando consultoria pontual ou mesmo como proprietário de microempresa fora do segmento econômico principal. Entretanto, essa configuração não pode ser interpretada como uma real tendência de diversificação setorial.
+
+Um caso exemplar é a subclasse *Fabricação de Periféricos para Equipamentos de Informática* - pertencente ao grupamento *Indústrias de Transformação* -, que registrou 18 declarações em 2024 e 11 em 2025. Esse padrão atípico, sem precedentes no mercado arqueológico, indica provavelmente a atuação de um único grande empregador - e não o surgimento de um novo setor de empregabilidade para a profissão.
+
+```{r econômico}
+#| column: screen-inset
+#| label: tbl-setor-economico
+#| tbl-cap: "Quantitativo de trabalhadores ativos por CNAE/IBGE"
+
+# Baixando o dicionário de dados do Novo CAGED (contém os setores econômicos)
+url.dic.cadeg <- "https://github.com/machadotm/Dados_MTE_Arqueo/raw/refs/heads/main/CAGED/3-Novo_Caged/Dicionario_Dados/Layout_Novo_Caged.xlsx"
+tmp.dic.caged <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url.dic.cadeg, write_disk(tmp.dic.caged ))))  
+
+secao <- read_excel(tmp.dic.caged, 
+                    sheet = "seção") %>% 
+  rename(Descrição_seção= Descrição,
+         Código_seção= Código)
+
+subclasse <- read_excel(tmp.dic.caged, 
+                        sheet = "subclasse",
+                        col_types = "text") %>% 
+  rename(Descrição_subclase= Descrição)
+
+# Recuperando os zeros
+subclasse <- subclasse %>%
+  mutate(Código = str_pad(Código, width = 7, side = "left", pad = "0"))
+
+subclasse <- subclasse %>%
+  mutate(prefixo = substr(Código, 1, 2)) %>%
+  mutate(Código_seção = case_when(
+    prefixo >= "01" & prefixo <= "03" ~ "A",
+    prefixo >= "05" & prefixo <= "09" ~ "B",
+    prefixo >= "10" & prefixo <= "33" ~ "C",
+    prefixo == "35" ~ "D",
+    prefixo >= "36" & prefixo <= "39" ~ "E",
+    prefixo >= "41" & prefixo <= "43" ~ "F",
+    prefixo >= "45" & prefixo <= "47" ~ "G",
+    prefixo >= "49" & prefixo <= "53" ~ "H",
+    prefixo >= "55" & prefixo <= "56" ~ "I",
+    prefixo >= "58" & prefixo <= "63" ~ "J",
+    prefixo >= "64" & prefixo <= "66" ~ "K",
+    prefixo == "68" ~ "L",
+    prefixo >= "69" & prefixo <= "75" ~ "M",
+    prefixo >= "77" & prefixo <= "82" ~ "N",
+    prefixo == "84" ~ "O",
+    prefixo == "85" ~ "P",
+    prefixo >= "86" & prefixo <= "88" ~ "Q",
+    prefixo >= "90" & prefixo <= "93" ~ "R",
+    prefixo >= "94" & prefixo <= "96" ~ "S",
+    prefixo == "97" ~ "T",
+    prefixo == "99" ~ "U"))
+
+junta.secao.subclasse <- left_join(subclasse, secao, by= 'Código_seção') %>% 
+  dplyr::select(-c(Código, prefixo, Código_seção)) %>% 
+  mutate(Descrição_seção = recode(Descrição_seção,
+                                  "Agricultura, Pecuária, Produção Florestal, Pesca e AqÜIcultura" =
+                                    "Agricultura, Pecuária, Produção Florestal, Pesca e Aquicultura")) %>% 
+  rename(CNAE.2.0.Subclasse = Descrição_subclase)
+
+Arqueo.RAIS.2022_2025 <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::select(-dplyr::any_of(c("Descrição_seção"))) %>%
+  left_join(junta.secao.subclasse, by = 'CNAE.2.0.Subclasse')
+
+setor.tab.economico <- Arqueo.RAIS.2022_2025
+
+setor.tab.economico <- setor.tab.economico %>% 
+  rename(
+         seção = Descrição_seção,
+         subclasse = CNAE.2.0.Subclasse)
+
+setor.tab.economico <- setor.tab.economico %>% 
+  dplyr::filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>% 
+  group_by(Ano, seção, subclasse) %>% 
+  summarise(quantidade = n(), .groups = "drop") %>% 
+  pivot_wider(
+    names_from  = Ano,
+    values_from = quantidade) %>% 
+  arrange(seção, subclasse)
+
+
+colunas_anos <- setor.tab.economico %>%
+  select(where(is.numeric)) %>%
+  names()
+
+n_anos <- length(colunas_anos)
+
+# Totais por seção e ano 
+totais_tab <- setor.tab.economico %>%
+  group_by(seção) %>%
+  summarise(across(all_of(colunas_anos), \(x) sum(x, na.rm = TRUE)),
+            .groups = "drop")
+
+# Total geral por ano
+totais_gerais <- setor.tab.economico %>%
+  summarise(across(all_of(colunas_anos), \(x) sum(x, na.rm = TRUE)))
+
+# Linha de percentual por seção
+percentual_secao <- totais_tab %>%
+  mutate(
+    across(all_of(colunas_anos), ~ {
+      total_geral <- totais_gerais[[cur_column()]]
+      ifelse(. == 0, "-", paste0(., " (", round(. / total_geral * 100, 2), "%)"))
+    }),
+    subclasse = ""
+  )
+
+anos_chr <- setor.tab.economico %>%
+  mutate(across(all_of(colunas_anos), ~ ifelse(is.na(.) | . == 0, "-", as.character(.))))
+
+dados_com_pct <- bind_rows(anos_chr, percentual_secao) %>%
+  arrange(seção, subclasse == "")
+
+linhas_pct <- which(dados_com_pct$subclasse == "")
+
+# Transições entre blocos de seção 
+linhas_secao <- which(
+  c(FALSE, dados_com_pct$seção[-1] != dados_com_pct$seção[-nrow(dados_com_pct)])
+) - 1
+
+# Estilos de borda
+borda_grossa <- fp_border(color = "#222222", width = 2.0)
+borda_vert <- fp_border(color = "#aaaaaa", width = 1.5)
+borda_invisivel <- fp_border(width = 0, color = "transparent")
+
+# Tabela flextable
+tabela_setor <- dados_com_pct %>%
+  flextable(col_keys = c("seção", "subclasse", colunas_anos)) %>%
+  merge_v(j = "seção") %>%
+  add_header_row(
+    top = TRUE,
+    values = c("", "", ""),
+    colwidths = c(1, 1, n_anos)
+  ) %>%
+  
+  # Rótulos da linha base do cabeçalho
+  set_header_labels(
+    seção = "Grupamento de Atividades Econômicas - Seção CNAE 2.0",
+    subclasse = "Atividade Econômica Principal do CNPJ - Subclasse CNAE 2.0"
+  ) %>%
+  
+  # Nomear os anos na linha base
+  compose(
+    part = "header", i = 2,
+    j    = colunas_anos,
+    value = as_paragraph(colunas_anos)
+  ) %>%
+  align(align = "center", part = "all") %>%
+  align(j = c("seção", "subclasse"), align = "left", part = "body") %>%
+  
+  bold(part = "header") %>%
+  bold(j = "seção", part = "body") %>%
+  
+  # --- Estilo linhas de percentual ---
+  bold(i   = linhas_pct, part = "body") %>%
+  italic(i = linhas_pct, part = "body") %>%
+  color(i  = linhas_pct, color = "#2c5f8a", part = "body") %>%
+  
+  # Fundo azul claro apenas nas colunas de anos das linhas de percentual
+  bg(
+    i  = linhas_pct,
+    j  = colunas_anos,
+    bg = "#eef4fb",
+    part = "body"
+  ) %>%
+  
+  # --- Larguras ---
+  width(j = "seção",       width = 3.0) %>%
+  width(j = "subclasse",   width = 3.5) %>%
+  width(j = colunas_anos,  width = 1.2) %>%
+   
+  theme_booktabs() %>%
+  
+  # Borda vertical
+  border(j = "subclasse", border.right = borda_vert, part = "all") %>%
+  # Borda horizontal grossa entre seções
+  hline(i = linhas_secao, border = borda_grossa, part = "body") %>%
+  
+  add_header_lines("Distribuição dos Vínculos Ativos por Setores Econômicos") %>%
+  add_header_lines("Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025") %>%
+  
+  # Remover bordas das linhas de título/subtítulo
+  hline(i = 1, border = borda_invisivel, part = "header") %>%
+
+  # Centralizar, negrito e tamanhos diferenciados
+  align(i  = 1:2, align = "center", part = "header") %>%
+  
+  fontsize(i = 1, size = 14, part = "header") %>%  
+  fontsize(i = 2, size = 11, part = "header")   
+
+tabela_setor
+```
+
+## Trabalho Intermitente
+
+O contrato de trabalho intermitente foi instituído pela Reforma Trabalhista [@brasil2017lei13467] como modalidade em que o trabalhador é convocado apenas quando há demanda específica do empregador, alternando períodos de atividade e inatividade sem vínculo contínuo.
+
+Essa modalidade guarda semelhança conceitual com a natureza dos projetos arqueológicos vinculados aos estudos de impactos em empreendimentos sujeitos ao licenciamento ambiental, tipicamente de curta duração. Contudo, os dados indicam que o contrato intermitente formal não é a principal forma de contratação no setor. As empresas parecem recorrer a outros mecanismos de admissão laboral, possivelmente por razões tributárias, operacionais ou de adequação contratual com o empreendedor.
+
+Ainda assim, observa-se tendência gradual de crescimento dessa modalidade ao longo do período analisado, sugerindo que sua adoção vem se expandindo de forma incremental, possivelmente à medida que empregadores e trabalhadores se familiarizam com o instrumento legal.
+
+```{r intermitente}
+#| label: fig-intermitente
+#| fig-cap: "Declarações ativas por indicador de trabalho intermitente"
+
+intermintente <- Arqueo.RAIS.2022_2025 %>% 
+  filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>%
+  mutate(Ind.Trabalho.Intermitente = recode(Ind.Trabalho.Intermitente,
+                          SIM = "Sim", NAO = "Não")) %>% 
+  group_by(Ano, Ind.Trabalho.Intermitente) %>% 
+  summarise(quantidade = n(), .groups = "drop") |> 
+  mutate(Ano = as.factor(Ano))
+
+intermintente  |>
+  group_by(Ind.Trabalho.Intermitente) |>
+  e_charts(Ano) |>
+  e_bar(quantidade) |>
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    subtext = "Distribuição dos Vínculos Ativos por Trabalho Intermitente",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    ")
+  )
+
+```
+
+## Escolaridade dos Arqueólogos
+
+A distribuição de escolaridade entre os vínculos ativos revela que os arqueólogos com graduação (como escolaridade máxima registrada) representam a maioria das declarações anuais. Profissionais com mestrado ou doutorado aparecem em proporção significativamente menor, o que pode refletir tanto a demanda do mercado - que frequentemente exige apenas a graduação - quanto a migração de pós-graduados para carreiras acadêmicas ou informais.
+
+Para o ano-base 2022, identificou-se um volume atípico de declarações com campos de escolaridade preenchidos com níveis incompatíveis com o exercício profissional da arqueologia - variando de "analfabeto" a "superior incompleto". Essas declarações foram agrupadas na categoria *Registros inconsistentes*. A presença desse grupo distorceu a distribuição dos demais níveis de escolaridade naquele ano, sub-representando as categorias de graduados e pós-graduados.
+
+Uma hipótese plausível para essa anomalia é a transição do GD-RAIS para o eSocial, período em que estabelecimentos ainda se adaptavam ao novo formato de preenchimento. Erros de mapeamento entre os campos de escolaridade dos dois sistemas podem ter gerado registros com valores incorretos.
+
+```{r escolaridade}
+#| label: fig-escolaridade
+#| fig-cap: "Declarações ativas por escolaridade"
+
+escolaridade <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12 == "SIM") %>%
+  mutate(
+    Escolaridade.Após.2005 = dplyr::recode(
+      Escolaridade.Após.2005,
+      "ANALFABETO" = "Registros inconsistentes",
+      "DOUTORADO" = "Doutorado",
+      "FUND COMPL" = "Registros inconsistentes",
+      "MEDIO COMPL" = "Registros inconsistentes",
+      "MEDIO INCOMP" = "Registros inconsistentes",
+      "MESTRADO" = "Mestrado",
+      "SUP. COMP" = "Graduação",
+      "SUP. INCOMP" = "Registros inconsistentes"
+    )
+  ) %>%
+  group_by(Ano, Escolaridade.Após.2005) %>%
+  summarise(quant.escolaridade = n(), .groups = "drop") %>%
+  mutate(
+    Ano = factor(Ano, levels = c(2022, 2023, 2024, 2025)),
+    Escolaridade.Após.2005 = factor(
+      Escolaridade.Após.2005,
+      levels = c("Graduação", "Mestrado", "Doutorado", "Registros inconsistentes")
+    )
+  ) |> 
+  mutate(Ano = as.character(Ano))
+
+escolaridade %>%
+  group_by(Escolaridade.Após.2005) %>%
+  e_charts(Ano) %>%
+  e_line(quant.escolaridade, 
+         smooth = FALSE, 
+         symbol = "circle", 
+         symbolSize = 8,
+         lineStyle = list(width = 0.9)) %>%
+  e_x_axis(
+    type = "category", 
+    axisLabel = list(fontSize = 10),
+    axisTick = list(alignWithLabel = TRUE)
+  ) %>%
+  e_y_axis(
+    axisLabel = list(fontSize = 11),
+    splitLine = list(show = TRUE),
+    axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    subtext = "Distribuição dos Vínculos Ativos por Escolaridade",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3")) %>%  
+  e_grid(containLabel = TRUE, left = "10%", right = "15%") %>%  
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    "),
+      axisPointer = list(
+      type = "cross"
+    )
+  )
+```
+
+## Faixa Etária
+
+A análise do perfil etário dos vínculos formais revela que todas as faixas registrou crescimento no período, embora em ritmos distintos. A faixa de 30 a 39 anos é o grupo que concentra a maior parcela dos profissionais ativos.
+
+Nas faixas etárias superiores - 40–49, 50–64 e acima de 65 anos - observa-se na linha temporal um distanciamento nas declarações para posições inferiores. Essa amplitude pode ser explicado por múltiplos fatores: aposentadoria de profissionais mais velhos, migração para o trabalho informal ou consultorias autônomas, transição para cargos de gestão ou mesmo mudança de carreira.
+
+Para profissionais situados nas faixas inferiores - 18-24 e 25-29 -, nota-se que o mercado formal está absorvendo poucos arqueólogos recém-formados.
+
+Diante desse cenário, compreende-se que esse padrão reflete a própria história da formação acadêmica em Arqueologia no Brasil. A expansão relativamente recente dos cursos de graduação na área significa que as faixas mais velhas da profissão são, por natureza, menos numerosas. Assim, a estrutura etária atual reflete tanto fenômenos de mercado (aposentadoria, migração, transição ocupacional) quanto a trajetória histórica de crescimento dos cursos de graduação no país.
+
+```{r faixa etária}
+#| label: fig-etario
+#| fig-cap: "Declarações ativas por faixa etária"
+
+faixa.etaria <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  group_by(Ano, Faixa.Etária) %>%
+  summarise(quant.etaria= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Faixa.Etária, quant.etaria) %>% 
+  mutate(Ano = as.character(Ano))
+
+faixa.etaria %>%
+  group_by(Faixa.Etária) %>%
+  e_charts(Ano) %>%
+  e_line(quant.etaria, 
+         smooth = FALSE, 
+         symbol = "circle", 
+         symbolSize = 8,
+         lineStyle = list(width = 0.9)) %>%
+  e_x_axis(
+    type = "category", 
+    axisLabel = list(fontSize = 10),
+    axisTick = list(alignWithLabel = TRUE)
+  ) %>%
+  e_y_axis(
+    axisLabel = list(fontSize = 11),
+    splitLine = list(show = TRUE),
+    axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    subtext = "Distribuição dos Vínculos Ativos por Faixa Etária",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FFB90F", "#CDCD00")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "15%") %>%  
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    "),
+      axisPointer = list(
+      type = "cross"
+    )
+  )
+```
+
+## Faixa Horária Contratual
+
+A maior parte dos arqueólogos trabalha entre 41 e 44 horas semanais, compatível com o regime padrão de escala 6×1 (seis dias de trabalho por um de descanso). Registros de jornadas acima de 44 horas persistem ao longo do período, indicando a existência de contratos com horas extras habituais ou regimes especiais.
+
+No extremo oposto, uma parcela dos profissionais possui jornadas inferiores a 30 horas semanais, sugerindo contratações em regime de tempo parcial, consultoria especializada ou condições especias mediadas por acordos com o empregador.
+
+```{r faixa hora contratual}
+#| label: fig-hora
+#| fig-cap: "Declarações ativas por faixa horária contratual"
+
+faixa.horario <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  mutate(Faixa.Hora.Contrat = recode(Faixa.Hora.Contrat,
+                                     "{ñ class}" = "Não informado",
+                                     .default = Faixa.Hora.Contrat)) %>% 
+  group_by(Ano, Faixa.Hora.Contrat) %>%
+  summarise(quant.horario= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Faixa.Hora.Contrat, quant.horario) %>% 
+  mutate(Faixa.Hora.Contrat = factor(Faixa.Hora.Contrat, 
+                                         levels = c("Até 12 horas", "13 a 15 horas",
+                                                    "16 a 20 horas", "21 a 30 horas",
+                                                    "31 a 40 horas", "41 a 44 horas",
+                                                    "Acima de 44 horas", "Não informado"))) |> 
+  mutate(Ano = as.factor(Ano))
+
+grafico <- faixa.horario |>
+  group_by(Faixa.Hora.Contrat) |>
+  e_charts(Ano) |>
+  e_bar(quant.horario) |>
+  e_facet(rows = 3, cols=3, legend_pos = "bottom", legend_space = 12) |> 
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Faixa Horária Contratual",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+```
+
+## Tempo de Emprego
+
+Um contingente significativo de arqueólogos acumula mais de cinco anos (+60 meses) no mesmo posto de trabalho, indicando relativa estabilidade e baixa rotatividade nesse segmento. Essa permanência indica a existência de empregadores que oferecem condições de retenção da mão de obra contratada.
+
+Os grupos com menos de cinco anos de vínculo apresentam maior variação anual, sugerindo rotatividade mais elevada. Esse padrão é consistente com a natureza dos projetos arqueológicos no escopo de licenciamento ambiental, tipicamente de duração limitada e com ciclos de contratação e desligamento mais frequentes.
+
+```{r tempo emprego}
+#| label: fig-tempo
+#| fig-cap: "Declarações ativas por faixa de tempo de emprego"
+
+tempo.emp <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  mutate(Faixa.Tempo.Emprego = recode(Faixa.Tempo.Emprego,
+                                     "12,0 a 23,9 meses" = "12 a 23 meses",
+                                     "120,0 meses ou mais" = "120 meses ou mais",
+                                     "24,0 a 35,9 meses" = "24 a 35 meses",
+                                     "3,0 a 5,9 meses" = "3 a 5 meses",
+                                     "36,0 a 59,9 meses" = "36 a 59 meses",
+                                     "6,0 a 11,9 meses" = "6 a 11 meses",
+                                     "60,0 a 119,9 meses" = "60 a 119 meses",
+                                     "Ate 2,9 meses" = "Até 2 meses")) %>% 
+  group_by(Ano, Faixa.Tempo.Emprego) %>%
+  summarise(quant.emp= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Faixa.Tempo.Emprego, quant.emp) %>% 
+  mutate(Faixa.Tempo.Emprego = factor(Faixa.Tempo.Emprego, 
+                                     levels = c("Até 2 meses", "3 a 5 meses",
+                                                "6 a 11 meses", "12 a 23 meses",
+                                                "24 a 35 meses", "36 a 59 meses",
+                                                "60 a 119 meses", "120 meses ou mais"))) |> 
+  mutate(Ano = as.factor(Ano)) |> 
+  dplyr::filter(!is.na(Faixa.Tempo.Emprego))
+
+grafico <- tempo.emp |>
+  group_by(Faixa.Tempo.Emprego) |>
+  e_charts(Ano) |>
+  e_bar(quant.emp) |>
+  e_facet(rows = 3, cols=3, legend_pos = "bottom", legend_space = 12) |> 
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Faixa Tempo de Emprego",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+```
+
+## Distribuição por Sexo
+
+A distribuição dos vínculos por sexo é acentuadamente desequilibrada: homens representam a grande maioria dos registros em todos os anos analisados. Ambos os sexos apresentam tendência de crescimento, mas a base masculina permanece significativamente superior à feminina ao longo de toda a série temporal.
+
+```{r distribuição por sexo}
+#| label: fig-ativo-sexo
+#| fig-cap: "Declarações ativas por sexo"
+
+sexo <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") |> 
+  group_by(Ano, Sexo) %>%
+  summarise(quant.sexo= n(), .groups = "drop") |> 
+  mutate(Sexo = factor(Sexo, 
+                           levels = c("MASCULINO", "FEMININO"))) %>% 
+  arrange(Ano, Sexo) |> 
+  mutate(Ano = as.factor(Ano))
+
+sexo %>%
+  group_by(Sexo) %>%
+  e_charts(Ano, timeline = FALSE) %>%
+  e_bar(quant.sexo, stack = FALSE) %>%
+  e_flip_coords() %>%
+  e_y_axis(inverse = TRUE, axisLabel = list(fontSize = 9)) %>%
+  e_x_axis(    
+    axisLabel = list(fontSize = 9),
+    splitLine = list(show = FALSE), axisLine = list(show = TRUE)
+  ) %>%
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    subtext = "Distribuição dos Vínculos Ativos por Sexo",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#00868B", "#D55E00")) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "5%") %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[0] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+```
+
+## Distribuição por Cor e Raça
+
+A distribuição dos vínculos por cor e raça revela uma inversão entre os anos-base. Em 2022, a categoria branca era majoritária, com 100 registros contra 76 da categoria parda. A partir de 2023, contudo, os vínculos declarados como pardos passam a predominar. Esse movimento coincide com uma redução expressiva dos registros sem informação e nulos, que, juntos, caem de 112 para 21 ao longo do quadriênio. A queda sugere que parte significativa da inversão decorre de uma melhoria no preenchimento dos dados sob o eSocial: vínculos que antes permaneciam sem classificação passaram a ser devidamente declarados em categorias específicas. Assim, o deslocamento para a categoria parda reflete menos uma mudança demográfica real do setor e mais a migração de registros anteriormente não informados para grupos efetivamente declaradas.
+
+Ainda sobre essa melhoria de preenchimento da identidade racial do trabalhador, na nota técnica da RAIS 2025 [@mterais2025, p. 9] o MTE informa que foram aplicados diferentes procedimentos para a qualificação dessa informação, de modo a reduzir a ocorrência de dados não rotulados.
+
+Em relação as categorias preta, indígena e amarela, nota-se que elas possuem participação minoritária no mercado formal.
+
+```{r cor/raça}
+#| label: fig-cor-raca
+#| fig-cap: "Declarações ativas por cor e raça"
+
+#| fig-cap: "Gráfico teste"
+raca.cor <- Arqueo.RAIS.2022_2025 %>%
+  dplyr::filter(Ind.Vínculo.Ativo.31.12=="SIM") %>%
+  mutate(Raça.Cor = recode(Raça.Cor,
+                                      "INDIGENA" = "Indígena",
+                                      "BRANCA" = "Branca",
+                                      "PRETA" = "Preta",
+                                      "AMARELA" = "Amarela",
+                                      "PARDA" = "Parda",
+                                      "NAO IDENT" = "Não declarado",
+                                      "IGNORADO" = "Não declarado",
+                                      .missing = "Não declarado")) %>% 
+  group_by(Ano, Raça.Cor) %>%
+  summarise(quantidade= n()) %>% 
+  ungroup() %>% 
+  dplyr::select(Ano, Raça.Cor, quantidade) %>% 
+  mutate(Raça.Cor = factor(Raça.Cor, 
+                                      levels = c("Branca", "Parda",
+                                                 "Preta", "Indígena",
+                                                 "Amarela", "Não declarado"))) |> 
+  mutate(Ano = as.factor(Ano))
+
+grafico <- raca.cor |>
+  group_by(Raça.Cor) |>
+  e_charts(Ano) |>
+  e_bar(quantidade) |>
+  e_facet(rows = 2, cols=3, legend_pos = "bottom", legend_space = 12) |> 
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "axis",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        var ano = params[0].axisValue;
+        var result = 'Ano: ' + ano + '<br/>';
+        params.forEach(function(p) {
+          result += p.marker + ' ' + p.seriesName + ': ' + p.value[1] + '<br/>';
+        });
+        return result;
+      }
+    ")
+  )
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "margin-bottom: 4px;",
+  style = "text-align: center; margin-bottom: 4px;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - RAIS 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0;"
+  ),
+  tags$p(
+    "Distribuição dos Vínculos Ativos por Cor e Raça",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555;"
+  )
+)
+
+browsable(tagList(titulo_html, grafico))
+```

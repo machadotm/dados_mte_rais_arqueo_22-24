@@ -1,18 +1,88 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  O Mercado de Trabalho Formal dos Arqueólogos — estrutura de LIVRO
+#
+#  Layout resultante:
+#    esquerda  → lista de capítulos, fixa, com busca
+#    direita   → "Nesta seção": os ## e ### do capítulo aberto
+#    rodapé    → navegação anterior / próximo
+# ═══════════════════════════════════════════════════════════════════════════
+
 project:
-  type: website
+  type: book
   output-dir: docs
 
-format: 
+book:
+  title: "O Mercado de Trabalho Formal de Arqueólogos"
+  subtitle: "Análise dos Dados da RAIS e do Novo CAGED — 2022 a 2025"
+  author: "Tacio Vieira Machado"
+  date: last-modified
+  language: pt
+  search: true
+  page-navigation: true
+  sidebar:
+    style: floating
+    collapse-level: 1
+    tools:
+    # ── repositório dos dados ─────────────────────────────────────────────
+      - icon: github
+        href: https://github.com/machadotm/Novos_Dados_MTE_Arqueo
+        text: "Repositório dos dados tratados da RAIS e do Novo CAGED"    
+  chapters:
+    - index.qmd            # 1  Notas Introdutórias
+    - dados.qmd            # 2  Carregando e Processando Dados
+    - rais.qmd             # 3  RAIS
+    - vinculos.qmd         # 4  Vínculos Ativos em 31/12
+    - remuneracao.qmd      # 5  Análise Remuneratória
+    - desligamentos.qmd    # 6  Vínculos Desligados em 31/12
+    - caged.qmd            # 7  Novo CAGED
+    - movimentacoes.qmd    # 8  Análise das Movimentações
+    - admitidos.qmd        # 9  Remuneração dos Admitidos
+    - narrativas.qmd       # 10 Interligando Dados e Construindo Narrativas
+    - notas.qmd            # 11 Notas Metodológicas
+    - agradecimentos.qmd   # 12 Agradecimentos
+    - referencias.qmd      # 13 Referências    
+  # ── repositório do projeto ─────────────────────────────────────────
+  repo-url: https://github.com/machadotm/dados_mte_rais_arqueo_22-24
+  repo-actions: [source, issue]
+
+bibliography: referencias.bib
+csl: abnt.csl
+link-citations: true
+nocite: |
+  @rcore2026, @allaire2026quarto, @ibge2026cnae, @esocial2026, @mtemicrodados,
+  @mtepdet, @nomefantasia, @minc2024pnab, @iphan2024edital, @mte2026cbo
+lang: pt-BR
+
+language:
+  crossref-sec-prefix: "Seção"
+  crossref-fig-title: "Figura"
+  crossref-tbl-title: "Tabela"
+  repo-action-links-source: "Código fonte do artigo"
+  search-submit-button-title: "Procurar"
+  repo-action-links-issue: "Relatar erro"
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: auto          # só re-executa o R do capítulo alterado
+
+format:
   html:
+    theme: cosmo
     css: styles.css
     toc: true
     toc-depth: 3
-    toc-title: "Índice"
-    toc-location: left
+    toc-title: "Nesta seção"
+    toc-location: right
     code-fold: true
-    embed-resources: true
+    code-summary: "Mostrar código executado"
     number-sections: true
     highlight-style: github
-    code-summary: "Mostrar código executado"
+    citations-hover: true
+    link-external-newwindow: true
     grid:
-      body-width: 900px 
+      body-width: 900px
+    include-after-body: sidebar-fonte.html
+
+editor: visual

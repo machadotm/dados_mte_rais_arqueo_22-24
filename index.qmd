@@ -1,0 +1,54 @@
+# Notas Introdutórias
+
+{{< include _setup.qmd >}}
+
+Este artigo apresenta uma análise dos microdados da RAIS (Relação Anual de Informações Sociais) e do Novo CAGED (Cadastro Geral de Empregados e Desempregados) para o período de 2022 a 2025, relativo à ocupação de arqueólogo. Os dados foram obtidos de registros tratados disponibilizados no GitHub [@machado2026dados], processados e consolidados para a geração de gráficos e tabelas.
+
+É importante esclarecer que esta análise não pretende comparar-se nem dar continuidade ao estudo de Machado e Mageste [-@machado2024arqueologos], que investigaram os mesmos dados para o intervalo temporal de 1994 a 2021. Essa decisão de não cruzar as duas séries históricas segue a recomendação do Ministério do Trabalho e Emprego (MTE), que orienta que os dados da RAIS a partir de 2022 não devem ser comparados com os registros anteriores.
+
+O MTE divulgou uma nota técnica [@mte2023notatecnicarais], detalhando a transição metodológica na coleta dos registros trabalhistas, implementada gradualmente desde 2018 e concluída em 2022. O sistema tradicional GD-RAIS, de envio anual, foi substituído pelo [eSocial](https://www.senior.com.br/esocial "Link para mais informações sobre o eSocial, um sistema que unifica informações trabalhistas, fiscais e previdenciárias"), de periodicidade mensal e contínua. O ano-base 2022, por ser o último da transição, contém declarações híbridas provenientes de ambos os sistemas, o que inviabiliza a comparabilidade com anos anteriores. Essa mesma ressalva se aplica ao Novo CAGED, conforme apontado por pesquisadores no assunto [@ibre2021caged].
+
+Neste estudo pretende-se [analisar diferentes variáveis](notas.html#sec-nota-unidade "A unidade de análise é o vínculo de trabalho formal, e não a pessoa física do trabalhador") e o comportamento dessas informações ao longo do intervalo temporal, que inclui:
+
+-   No caso da RAIS:
+    -   Quantitativo de registros declarados e os tipos de vínculos em 31/12
+    -   Distribuição dos vínculos ativos em 31/12 por:
+        -   Região
+        -   Estados
+        -   Vínculo empregatício
+        -   Natureza jurídica do empregador
+        -   Tamanho do estabelecimento por setores econômicos
+        -   Trabalho intermitente
+        -   Escolaridade dos arqueólogos
+        -   Intervalo por grupos de:
+            -   Idades
+            -   Horas trabalhadas
+            -   Tempo de emprego
+        -   Sexo
+        -   Cor/raça
+        -   Análise remuneratória
+    -   Distribuição dos vínculos desligados em 31/12 por:
+        -   Motivo do desligamento
+        -   Sexo
+-   Para o Novo CAGED:
+    -   Movimentações por
+        -   Ano
+        -   Mês
+        -   Região
+        -   Estados
+        -   Sexo
+    -   Remuneração dos admitidos
+
+Os gráficos e tabelas foram gerados na [linguagem de programação R](notas.html#sec-nota-ferramentas "ver mais na nota metodológica sobre ferramentas utilizadas"). As visualizações são dinâmicas e interativas: ao passar o cursor sobre barras ou linhas, o usuário visualiza informações detalhadas; também é possível filtrar registros para exibir apenas os dados de interesse no painel.
+
+::::: columns
+::: {.column width="50%"}
+![Exemplo de interação em gráfico [dinâmico 1](https://pic1.zhimg.com/v2-a6d90f9da067aa0caaa266e63b64e1a4_b.gif "Link de acesso ao gif 1"){target="_blank"}](https://pic1.zhimg.com/v2-a6d90f9da067aa0caaa266e63b64e1a4_b.gif){#fig-gif1}
+:::
+
+::: {.column width="50%"}
+![Exemplo de interação em gráfico [dinâmico 2](https://pic2.zhimg.com/v2-355a0328399c8c4b8529be44b3cb9ced_b.gif "Link de acesso ao gif 2"){target="_blank"}](https://pic2.zhimg.com/v2-355a0328399c8c4b8529be44b3cb9ced_b.gif){#fig-gif2}
+:::
+:::::
+
+Destaca-se que este estudo contou com o auxílio de Inteligência Artificial generativa para revisão textual, melhorias de script e identificação de padrões ocultos nos dados.

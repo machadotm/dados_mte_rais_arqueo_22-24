@@ -1,0 +1,184 @@
+# Carregando e Processando Dados
+
+{{< include _setup.qmd >}}
+
+Conforme mencionado anteriormente, os dados foram obtidos do repositório GitHub [@machado2026dados] e processados para gerar os gráficos e tabelas deste artigo. Para garantir transparência metodológica, cada visualização - gráfico ou tabela - inclui um botão no canto superior esquerdo rotulado "Mostrar código executado". Ao clicar, o leitor acessa diretamente o script R que produziu aquele resultado específico, permitindo verificação e reprodução dos procedimentos.
+
+Todo o artigo foi produzido no [Quarto](https://quarto.org/ "Link para acesso ao Quarto"), uma ferramenta de publicação técnica de código aberto que integra código executável (R, Python, Julia e Observable) a documentos narrativos.
+
+As ferramentas empregadas - a linguagem R, o sistema Quarto e os pacotes usados em cada etapa - estão documentadas na @sec-nota-ferramentas, com as versões utilizadas.
+
+```{r carregando dados}
+#| eval: false
+#| code-fold: true
+
+# Este bloco e executado uma unica vez em _setup.qmd, com cache.
+# Aqui ele e exibido para consulta, sem re-executar.
+
+#---------------RAIS---------------
+# 2022
+url <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2022/RAIS/Dados_Tratados_RAIS_2022.xlsx"
+tmp <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url, write_disk(tmp))))
+Arqueo.RAIS.2022 <- read_excel(tmp)
+
+# 2023
+url2 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2023/RAIS/Dados_Tratados_RAIS_2023.xlsx"
+tmp2 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url2, write_disk(tmp2))))
+Arqueo.RAIS.2023 <- read_excel(tmp2)
+
+# Ajustes 2023
+Arqueo.RAIS.2023$Ano <- as.numeric(Arqueo.RAIS.2023$Ano)
+Arqueo.RAIS.2023$Mês.Desligamento <- as.character(Arqueo.RAIS.2023$Mês.Desligamento)
+Arqueo.RAIS.2023$Vl.Rem.Dezembro..SM <- as.numeric(Arqueo.RAIS.2023$Vl.Rem.Dezembro..SM)
+Arqueo.RAIS.2023$Vl.Rem.Média.Nom <- as.numeric(Arqueo.RAIS.2023$Vl.Rem.Média.Nom)
+Arqueo.RAIS.2023$Vl.Rem.Média..SM <- as.numeric(Arqueo.RAIS.2023$Vl.Rem.Média..SM)
+Arqueo.RAIS.2023$Tempo.Emprego <- as.numeric(Arqueo.RAIS.2023$Tempo.Emprego)
+Arqueo.RAIS.2023$Vl.Rem.Junho.SC <- as.numeric(Arqueo.RAIS.2023$Vl.Rem.Junho.SC)
+
+Causa.Afast.DF1 <- data.frame(
+  categorias = c("ACI TRB TIP", "ACI TRB TJT", "DOEN REL TR", "DOEN NREL TR", "LIC MATERNID", "SERV MILITAR", "LIC SEM VENC",
+                 "LIC COM VENC", "SUSP TEMP DE TRAB", "ACID DOENC TRAB", "SEM AFASTAMENTOS", "IGNORADO"),
+  Causa.Afastamento.1 = c(10, 20, 30, 40, 50, 60, 70, 80, 85, 90, 999, -1)
+)
+
+Arqueo.RAIS.2023 <- left_join(Arqueo.RAIS.2023, Causa.Afast.DF1, by = "Causa.Afastamento.1") %>%
+  mutate(Causa.Afastamento.1 = categorias) %>%
+  select(-categorias)
+
+Causa.Afast.DF2 <- data.frame(
+  categorias = c("ACI TRB TIP", "ACI TRB TJT", "DOEN REL TR", "DOEN NREL TR", "LIC MATERNID", "SERV MILITAR", "LIC SEM VENC",
+                 "LIC COM VENC", "SUSP TEMP DE TRAB", "ACID DOENC TRAB", "SEM AFASTAMENTOS", "IGNORADO"),
+  Causa.Afastamento.2 = c(10, 20, 30, 40, 50, 60, 70, 80, 85, 90, 999, -1)
+)
+
+Arqueo.RAIS.2023 <- left_join(Arqueo.RAIS.2023, Causa.Afast.DF2, by = "Causa.Afastamento.2") %>%
+  mutate(Causa.Afastamento.2 = categorias) %>%
+  select(-categorias)
+
+# 2024
+url3 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2024/RAIS/Dados_Tratados_RAIS_2024.xlsx"
+tmp3 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url3, write_disk(tmp3))))
+Arqueo.RAIS.2024 <- read_excel(tmp3)
+
+Arqueo.RAIS.2024$Mês.Desligamento <- as.character(Arqueo.RAIS.2024$Mês.Desligamento)
+Arqueo.RAIS.2024$Vl.Rem.Dezembro..SM <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Dezembro..SM)
+Arqueo.RAIS.2024$Vl.Rem.Média.Nom <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Média.Nom)
+Arqueo.RAIS.2024$Vl.Rem.Média..SM <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Média..SM)
+Arqueo.RAIS.2024$Tempo.Emprego <- as.numeric(Arqueo.RAIS.2024$Tempo.Emprego)
+Arqueo.RAIS.2024$Vl.Rem.Maio.SC <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Maio.SC)
+Arqueo.RAIS.2024$Vl.Rem.Junho.SC <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Junho.SC)
+Arqueo.RAIS.2024$Vl.Rem.Setembro.SC <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Setembro.SC)
+Arqueo.RAIS.2024$Vl.Rem.Outubro.SC <- as.numeric(Arqueo.RAIS.2024$Vl.Rem.Outubro.SC)
+
+Arqueo.RAIS.2024 <- left_join(Arqueo.RAIS.2024, Causa.Afast.DF1, by = "Causa.Afastamento.1") %>%
+  mutate(Causa.Afastamento.1 = categorias) %>%
+  select(-categorias)
+
+Arqueo.RAIS.2024 <- left_join(Arqueo.RAIS.2024, Causa.Afast.DF2, by = "Causa.Afastamento.2") %>%
+  mutate(Causa.Afastamento.2 = categorias) %>%
+  select(-categorias)
+
+# 2025
+url4 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2025/RAIS/Dados_Tratados_RAIS_2025.xlsx"
+tmp4 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url4, write_disk(tmp4))))
+Arqueo.RAIS.2025 <- read_excel(tmp4)
+
+Arqueo.RAIS.2025$Ano <- 2025
+Arqueo.RAIS.2025 <- Arqueo.RAIS.2025 |> 
+  relocate(Ano, .before = Bairros.SP)
+
+Arqueo.RAIS.2025$Mês.Desligamento <- as.character(Arqueo.RAIS.2025$Mês.Desligamento)
+Arqueo.RAIS.2025$Vl.Rem.Dezembro..SM <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Dezembro..SM)
+Arqueo.RAIS.2025$Vl.Rem.Média.Nom <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Média.Nom)
+Arqueo.RAIS.2025$Vl.Rem.Média..SM <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Média..SM)
+Arqueo.RAIS.2025$Tempo.Emprego <- as.numeric(Arqueo.RAIS.2025$Tempo.Emprego)
+Arqueo.RAIS.2025$Vl.Rem.Maio.SC <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Maio.SC)
+Arqueo.RAIS.2025$Vl.Rem.Junho.SC <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Junho.SC)
+Arqueo.RAIS.2025$Vl.Rem.Setembro.SC <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Setembro.SC)
+Arqueo.RAIS.2025$Vl.Rem.Outubro.SC <- as.numeric(Arqueo.RAIS.2025$Vl.Rem.Outubro.SC)
+
+Arqueo.RAIS.2025 <- left_join(Arqueo.RAIS.2025, Causa.Afast.DF1, by = "Causa.Afastamento.1") %>%
+  mutate(Causa.Afastamento.1 = categorias) %>%
+  select(-categorias)
+
+Arqueo.RAIS.2025 <- left_join(Arqueo.RAIS.2025, Causa.Afast.DF2, by = "Causa.Afastamento.2") %>%
+  mutate(Causa.Afastamento.2 = categorias) %>%
+  select(-categorias)
+
+Arqueo.RAIS.2025 <- Arqueo.RAIS.2025 |> 
+  mutate(CNAE.2.0.Subclasse= case_when(
+    CNAE.2.0.Classe == 'Edição de jornais' ~ 'Edição de Jornais Diarios',
+    TRUE ~ CNAE.2.0.Subclasse
+  ))
+
+# Juntar todos os anos
+junta <- full_join(Arqueo.RAIS.2022, Arqueo.RAIS.2023, by = NULL)
+junta2 <- full_join(junta, Arqueo.RAIS.2024, by= NULL)
+Arqueo.RAIS.2022_2025 <- full_join(junta2, Arqueo.RAIS.2025, by = NULL)
+
+# Remover objetos temporários
+rm(tmp, tmp2, tmp3, tmp4, junta, junta2, url, url2, url3, url4, Causa.Afast.DF1, Causa.Afast.DF2)
+
+#---------------------------Novo CAGED-------------------------------
+
+url5 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2022/Novo_CAGED/Dados_Tratados_Novo%20CAGED_2022.xlsx"
+tmp5 <- tempfile(fileext = ".xlsx")  # Cria arquivo temporário
+invisible(capture.output(
+GET(url5, write_disk(tmp5))))  # Baixa o arquivo
+
+Arqueo.CAGED.2022 <- read_excel(tmp5)
+
+url6 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2023/Novo_CAGED/Dados_Tratados_Novo%20CAGED_2023.xlsx"
+tmp6 <- tempfile(fileext = ".xlsx") 
+invisible(capture.output(
+GET(url6, write_disk(tmp6))))  
+
+Arqueo.CAGED.2023 <- read_excel(tmp6)
+
+url7 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2024/Novo_CAGED/Dados_Tratados_Novo%20CAGED_2024.xlsx"
+tmp7 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url7, write_disk(tmp7)))) 
+
+Arqueo.CAGED.2024 <- read_excel(tmp7)
+
+url8 <- "https://github.com/machadotm/Novos_Dados_MTE_Arqueo/raw/refs/heads/main/2025/Novo_CAGED/Dados_Tratados_Novo%20CAGED_2025.xlsx"
+tmp8 <- tempfile(fileext = ".xlsx")
+invisible(capture.output(
+GET(url8, write_disk(tmp8))))  
+
+Arqueo.CAGED.2025 <- read_excel(tmp8)
+
+junta3 <- full_join(Arqueo.CAGED.2022, Arqueo.CAGED.2023, by= NULL)
+
+Arqueo.CAGED.2024$horascontratuais <- gsub(",", ".", 
+                                           Arqueo.CAGED.2024$horascontratuais)
+
+Arqueo.CAGED.2024$horascontratuais <- as.numeric(Arqueo.CAGED.2024$horascontratuais)
+
+Arqueo.CAGED.2024$salário <- gsub(",", ".", 
+                                           Arqueo.CAGED.2024$salário)
+
+Arqueo.CAGED.2024$salário <- as.numeric(Arqueo.CAGED.2024$salário)
+
+Arqueo.CAGED.2024$valorsaláriofixo <- gsub(",", ".", 
+                                  Arqueo.CAGED.2024$valorsaláriofixo)
+
+Arqueo.CAGED.2024$valorsaláriofixo <- as.numeric(Arqueo.CAGED.2024$valorsaláriofixo)
+
+junta4 <- full_join(junta3, Arqueo.CAGED.2024, by= NULL)
+
+Arqueo.CAGED.2022_2025 <- full_join(junta4, Arqueo.CAGED.2025, by= NULL)
+
+# Remover objetos temporários
+rm(tmp5, tmp6, tmp7, tmp8, junta3, junta4, url5, url6, url7, url8)
+
+```

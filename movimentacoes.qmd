@@ -1,0 +1,611 @@
+# Movimentações -- Novo CAGED
+
+{{< include _setup.qmd >}}
+
+Conforme comentado no item anterior, o [saldo](notas.html#sec-nota-saldo "saldo = admissões − desligamentos") é um importante indicador para avaliar se o mercado de trabalho formal está em expansão ou enfrenta retração. Desse modo, o seu resultado permite mapear o desempenho das contratações de arqueólogos no quadriênio analisado. Assim, os gráficos subsequentes foram gerados com base nesse indicador, a fim de observar o seu comportamento em relação a algumas variáveis selecionadas.
+
+## Movimentação Anual
+
+O saldo anual de contratações manteve-se positivo até 2024, indicando que o mercado de trabalho arqueológico criou mais vagas do que perdeu ao longo do período analisado (saldo acumulado de +64). O destaque é 2023, que registrou o maior volume de vagas abertas (+41) - um pico que corrobora com a hipótese de retomada de projetos paralisados durante a pandemia, potencializada pelo quadro político favorável ao licenciamento ambiental naquele ano.
+
+Em 2024, o saldo permaneceu positivo, porém com ritmo de crescimento reduzido (+9 vagas abertas), sinalizando queda na geração de novos empregos. O decremento aponta que o impulso pós-pandemia perdeu força, culminando em um saldo negativo em 2025, único ano da série que registrou valor abaixo de zero (-13).
+
+A análise sugere que o mercado entrou em uma fase de retração, com menor capacidade de absorção de novos profissionais.
+
+```{r movimentação anual}
+#| label: fig-movimenta-anual
+#| fig-cap: "Movimentações anuais"
+
+saldo_anual <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  group_by(anocompetênciamov, saldomovimentação) %>% 
+  summarise(quantidade= n()) %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  mutate(Ano_num = as.numeric(factor(anocompetênciamov, 
+                                     levels = c(2022, 2023, 2024, 2025))))
+
+rotulos_finais <- saldo_anual %>%
+  group_by(saldomovimentação) %>%
+  slice_max(Ano_num, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
+  mutate(x_fim = Ano_num,
+         y_fim = quantidade)
+
+saldo_anual %>%
+  group_by(saldomovimentação) %>%
+  e_charts(anocompetênciamov) %>%
+  e_line(quantidade, 
+         smooth = FALSE, 
+         symbol = "circle", 
+         symbolSize = 8,
+         lineStyle = list(width = 0.9)) %>%
+  e_x_axis(
+    type = "category", 
+    axisLabel = list(fontSize = 10),
+    axisTick = list(alignWithLabel = TRUE)
+  ) %>%
+  e_y_axis(
+  axisLabel = list(
+    fontSize = 11,
+    rich = list(
+      red = list(color = "red")
+    ),
+    formatter = htmlwidgets::JS("
+      function(value) {
+        var formatted = Math.abs(value).toLocaleString('pt-BR');
+        if (value < 0) {
+          return '{red|-' + formatted + '}';
+        } else {
+          return formatted;
+        }
+      }
+    ")
+  ),
+  splitLine = list(show = TRUE),
+  axisLine = list(show = TRUE)
+  ) |> 
+  e_title(
+    text = "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    subtext = "Distribuição Anual das Movimentações",
+    left = "center",
+    textStyle = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_color(c("#377EB8", "#E41A1C", "#4DAF4A")) %>%  
+  e_mark_line(
+    serie = "Saldo",                
+    data = list(yAxis = -0),         
+    lineStyle = list(color = "red", width = 2, type = "solid"),
+    symbol = "none",
+    label = list(show = FALSE),
+    tooltip = list(show = FALSE)
+  ) %>%
+  e_grid(containLabel = TRUE, left = "10%", right = "15%") %>%  
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Ano: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[1];
+      }
+    "),
+    axisPointer = list(type = "cross")
+  )
+```
+
+## Movimentação Mensal
+
+Pela distribuição mensal do saldo, fevereiro é o mês apontado com o pior desempenho de contração, com postos de trabalhos fechados que supera os demais meses (saldo acumulado de -29). As festividades do carnaval podem ser um dos fatores para essa sazonalidade identificada - contratos aguardando o início das obras.
+
+Março segue a mesma tendência de seu predecessor, com saldo acumulado de -7, prolongando o período de menor dinamismo. É possível supor que o primeiro trimestre do ano é uma época de retração na oferta de emprego formal para os arqueólogos.
+
+Junho emerge como o mês mais consistente em geração de vagas, registrando desempenho positivo em todos os anos analisados (saldo acumulado de +14). Já agosto apresentou o mesmo resultado que junho, mas sinaliza tendência de decréscimo na linha temporal.
+
+```{r movimentação mensal}
+#| label: fig-movimenta-mes
+#| fig-cap: "Movimentações mensais"
+#| fig-align: center
+#| column: page
+
+saldo_mensal <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  group_by(anocompetênciamov, mêscompetênciamov, saldomovimentação) %>% 
+  summarise(quantidade = n(), .groups = "drop") %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  mutate(Ano_num = as.numeric(factor(anocompetênciamov, 
+                                     levels = c(2022, 2023, 2024, 2025)))) %>% 
+  mutate(mêscompetênciamov = factor(mêscompetênciamov, 
+                         levels = c("Janeiro", "Fevereiro", "Março", "Abril", "Maio",
+                                    "Junho", "Julho", "Agosto", "Setembro",
+                                    "Outubro", "Novembro", "Dezembro")))
+
+p_mensal <- saldo_mensal %>%
+  mutate(saldomovimentação = factor(saldomovimentação,
+                                    levels = c("Admitido", "Desligado", "Saldo"))) %>%
+  ggplot(aes(x = Ano_num, y = quantidade,
+             group = saldomovimentação, color = saldomovimentação,
+             text = paste0(
+               "Ano: ", c(2022, 2023, 2024, 2025)[Ano_num], "<br>",
+               saldomovimentação, ": ", quantidade
+             ))) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.5) +
+  geom_hline(yintercept = 0, color = "red", linewidth = 0.7) +
+  facet_wrap(~ mêscompetênciamov, ncol = 4, nrow = 3, scales = "free_x") + # ← só x livre
+  scale_x_continuous(
+    breaks = 1:4, labels = c(2022, 2023, 2024, 2025),
+    expand = expansion(mult = c(0.05, 0.15))
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
+  scale_color_manual(
+    values = c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45"),
+    name = NULL
+  ) +
+  labs(x = "", y = "") +
+  theme_bw() +
+  theme(
+    axis.text.x        = element_text(angle = 0, hjust = 0.5, size = 8),
+    axis.text.y        = element_text(size = 8),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor   = element_blank(),
+    strip.background   = element_rect(fill = "lightgray"),
+    strip.text         = element_text(face = "bold", size = 9),
+    legend.position    = "bottom",  
+    legend.background  = element_rect(fill = "white", color = "gray50"),
+    plot.title         = element_blank(),
+    plot.subtitle      = element_blank(),
+    panel.spacing.x    = unit(0.3, "cm"),
+    panel.spacing.y    = unit(0.8, "cm"),
+    plot.margin        = margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+  )
+
+fig <- ggplotly(p_mensal, tooltip = "text", height = 780) %>% 
+  layout(
+    legend = list(
+      title       = list(text = ""),
+      orientation = "h",
+      x           = 0.5,
+      xanchor     = "center",
+      y           = -0.12,
+      yanchor     = "top"
+    ),
+    margin = list(t = 20, l = 50, r = 30, b = 130),
+    hoverlabel = list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = "rgba(0,0,0,0)",
+      font        = list(color = "black")
+    )
+  ) %>%
+  config(
+    responsive      = TRUE,   
+    displayModeBar  = FALSE  
+  )
+
+series_colors <- c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45")
+for (i in seq_along(fig$x$data)) {
+  trace_name <- fig$x$data[[i]]$name
+  if (!is.null(trace_name) && trace_name %in% names(series_colors)) {
+    fig$x$data[[i]]$hoverlabel <- list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = series_colors[trace_name],
+      font        = list(color = "black", size = 12)
+    )
+  }
+}
+
+y_axes <- grep("^yaxis", names(fig$x$layout), value = TRUE)
+for (ax in y_axes) {
+  ticks <- fig$x$layout[[ax]]$tickvals
+  if (!is.null(ticks)) {
+    colored <- sapply(ticks, function(v) {
+      if (v < 0) paste0('<span style="color:red">', v, '</span>') else as.character(v)
+    })
+    fig$x$layout[[ax]]$ticktext <- colored
+    fig$x$layout[[ax]]$tickfont <- list(size = 10)
+  }
+}
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "text-align: center; margin-bottom: 6px; width: 100%;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0; text-align: center;"
+  ),
+  tags$p(
+    "Distribuição Mensal das Movimentações",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555; text-align: center;"
+  )
+)
+
+browsable(tagList(titulo_html, fig))
+
+```
+
+## Movimentação por Região
+
+O [Nordeste](notas.html#sec-nota-territorio "A localização do vínculo é determinada pelo endereço do contratante, e não onde a pesquisa arqueológica é executada") se consolida como polo de expansão sustentada, registrando saldo positivo em todos os anos analisados.
+
+A Região Sul apresenta um cenário oposto: saldo negativo persistente, revelando que os estabelecimentos sulistas encerram contratos em volume superior ao de novas admissões.
+
+O Centro-Oeste exibe um padrão mais volátil. Em 2023 concentrou o maior volume de vagas abertas - um pico que provavelmente reflete grandes projetos de infraestrutura ou licenciamentos ambientais específicos da região. Contudo, nos anos subsequentes, o saldo recuou acentuadamente, indicando que os postos criados eram majoritariamente temporários e não se converteram em vínculos duradouros.
+
+A Região Norte sinaliza que as empresas daquela macrorregião possuem a menor capacidade para absorver novos profissionais no mercado formal.
+
+O Sudeste registrou uma queda abrupta em 2025 (saldo de -17) após obter desempenho positivo nos anos anteriores, situação que pode indicar encerramento de projetos de grande porte naquela região.
+
+```{r movimenta região}
+#| fig-align: center
+#| label: fig-movimenta-regiao
+#| fig-cap: "Movimentações regionais"
+
+saldo_região <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  group_by(anocompetênciamov, região, saldomovimentação) %>% 
+  summarise(quantidade = n()) %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  mutate(Ano_num = as.numeric(factor(anocompetênciamov, 
+                                     levels = c(2022, 2023, 2024, 2025)))) %>% 
+  mutate(região = factor(região, 
+                         levels = c("Norte", "Nordeste", "Centro-Oeste",
+                                    "Sudeste", "Sul")))
+
+p_regiao <- saldo_região %>%
+  mutate(saldomovimentação = factor(saldomovimentação,
+                                    levels = c("Admitido", "Desligado", "Saldo"))) %>%
+  ggplot(aes(x = Ano_num, y = quantidade,
+             group = saldomovimentação, color = saldomovimentação,
+             text = paste0(
+               "Ano: ", c(2022, 2023, 2024, 2025)[Ano_num], "<br>",
+               saldomovimentação, ": ", quantidade
+             ))) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.5) +
+  geom_hline(yintercept = 0, color = "red", linewidth = 0.7) +
+  facet_wrap(~ região, ncol = 3, nrow = 2, scales = "free_x") + 
+  scale_x_continuous(
+    breaks = 1:4, labels = c(2022, 2023, 2024, 2025),
+    expand = expansion(mult = c(0.05, 0.15))
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.1))) +
+  scale_color_manual(
+    values = c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45"),
+    name = NULL
+  ) +
+  labs(x = "", y = "") +
+  theme_bw() +
+  theme(
+    axis.text.x        = element_text(angle = 0, hjust = 0.5, size = 8),
+    axis.text.y        = element_text(size = 8),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor   = element_blank(),
+    strip.background   = element_rect(fill = "lightgray"),
+    strip.text         = element_text(face = "bold", size = 9),
+    legend.position    = "bottom",  
+    legend.background  = element_rect(fill = "white", color = "gray50"),
+    plot.title         = element_blank(),
+    plot.subtitle      = element_blank(),
+    panel.spacing.x    = unit(0.3, "cm"),
+    panel.spacing.y    = unit(0.8, "cm"),
+    plot.margin        = margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+  )
+
+fig <- ggplotly(p_regiao, tooltip = "text", height = 780) %>% 
+  layout(
+    legend = list(
+      title       = list(text = ""),
+      orientation = "h",
+      x           = 0.5,
+      xanchor     = "center",
+      y           = -0.12,
+      yanchor     = "top"
+    ),
+    margin = list(t = 20, l = 50, r = 30, b = 130),
+    hoverlabel = list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = "rgba(0,0,0,0)",
+      font        = list(color = "black")
+    )
+  ) %>%
+  config(
+    responsive      = TRUE, 
+    displayModeBar  = FALSE 
+  )
+
+series_colors <- c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45")
+for (i in seq_along(fig$x$data)) {
+  trace_name <- fig$x$data[[i]]$name
+  if (!is.null(trace_name) && trace_name %in% names(series_colors)) {
+    fig$x$data[[i]]$hoverlabel <- list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = series_colors[trace_name],
+      font        = list(color = "black", size = 12)
+    )
+  }
+}
+
+y_axes <- grep("^yaxis", names(fig$x$layout), value = TRUE)
+for (ax in y_axes) {
+  ticks <- fig$x$layout[[ax]]$tickvals
+  if (!is.null(ticks)) {
+    colored <- sapply(ticks, function(v) {
+      if (v < 0) paste0('<span style="color:red">', v, '</span>') else as.character(v)
+    })
+    fig$x$layout[[ax]]$ticktext <- colored
+    fig$x$layout[[ax]]$tickfont <- list(size = 10)
+  }
+}
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "text-align: center; margin-bottom: 6px; width: 100%;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0; text-align: center;"
+  ),
+  tags$p(
+    "Distribuição das Movimentações por Região",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555; text-align: center;"
+  )
+)
+
+browsable(tagList(titulo_html, fig))
+```
+
+## Movimentação por Estados
+
+Assim como descrito no subitem [-@sec-ativos-estados], a distribuição das movimentações por [unidade federativa](notas.html#sec-nota-territorio "A localização do vínculo é determinada pelo endereço do contratante, e não onde a pesquisa arqueológica é executada") também é fortemente assimétrica: nem todos os estados registraram saldo no período analisado, e alguns apresentaram apenas um ou dois eventos. Para viabilizar a comparação, os dados foram consolidados apenas para as UFs que obtiveram saldo em pelo menos um ano, possibilitando gerar um saldo acumulado que sintetize o desempenho de cada estado no quadriênio analisado.
+
+Pernambuco se destaca como o principal polo de geração de vagas, com saldo acumulado de +42 postos de trabalho criados - o maior do país. O estado alcançou saldo positivo em todos os quatro anos, indicando que as empresas daquela unidade federativa mantém forte presença em projetos de licenciamento ambiental com exigências contratuais pelo regime celetista.
+
+Na sequência encontra-se São Paulo, com saldo acumulado de +10 vagas, mas com um padrão atípico em 2025. O estado concentra o maior volume absoluto de movimentações (131 admissões e 121 desligamentos no período), mas em 2025 registrou um saldo fortemente negativo de −15. Esse desempenho sugere encerramento de projetos de grande porte ou reestruturação de consultorias que mantinham contratos em massa. A queda abrupta contrasta com os anos anteriores (2022: +12; 2023: +9; 2024: +4), revelando desaceleração progressiva seguida de reversão.
+
+Goiás apresenta um padrão mais volátil: em 2023, registrou saldo de +24 vagas abertas - a maior quantidade individual entre os estados, mas em 2024 sofreu retração de −17 postos, resultando em saldo acumulado de −1. O comportamento sugere que o pico de 2023 foi impulsionado por projetos temporários (grandes obras de infraestrutura ou licenciamentos pontuais) que se encerraram no ano seguinte, sem se converterem em vínculos duradouros.
+
+Por fim, o Ceará lidera o ranking de saldo negativo acumulado (−16 postos no período). O desequilíbrio se concentrou em 2022, quando o estado declarou 23 desligamentos contra apenas 6 admissões - uma retração de −17 em um único ano. Esse padrão indica que contratos temporários ou consultorias locais encerraram operações naquele ano sem reposição imediata.
+
+```{r movimenta estados}
+#| label: fig-movimenta-estados
+#| fig-cap: "Saldo acumulado dos estados"
+#| fig-align: center
+
+saldo_estados <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>%
+  mutate(uf= recode(uf, "Minas gerais" = "Minas Gerais")) |> 
+  group_by(anocompetênciamov, uf, saldomovimentação) %>% 
+  summarise(quantidade = n(), .groups = "drop") %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  pivot_wider(
+    names_from = anocompetênciamov,
+    values_from = quantidade) %>% 
+  arrange(uf)
+
+saldo_acumulado_estados <- saldo_estados %>% 
+  dplyr::filter(saldomovimentação== "Saldo") %>% 
+  dplyr::filter(!if_all(c(`2022`, `2023`, `2024`, `2025`), is.na)) %>%
+  rowwise() %>% 
+  mutate(saldo_acumulado= sum(c(`2022`, `2023`, `2024`, `2025`), na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  arrange(saldo_acumulado) |> 
+  mutate(status= if_else(saldo_acumulado >=0, 'positivo', 'negativo'))
+
+saldo_acumulado_estados %>%
+  arrange(saldo_acumulado) %>%
+  e_charts(uf) %>%
+  e_bar(
+    saldo_acumulado,
+    name      = "Saldo",
+    legend    = FALSE,
+    itemStyle = list(
+      color = htmlwidgets::JS(
+        "function(params) {
+          return params.value[0] >= 0 ? '#3B6D11' : '#E24B4A';
+        }"
+      )
+    )
+  ) %>%
+  e_flip_coords() %>%
+  e_x_axis(
+  axisLabel = list(
+    fontSize = 11,
+    rich = list(
+      red = list(color = "red")
+    ),
+    formatter = htmlwidgets::JS("
+      function(value) {
+        var formatted = Math.abs(value).toLocaleString('pt-BR');
+        if (value < 0) {
+          return '{red|-' + formatted + '}';
+        } else {
+          return formatted;
+        }
+      }
+    ")
+  ),  
+    splitLine = list(show = FALSE),
+    axisLine  = list(show = TRUE)
+  ) %>%
+  e_y_axis(
+    axisLabel = list(fontSize = 9)
+  ) %>%
+  e_mark_line(
+    data      = list(xAxis = 0),
+    lineStyle = list(color = "grey50", width = 0.8, type = "solid"),
+    symbol    = "none",
+    label     = list(show = FALSE),
+    silent    = TRUE
+  ) %>%
+  e_grid(
+    containLabel = TRUE,
+    left         = "10%",
+    right        = "15%"
+  ) %>%
+  e_title(
+    text         = "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    subtext      = "Distribuição das Movimentações por Estados - Saldo Acumulado",
+    textStyle    = list(fontSize = 15, fontWeight = "bold"),
+    subtextStyle = list(fontSize = 12, fontWeight = "bold")
+  ) %>%
+  e_tooltip(
+    extraCssText = "text-align: left;",
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params) {
+        return 'Estado: ' + params.name + '<br/>' +
+               params.marker + ' ' + params.seriesName + ': ' + params.value[0];
+      }
+    "),
+    axisPointer = list(type = "cross")
+  )
+```
+
+## Movimentação por Sexo
+
+Ambos os gêneros apresentaram saldo positivo entre 2022 e 2024, indicando criação líquida de vagas abertas, mas o cenário se inverteu em 2025, quando ambos registraram retração.
+
+As arqueólogas se destacaram na ocupação dos postos criados ao longo do período, com saldo acumulado de +30. Contudo, o padrão de desligamentos femininos cresceu de forma consistente entre 2022 e 2024, culminando em saldo negativo em 2025.
+
+Os homens, por sua vez, concentram o maior volume absoluto de movimentações: 296 admissões e 275 desligamentos no período analisado (saldo acumulado de +21).
+
+```{r movimenta sexo}
+#| label: fig-movimenta-sexo
+#| fig-cap: "Movimentações por sexo"
+#| fig-align: center
+
+saldo_sexo <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  group_by(anocompetênciamov, sexo, saldomovimentação) %>% 
+  summarise(quantidade = n(), .groups = "drop") %>% 
+  pivot_wider(names_from = saldomovimentação, values_from = quantidade, values_fill = 0) %>% 
+  mutate(Saldo = Admitido - Desligado) %>% 
+  pivot_longer(cols = c(Admitido, Desligado, Saldo),
+               names_to = "saldomovimentação",
+               values_to = "quantidade") %>% 
+  mutate(Ano_num = as.numeric(factor(anocompetênciamov, 
+                                     levels = c(2022, 2023, 2024, 2025)))) %>% 
+  mutate(sexo = recode(sexo, 
+                            "Homem"= "Masculino",
+                            "Mulher"= "Feminino"))
+
+p_sexo <- saldo_sexo %>%
+  mutate(saldomovimentação = factor(saldomovimentação,
+                                    levels = c("Admitido", "Desligado", "Saldo"))) %>%
+  ggplot(aes(x = Ano_num, y = quantidade,
+             group = saldomovimentação, color = saldomovimentação,
+             text = paste0(
+               "Ano: ", c(2022, 2023, 2024, 2025)[Ano_num], "<br>",
+               saldomovimentação, ": ", quantidade
+             ))) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.5) +
+  geom_hline(yintercept = 0, color = "red", linewidth = 0.7) +
+  facet_grid(cols = vars(sexo)) +
+  scale_x_continuous(
+    breaks = 1:4, labels = c(2022, 2023, 2024, 2025),
+    expand = expansion(mult = c(0.05, 0.15))
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.1))) +
+  scale_color_manual(
+    values = c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45"),
+    name = NULL
+  ) +
+  labs(x = "", y = "") +
+  theme_bw() +
+  theme(
+    axis.text.x        = element_text(angle = 0, hjust = 0.5, size = 8),
+    axis.text.y        = element_text(size = 8),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor   = element_blank(),
+    strip.background   = element_rect(fill = "lightgray"),
+    strip.text         = element_text(face = "bold", size = 9),
+    legend.position    = "bottom",  
+    legend.background  = element_rect(fill = "white", color = "gray50"),
+    plot.title         = element_blank(),
+    plot.subtitle      = element_blank(),
+    panel.spacing.x    = unit(1.2, "cm"),
+    panel.spacing.y    = unit(0.8, "cm"),
+    plot.margin        = margin(t = 5, r = 10, b = 5, l = 10, unit = "pt")
+  )
+
+fig <- ggplotly(p_sexo, tooltip = "text", height = 780) %>% 
+  layout(
+    legend = list(
+      title       = list(text = ""),
+      orientation = "h",
+      x           = 0.5,
+      xanchor     = "center",
+      y           = -0.12,
+      yanchor     = "top"
+    ),
+    margin = list(t = 20, l = 50, r = 30, b = 130),
+    hoverlabel = list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = "rgba(0,0,0,0)",
+      font        = list(color = "black")
+    )
+  ) %>%
+  config(
+    responsive      = TRUE, 
+    displayModeBar  = FALSE 
+  )
+
+series_colors <- c("Admitido" = "#1874CD", "Desligado" = "#CD2626", "Saldo" = "#008B45")
+for (i in seq_along(fig$x$data)) {
+  trace_name <- fig$x$data[[i]]$name
+  if (!is.null(trace_name) && trace_name %in% names(series_colors)) {
+    fig$x$data[[i]]$hoverlabel <- list(
+      bgcolor     = "rgba(255,255,255,0.9)",
+      bordercolor = series_colors[trace_name],
+      font        = list(color = "black", size = 12)
+    )
+  }
+}
+
+y_axes <- grep("^yaxis", names(fig$x$layout), value = TRUE)
+for (ax in y_axes) {
+  ticks <- fig$x$layout[[ax]]$tickvals
+  if (!is.null(ticks)) {
+    ticks <- sapply(ticks, function(v) if (abs(v) < 1e-9) 0 else v)
+    fig$x$layout[[ax]]$tickvals <- ticks
+    colored <- sapply(ticks, function(v) {
+      if (v < 0) paste0('<span style="color:red">', v, '</span>') else as.character(v)
+    })
+    fig$x$layout[[ax]]$ticktext <- colored
+    fig$x$layout[[ax]]$tickfont <- list(size = 10)
+  }
+}
+
+titulo_html <- tags$div(
+  class = "titulo-grafico",
+  style = "text-align: center; margin-bottom: 6px; width: 100%;",
+  tags$p(
+    "Mercado de Trabalho Formal de Arqueólogos - Novo CAGED 2022 a 2025",
+    style = "font-size: 15px; font-weight: bold; margin: 0; text-align: center;"
+  ),
+  tags$p(
+    "Distribuição das Movimentações por Sexo",
+    style = "font-size: 12px; font-weight: bold; margin: 0; color: #555; text-align: center;"
+  )
+)
+
+browsable(tagList(titulo_html, fig))
+```

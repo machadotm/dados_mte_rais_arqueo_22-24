@@ -1,0 +1,101 @@
+<script>
+// ───────────────────────────────────────────────────────────────────────────
+//  Distribui as ações de repositório entre as duas colunas:
+//
+//    esquerda, no pé da lista de capítulos → "Ver o código fonte"
+//                                            (apontando para a raiz do repo)
+//    direita, ao fim de "Nesta seção"      → as demais ações (ex.: issue)
+//
+//  Também remove do cabeçalho o ícone duplicado que o Quarto cria a partir
+//  de repo-url, e faz os links externos abrirem em nova aba.
+// ───────────────────────────────────────────────────────────────────────────
+(function () {
+
+  var ABRIR_EM_NOVA_ABA = true;   // false para navegar na mesma aba
+
+  function externo(a) {
+    return a.protocol && /^https?:$/.test(a.protocol) &&
+           a.hostname && a.hostname !== window.location.hostname;
+  }
+  function novaAba(a) {
+    if (!ABRIR_EM_NOVA_ABA || !a || !externo(a)) return;
+    a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener');
+  }
+
+  function ajustar() {
+    var barra  = document.getElementById('quarto-sidebar');
+    var margem = document.getElementById('quarto-margin-sidebar');
+    var blocos = document.querySelectorAll('.toc-actions');
+    if (!barra || !blocos.length) return;
+
+    var principal = blocos[0];
+
+    // remove as cópias que o Quarto repete no rodapé da página
+    for (var i = 1; i < blocos.length; i++) {
+      var pai = blocos[i].closest('.nav-footer-center, .nav-footer-left, .nav-footer-right');
+      (pai || blocos[i]).remove();
+    }
+
+    // ── separa o link do código fonte ────────────────────────────────────
+    var fonte = principal.querySelector('a[href*="/blob/"]');
+    if (fonte) {
+      var base = fonte.getAttribute('href').split('/blob/')[0];
+
+      var icone = document.querySelector(
+        '.sidebar-tools-main a.quarto-navigation-tool[href="' + base + '"]'
+      );
+      if (icone) icone.remove();
+
+      fonte.setAttribute('href', base);      // encurta para a raiz do repositório
+
+      var item = fonte.closest('li');
+      var caixa = document.createElement('div');
+      caixa.className = 'toc-actions';
+      var lista = document.createElement('ul');
+      lista.appendChild(item);               // move só este <li>
+      caixa.appendChild(lista);
+
+      var rodape = document.createElement('div');
+      rodape.className = 'sidebar-fonte';
+      rodape.appendChild(document.createElement('hr'));
+      rodape.appendChild(caixa);
+      barra.appendChild(rodape);
+    }
+
+    // ── o que sobrou (issue, edit…) fica na coluna da direita ────────────
+    var restantes = principal.querySelectorAll('li');
+    if (!restantes.length) {
+      principal.remove();
+    } else if (margem && !margem.contains(principal)) {
+      // capítulos sem subtítulos não têm sumário: o Quarto joga o bloco no
+      // rodapé da página; aqui ele é trazido para a margem, como nos demais
+      principal.classList.add('toc-actions-soltas');
+      margem.appendChild(principal);
+    }
+
+    // ── ícone: o Quarto só decora a primeira ação; as demais recebem
+    //    <i class="bi empty">. Copia aqui o mesmo ícone para todas. ────────
+    var modelo = document.querySelector('.toc-actions i.bi:not(.empty)');
+    var classe = 'bi-github';
+    if (modelo) {
+      Array.prototype.forEach.call(modelo.classList, function (c) {
+        if (c !== 'bi') classe = c;
+      });
+    }
+    Array.prototype.forEach.call(
+      document.querySelectorAll('.toc-actions i.bi.empty'),
+      function (i) { i.classList.remove('empty'); i.classList.add(classe); }
+    );
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll('.sidebar-tools-main a, .toc-actions a'),
+      novaAba
+    );
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ajustar);
+  } else { ajustar(); }
+})();
+</script>

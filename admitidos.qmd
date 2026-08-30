@@ -1,0 +1,223 @@
+# Remuneração dos Admitidos – Novo CAGED
+
+{{< include _setup.qmd >}}
+
+As tabelas a seguir são referentes a movimentação de admitidos, com remoção do registro `Variavel` da coluna `unidadesaláriocódigo` por conter dados nulos.
+
+## Unidades de Pagamento
+
+A base do Novo CAGED contém dados da unidade salarial contratada do vínculo celetista. Por meio dessa variável, é possível obter registros segmentados por modalidade de pagamento (hora, dia e mês).
+
+Ao consolidar as informações em um resumo estatístico tabular, nota-se que são poucas as contratações pagas por dia. Essa categoria não teve dados declarados em 2022 e, devido à pequena quantidade de informações preenchidas, as medidas de posição mostraram-se uniformes ao longo do registro longitudinal.
+
+Os salários pagos por hora também apresentam poucas declarações. *Outliers* são vistos nos anos de 2024 e 2025, com o valor máximo apresentando números atípicos na casa dos milhares, gerando distorções no resultado da média. Esse valor se mantém nos dois anos, apontando erro de preenchimento - o dado possui característica de remuneração mensal lançado no campo de salário-hora.
+
+Já na modalidade mensal - que concentra o maior número de contratações -, o número de declarações registrou crescimento em 2022 e 2023, mas nos anos subsequentes apresentou decremento no pagamento por essa categoria.
+
+Em quase toda a distribuição salarial, há oscilações interanuais, isto é, variações que, em determinado ano, registram alta e, no seguinte, registram queda.
+
+```{r unidades salariais}
+#| label: tbl-resumo-estatistico-unidades-salario
+#| tbl-cap: "Medidas de posição das unidades salarias da movimentação de admitidos"
+
+resumo_unidades_salariais <- Arqueo.CAGED.2022_2025 %>% 
+  dplyr::filter(anocompetênciamov != "2021") %>% 
+  dplyr::filter(saldomovimentação == "Admitido" & unidadesaláriocódigo != "Variavel") %>% 
+  mutate(unidadesaláriocódigo = factor(unidadesaláriocódigo,
+                                       levels = c("Hora", "Dia", "Mês"))) %>%
+  group_by(anocompetênciamov, unidadesaláriocódigo) %>%
+  summarise(
+    Quantidade = n(),
+    Mínimo     = min(valorsaláriofixo,    na.rm = TRUE),
+    Mediana    = median(valorsaláriofixo, na.rm = TRUE),
+    Média      = mean(valorsaláriofixo,   na.rm = TRUE),
+    Máximo     = max(valorsaláriofixo,    na.rm = TRUE),
+    .groups = "drop") %>%
+  arrange(anocompetênciamov, unidadesaláriocódigo) %>%
+  pivot_longer(
+    cols      = c(Quantidade, Mínimo, Mediana, Média, Máximo),
+    names_to  = "Estatística",
+    values_to = "Valor") %>%
+  mutate(Estatística = factor(Estatística,
+                              levels = c("Quantidade", "Mínimo", "Mediana",
+                                         "Média", "Máximo"))) %>%
+  pivot_wider(
+    names_from  = anocompetênciamov,
+    values_from = Valor) %>%
+  arrange(unidadesaláriocódigo, Estatística)
+
+colunas_anos <- resumo_unidades_salariais %>%
+  select(where(is.numeric)) %>%
+  names()
+
+linhas_qtd <- which(resumo_unidades_salariais$Estatística == "Quantidade")
+
+linhas_monetario <- which(resumo_unidades_salariais$Estatística != "Quantidade")
+
+tabela_unidades_salariais <- resumo_unidades_salariais %>%
+  gt(rowname_col   = "Estatística",
+     groupname_col = "unidadesaláriocódigo") %>%
+  tab_header(
+    title    = "Resumo Estatístico",
+    subtitle = "Unidades Salariais de Pagamento dos Admitidos") %>%
+  tab_spanner(
+    label   = "Ano",
+    columns = all_of(colunas_anos)) %>%
+  
+  fmt_number(
+    columns  = all_of(colunas_anos),
+    rows     = Estatística %in% c("Mínimo", "Mediana", "Média", "Máximo"),
+    decimals = 2,
+    sep_mark = ".",
+    dec_mark = ",") %>%
+  fmt_currency(
+    columns  = all_of(colunas_anos),
+    rows     = Estatística %in% c("Mínimo", "Mediana", "Média", "Máximo"),
+    currency = "BRL",
+    decimals = 2,
+    sep_mark = ".",
+    dec_mark = ",") %>%
+  
+  fmt_integer(
+    columns  = all_of(colunas_anos),
+    rows     = Estatística == "Quantidade",
+    sep_mark = ".") %>%
+  cols_align(align = "center", columns = all_of(colunas_anos)) %>%
+  
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_row_groups()) %>%
+  
+  tab_style(
+    style = list(
+      cell_text(weight = "bold", color = "#2c5f8a"),
+      cell_fill(color = "#eef4fb")),
+    locations = cells_body(
+      columns = all_of(colunas_anos),
+      rows    = Estatística == "Quantidade")) %>%
+  
+  tab_style(
+    style = cell_borders(
+      sides  = "bottom",
+      color  = "#aaaaaa",
+      weight = px(1.5)),
+    locations = cells_body(rows = Estatística == "Quantidade")) %>%
+  sub_missing(
+    columns      = all_of(colunas_anos),
+    missing_text = "-")
+
+tabela_unidades_salariais
+```
+
+## Valores Salariais
+
+A distribuição remuneratória dos arqueólogos admitidos apresenta assimetria acentuada, tornando a mediana o indicador mais confiável para representar o profissional típico. A média, distorcida por *outliers* extremos, superestima sistematicamente o salário real da maioria.
+
+A presença de um valor máximo de R\$ 404.199,41 declarado em 2024 e 2025 - um *outlier* que possui correspondência com um contrato horista de altíssimo valor destacado na @tbl-resumo-estatistico-unidades-salario - infla a média de forma desporporcional, que chegou a R\$ 12.964,12 em 2024, valor quase quatro vezes superior à mediana daquele ano.
+
+A mediana apresentou oscilações interanuais e trajetória de queda no período (R\$ 3.636,60 em 2022 para R\$ 3.322,28 em 2025 - variação acumulada de -8,6%), enquanto o valor mínimo foi a única medida com crescimento consistente ao longo de todo o período.
+
+```{r remunera admitidos}
+#| label: tbl-resumo-estatistico-remunera-admitidos
+#| tbl-cap: "Medidas de posição do salário dos admitidos"
+
+resumo_remunera_caged <- Arqueo.CAGED.2022_2025 %>% 
+     dplyr::filter(anocompetênciamov != "2021") %>%
+     dplyr::filter(saldomovimentação == "Admitido" & unidadesaláriocódigo != "Variavel") %>% 
+     group_by(anocompetênciamov) %>%
+     summarise(
+       Mínimo = min(salário, na.rm = TRUE),
+       Mediana = median(salário, na.rm = TRUE),
+       Média = mean(salário, na.rm = TRUE),
+       Máximo = max(salário, na.rm = TRUE)) %>%
+      mutate(across(where(is.numeric), ~ round(., 2)))
+
+tabela_remunera_caged <- resumo_remunera_caged %>%
+  pivot_longer(-anocompetênciamov, names_to = "Estatística", values_to = "Valor") %>%
+  pivot_wider(names_from = anocompetênciamov, values_from = Valor)
+
+tabela_remunera_caged2 <- tabela_remunera_caged %>%
+  gt() %>%
+  tab_header(
+    title = "Resumo Estatístico",
+    subtitle = "Valores Remuneratórios da Movimentação de Admitidos"
+  ) %>%
+  fmt_number(columns = where(is.numeric), decimals = 2, 
+             sep_mark = ".", dec_mark = ",", pattern = "R$ {x}") %>%
+  cols_label(
+    Estatística = ""
+  ) %>%
+  tab_spanner(
+    label = "Ano",
+    columns = where(is.numeric))
+
+tabela_remunera_caged2
+```
+
+## Valores Salariais por Sexo
+
+Acerca da distribuição salarial por gênero, merece destaque o valor máximo de R\$ 404.199,41, repetido de forma idêntica em três registros distintos (Feminino/2024, Masculino/2024 e Masculino/2025). Trata-se de um erro de declaração com mecanismo identificável - ver @tbl-tabela-geral-caged. Os três registros compartilham as mesmas características: unidade salarial registrada como hora, jornada de 44 horas semanais e salário-hora declarado de R\$ 1.837,27.
+
+No sistema do Novo CAGED, o campo `salário` é calculado automaticamente a partir da unidade informada pelo empregador. O erro, portanto, ocorreu a montante: um valor de natureza mensal foi inserido equivocadamente no campo destinado ao salário-hora. Quando o sistema converteu esse valor para a equivalência mensal, o resultado foi inflado para a cifra anômala observada. Diante dessa situação, a análise das médias de 2024 e 2025 estão comprometidas, impossibilitando formular uma conclusão desse indicador.
+
+Afastando o viés do *outlier*, a mediana revela o padrão real. Em 2022, a mediana feminina de R\$ 4.000 superava a masculina de R\$ 3.509,75 em [+13,9%](notas.html#sec-nota-diferenca "diferença (%) = (valor do grupo A ÷ valor do grupo B − 1) × 100") - uma diferença expressiva. Em 2023, essa vantagem se reduziu para +4,5% (R\$ 3.135 contra R\$ 3.000), e em 2024 houve uma inversão, com os homens ficando −6,4% acima (R\$ 3.740 contra R\$ 3.500). Já em 2025, a paridade quase se restabelece, com as mulheres ligeiramente à frente por margem mínima de +0,5% (R\$ 3.338 contra R\$ 3.322,27). No conjunto, a mediana feminina prevalece na maior parte do período, sugerindo que as arqueólogas admitidas tendem a acessar postos com remuneração um pouco mais elevado.
+
+O fenômeno mais marcante, contudo, está no quartil inferior (Q1). Em 2022, as mulheres nesse estrato recebiam R\$ 2.948,70 contra R\$ 1.625,00 dos homens - uma diferença de +81,5%. Três anos depois, essa vantagem desabou para +0,65% (diferença de R\$ 13), com ambos os sexos praticamente empatados em torno de R\$ 2.000. A queda mais abrupta ocorreu entre 2023 e 2024, quando o Q1 feminino despencou de R\$ 2.878,48 para R\$ 1.958,50, uma redução de −31,7% em um único ano. Esse movimento sugere que as mulheres admitidas nas faixas mais baixas passaram a ser alocadas em postos com remuneração significativamente menor, enquanto os homens nesse mesmo estrato tiveram ganhos relativos expressivos.
+
+No terço superior (Q3), a disputa é mais equilibrada e oscilante. As mulheres partiram de uma vantagem de +15% em 2022 (R\$ 4.680 contra R\$ 4.070), mas perderam a liderança em 2023 (−4,3%), retomaram marginalmente em 2024 (+1,6%) e voltaram a ceder em 2025 (−5,6%). Essa alternância indica que, nos postos mais bem remunerados entre os admitidos, não há um padrão estável de domínio de um sexo - a composição das vagas abertas a cada ano parece ser o fator decisivo.
+
+```{r}
+#| label: tbl-resumo-estatistico-remunera-admitidos-sexo
+#| tbl-cap: "Medidas de posição do salário dos admitidos por sexo"
+resumo_salario_sexo_caged <- Arqueo.CAGED.2022_2025 %>%
+  dplyr::filter(anocompetênciamov != "2021") %>%
+  dplyr::filter(saldomovimentação == "Admitido" & unidadesaláriocódigo != "Variavel") %>% 
+  mutate(sexo = recode(sexo,
+                       "Mulher" = "Feminino",
+                       "Homem" = "Masculino")) %>% 
+  group_by(anocompetênciamov, sexo) %>%
+  summarise(
+    Mínimo = min(salário, na.rm = TRUE),
+    Q1 = quantile(salário, 0.25, na.rm = TRUE),
+    Mediana = median(salário, na.rm = TRUE),
+    Média = mean(salário, na.rm = TRUE),
+    Q3 = quantile(salário, 0.75, na.rm = TRUE),
+    Máximo = max(salário, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(across(where(is.numeric), ~ round(., 2))) %>%
+  pivot_longer(
+    cols = c(Mínimo, Q1, Mediana, Média, Q3, Máximo),
+    names_to = "Estatística",
+    values_to = "Valor") %>%
+  pivot_wider(
+    names_from = anocompetênciamov,
+    values_from = Valor)
+
+
+tabela_sexos_salario_caged <- resumo_salario_sexo_caged %>%
+  gt(
+    rowname_col = "sexo",
+    groupname_col = "Estatística") %>%
+  tab_header(
+    title = "Resumo Estatístico",
+    subtitle = "Valores Remuneratórios dos Admitidos por Sexo") %>%
+  fmt_number(
+    columns = where(is.numeric),
+    decimals = 2,
+    sep_mark = ".",
+    dec_mark = ",",
+    pattern = "R$ {x}"
+  ) %>%
+  tab_spanner(
+    label = "Ano",
+    columns = where(is.numeric)) %>%
+  cols_align(
+    align = "center",
+    columns = where(is.numeric)) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_row_groups())
+
+tabela_sexos_salario_caged
+```
