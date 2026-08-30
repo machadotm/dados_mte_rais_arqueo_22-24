@@ -1,11 +1,51 @@
-/* ═══════════════════════════════════════════════════════════════════════
-   Ações do repositório distribuídas nas duas colunas
-     esquerda → "Ver o código fonte", no pé da lista de capítulos
-     direita  → "Relatar erro", ao fim de "Nesta seção"
-   Acrescentar ao final do styles.css
-   ═══════════════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════════════
+   styles.css — arquivo COMPLETO
+   Reúne as regras originais do artigo e todos os acréscimos das últimas
+   rodadas. Substitua o seu por este; não é para acrescentar.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── COLUNA DA ESQUERDA ────────────────────────────────────────────────── */
+
+/* ── 1. TIPOGRAFIA DO CORPO ────────────────────────────────────────────────
+   Texto justificado */
+
+p {
+  text-align: justify;
+}
+
+.titulo-grafico p {
+  text-align: center;
+}
+
+
+/* ── 2. TABELAS LADO A LADO ────────────────────────────────────────────────
+   Ocupa a coluna do corpo mais a margem direita do grid.                   */
+
+.tabelas-side-by-side {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: auto;
+}
+
+.tabelas-side-by-side > div {
+  flex: 1 1 0;
+  min-width: 260px;
+}
+
+
+/* ── 3. WIDGETS ────────────────────────────────────────────────────────────
+   Expande os gráficos do plotly para 100% do contêiner.                    */
+
+.plotly.html-widget {
+  width: 100% !important;
+}
+
+
+/* ── 4. AÇÕES DO REPOSITÓRIO — COLUNA DA ESQUERDA ──────────────────────────
+   "Ver o código fonte", no pé da lista de capítulos.                       */
 
 .sidebar-fonte { margin-top: 1.25rem; }
 
@@ -32,7 +72,8 @@
 .sidebar-fonte .toc-actions i.bi.empty { display: none; }
 
 
-/* ── COLUNA DA DIREITA ─────────────────────────────────────────────────── */
+/* ── 5. AÇÕES DO REPOSITÓRIO — COLUNA DA DIREITA ───────────────────────────
+   "Relatar erro", ao fim de "Nesta seção".                              */
 
 #quarto-margin-sidebar .toc-actions {
   margin-top: .9rem;
