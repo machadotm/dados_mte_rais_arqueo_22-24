@@ -26,12 +26,12 @@ O segundo levantamento, realizado pelo Grupo de Trabalho de Licenciamento Ambien
 
 A convergência entre três fontes construídas por métodos que não se comunicam - registros administrativos preenchidos pelo empregador, questionário aberto à comunidade profissional e questionário dirigido ao nicho do licenciamento ambiental - descrevem o mesmo desenho:
 
-| Fonte | O que mede | Homens | Mulheres |
-|-----------------|---------------------|-----------------|-----------------|
-| Gaspar *et al.* (2020) | Comunidade arqueológica (n= 2.117) | 47,3% | 52,5% |
-| Caromano *et al.* (2025) | Amostra da comunidade (n= 506) | 42% | 54% |
-| RAIS (2025) | Vínculos formais ativos (n= 383) | 56,9% | 43,1% |
-| GTLA-SAB (2025) | Autônomos no licenciamento (n= 148) | 54,7% | 41,9% |
+| Fonte                    | O que mede                          | Homens | Mulheres |
+|--------------------------|-------------------------------------|--------|----------|
+| Gaspar *et al.* (2020)   | Comunidade arqueológica (n= 2.117)  | 47,3%  | 52,5%    |
+| Caromano *et al.* (2025) | Amostra da comunidade (n= 506)      | 42%    | 54%      |
+| RAIS (2025)              | Vínculos formais ativos (n= 383)    | 56,9%  | 43,1%    |
+| GTLA-SAB (2025)          | Autônomos no licenciamento (n= 148) | 54,7%  | 41,9%    |
 
 As arqueólogas são, portanto, maioria na profissão e minoria nas relações de trabalho. A dissociação entre essas duas posições se materializa na pesquisa do Projeto Perfis: apenas 13% das mulheres declararam possuir vínculo celetista, contra 23% dos homens; e 11% delas se declararam desempregadas, frente a 8% deles.
 

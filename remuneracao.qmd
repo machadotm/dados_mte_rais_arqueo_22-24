@@ -1,4 +1,4 @@
-# Remuneração dos Vínculos Ativos -- RAIS
+# Remuneração dos Vínculos Ativos - RAIS
 
 {{< include _setup.qmd >}}
 
@@ -404,12 +404,12 @@ dados_boxplot %>%
 
 O boxplot da distribuição remuneratória confirma a assimetria positiva e permite visualizar o [intervalo interquartil (IQR)](notas.html#sec-nota-quartis "IQR = Q3 − Q1") - faixa que contém os 50% dos trabalhadores no centro da distribuição.
 
-| Medida | 2022 | 2023 | 2024 | 2025 | Variação acumulada |
-|------------|------------|------------|------------|------------|------------|
-| Q1 (1º quartil) | R\$ 3.224,18 | R\$ 3.092,82 | R\$ 2.952,50 | R\$ 3.101,28 | -3,8% |
-| Mediana | R\$ 4.159,08 | R\$ 4.153,96 | R\$ 4.206,30 | R\$ 4.489,28 | 7,9% |
-| Q3 (3º quartil) | R\$ 5.893,90 | R\$ 5.672,30 | R\$ 5.864,77 | R\$ 6.420,97 | 8,9% |
-| IQR (Q3-Q1) | R\$ 2.669,72 | R\$ 2.579,48 | R\$ 2.912,27 | R\$ 3.319,69 | 24,3% |
+| Medida          | 2022         | 2023         | 2024         | 2025         | Variação acumulada |
+|-----------------|--------------|--------------|--------------|--------------|--------------------|
+| Q1 (1º quartil) | R\$ 3.224,18 | R\$ 3.092,82 | R\$ 2.952,50 | R\$ 3.101,28 | -3,8%              |
+| Mediana         | R\$ 4.159,08 | R\$ 4.153,96 | R\$ 4.206,30 | R\$ 4.489,28 | 7,9%               |
+| Q3 (3º quartil) | R\$ 5.893,90 | R\$ 5.672,30 | R\$ 5.864,77 | R\$ 6.420,97 | 8,9%               |
+| IQR (Q3-Q1)     | R\$ 2.669,72 | R\$ 2.579,48 | R\$ 2.912,27 | R\$ 3.319,69 | 24,3%              |
 
 > Entre 2022 e 2025, a média remuneratória apresentou uma recuperação desigual. Enquanto o trabalhador típico (mediana) registrou ganho acumulado de 7,9%, chegando a R\$ 4.489 em 2025, os trabalhadores de menor remuneração (Q1) ainda não recuperaram as perdas do período, encerrando com R\$ 3.101 - 3,8% abaixo do patamar de 2022. Por outro lado, os arqueólogos de faixa superior (Q3) tiveram o melhor desempenho relativo, com variação acumulada de 8,9% e atingindo R\$ 6.421 em 2025. Essa dinâmica ampliou a dispersão salarial: o intervalo interquartil (IQR), que mede a distância entre o topo e a base da distribuição, cresceu 24,3%, sinalizando um aumento expressivo da desigualdade remuneratória ao longo do período.
 
