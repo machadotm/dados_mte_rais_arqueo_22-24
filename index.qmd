@@ -51,4 +51,4 @@ Os gráficos e tabelas foram gerados na [linguagem de programação R](notas.htm
 :::
 :::::
 
-Destaca-se que este estudo contou com o auxílio de Inteligência Artificial generativa para revisão textual, melhorias de script e identificação de padrões ocultos nos dados.
+Destaca-se que este estudo contou com o auxílio de Inteligência Artificial generativa para revisão textual, melhorias de _script_ e identificação de padrões ocultos nos dados.

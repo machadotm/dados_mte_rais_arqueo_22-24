@@ -602,7 +602,7 @@ escolaridade %>%
 
 ## Faixa Etária
 
-A análise do perfil etário dos vínculos formais revela que todas as faixas registrou crescimento no período, embora em ritmos distintos. A faixa de 30 a 39 anos é o grupo que concentra a maior parcela dos profissionais ativos.
+A análise do perfil etário dos vínculos formais revela que todas as faixas registraram crescimento no período, embora em ritmos distintos. A faixa de 30 a 39 anos é o grupo que concentra a maior parcela de profissionais ativos.
 
 Nas faixas etárias superiores - 40–49, 50–64 e acima de 65 anos - observa-se na linha temporal um distanciamento nas declarações para posições inferiores. Essa amplitude pode ser explicado por múltiplos fatores: aposentadoria de profissionais mais velhos, migração para o trabalho informal ou consultorias autônomas, transição para cargos de gestão ou mesmo mudança de carreira.
 

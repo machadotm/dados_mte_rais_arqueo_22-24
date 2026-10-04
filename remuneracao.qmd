@@ -1,4 +1,4 @@
-# Remuneração dos Vínculos Ativos - RAIS
+# Remuneração dos Vínculos Ativos -- RAIS
 
 {{< include _setup.qmd >}}
 

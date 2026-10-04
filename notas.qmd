@@ -2,7 +2,7 @@
 
 {{< include _setup.qmd >}}
 
-Esta seção tem por objetivo explicitar o cálculo de cada indicador derivado no estudo, de modo que qualquer leitor possa reproduzir as contas utilizando exclusivamente os números já apresentados nos gráficos e tabelas, sem necessidade de consultar o script de processamento.
+Esta seção tem por objetivo explicitar o cálculo de cada indicador derivado no estudo, de modo que qualquer leitor possa reproduzir as contas utilizando exclusivamente os números já apresentados nos gráficos e tabelas, sem necessidade de consultar o _script_ de processamento.
 
 A intenção é garantir transparência e reprodutibilidade: cada nota metodológica é estruturada em três partes. Primeiro, a pergunta que o indicador pretende responder. Em seguida, apresenta-se a fórmula utilizada, com a definição de cada termo e a indicação das colunas ou agregados envolvidos. Por fim, fornece-se um exemplo prático com dados extraídos do próprio estudo, demonstrando a operação passo a passo.
 
@@ -294,7 +294,7 @@ Os arquivos brutos tratados a partir dessas duas bases estão disponíveis em re
 
 ## Ferramentas utilizadas {#sec-nota-ferramentas}
 
-Todo o processamento, os cálculos e as visualizações deste artigo foram feitos na linguagem **R**, dentro do sistema de publicação **Quarto**, que combina texto e código no mesmo arquivo - é o que permite que cada painel exiba o script que o produziu.
+Todo o processamento, os cálculos e as visualizações deste artigo foram feitos na linguagem **R**, dentro do sistema de publicação **Quarto**, que combina texto e código no mesmo arquivo - é o que permite que cada painel exiba o _script_ que o produziu.
 
 O botão “Mostrar código executado”, posicionado no canto de cada painel, revela o trecho de código responsável por aquele gráfico ou tabela específica. Contudo, esse botão exibe apenas o script do painel individual - não inclui o carregamento inicial dos pacotes, que ocorre uma única vez no cabeçalho do documento. Para suprir essa lacuna e permitir a reprodução integral, a tabela abaixo relaciona todos os pacotes utilizados, a função que cada um desempenhou no fluxo de trabalho e a versão efetivamente empregada na geração desta página.
 

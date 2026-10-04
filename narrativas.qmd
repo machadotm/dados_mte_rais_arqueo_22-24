@@ -1,8 +1,8 @@
 # Interligando Dados e Construindo Narrativas
 
-A análise dos dados da RAIS e do Novo CAGED para o período de 2022 a 2025 permitiu mapear a dinâmica atual do mercado de trabalho formal da arqueologia no Brasil. O objetivo deste levantamento não foi esgotar todas as possibilidades analíticas desses registros administrativos, mas sim apresentar os principais padrões identificados por meio de gráficos interativos e tabelas. Para garantir transparência e reprodutibilidade, o script em R foi disponibilizado em cada painel, permitindo que outros pesquisadores verifiquem os procedimentos e explorem variáveis adicionais não contempladas aqui - ver @sec-notas.
+A análise dos dados da RAIS e do Novo CAGED para o período de 2022 a 2025 permitiu mapear a dinâmica atual do mercado de trabalho formal da arqueologia no Brasil. O objetivo deste levantamento não foi esgotar todas as possibilidades analíticas desses registros administrativos, mas sim apresentar os principais padrões identificados por meio de gráficos interativos e tabelas. Para garantir transparência e reprodutibilidade, o _script_ R foi disponibilizado em cada painel, permitindo que outros pesquisadores verifiquem os procedimentos e explorem variáveis adicionais não contempladas aqui - ver @sec-notas.
 
-O panorama revelado mostra um mercado de trabalho marcado por avanços pontuais seguido de retração. A arqueologia formal demonstra alta sensibilidade a eventos conjunturais: as contratações crescem quando grandes projetos de licenciamento ambiental demandam vínculos celetistas, e encolhem quando obras são paralisadas ou concluídas, provocando perda da capacidade de retenção da força de trabalho. O biênio 2023–2024 ilustra bem essa oscilação: 2023 registrou um boom de contratações e maior poder de escolha para os profissionais, enquanto 2024 trouxe uma reversão desse cenário.
+O panorama revelado mostra um mercado de trabalho marcado por avanços pontuais seguido de retração. A arqueologia formal demonstra alta sensibilidade a eventos conjunturais: as contratações crescem quando grandes projetos de licenciamento ambiental demandam vínculos celetistas, e encolhem quando obras são paralisadas ou concluídas, provocando perda da capacidade de retenção da força de trabalho. O biênio 2023–2024 ilustra bem essa oscilação: 2023 registrou um aumento de contratações e maior poder de escolha para os profissionais, enquanto 2024 trouxe uma reversão desse cenário.
 
 Geograficamente, a contratação de arqueólogos permanece concentrada na Região Sudeste. Contudo, o Nordeste emerge como polo de expansão, com destaque para Pernambuco, onde empresas locais vêm ampliando a oferta de empregos formais. Em contrapartida, a Região Norte apresenta as menores oportunidades de trabalho, com seus estabelecimentos contendo poucos contratos que exigem vínculos celetista, embora esse cenário venha se alterando paulatinamente.
 
@@ -26,12 +26,12 @@ O segundo levantamento, realizado pelo Grupo de Trabalho de Licenciamento Ambien
 
 A convergência entre três fontes construídas por métodos que não se comunicam - registros administrativos preenchidos pelo empregador, questionário aberto à comunidade profissional e questionário dirigido ao nicho do licenciamento ambiental - descrevem o mesmo desenho:
 
-| Fonte                    | O que mede                          | Homens | Mulheres |
-|--------------------------|-------------------------------------|--------|----------|
-| Gaspar *et al.* (2020)   | Comunidade arqueológica (n= 2.117)  | 47,3%  | 52,5%    |
-| Caromano *et al.* (2025) | Amostra da comunidade (n= 506)      | 42%    | 54%      |
-| RAIS (2025)              | Vínculos formais ativos (n= 383)    | 56,9%  | 43,1%    |
-| GTLA-SAB (2025)          | Autônomos no licenciamento (n= 148) | 54,7%  | 41,9%    |
+| Fonte | O que mede | Homens | Mulheres |
+|------------------|---------------------------|--------------|--------------|
+| Gaspar *et al.* (2020) | Comunidade arqueológica (n= 2.117) | 47,3% | 52,5% |
+| Caromano *et al.* (2025) | Amostra da comunidade (n= 506) | 42% | 54% |
+| RAIS (2025) | Vínculos formais ativos (n= 383) | 56,9% | 43,1% |
+| GTLA-SAB (2025) | Autônomos no licenciamento (n= 148) | 54,7% | 41,9% |
 
 As arqueólogas são, portanto, maioria na profissão e minoria nas relações de trabalho. A dissociação entre essas duas posições se materializa na pesquisa do Projeto Perfis: apenas 13% das mulheres declararam possuir vínculo celetista, contra 23% dos homens; e 11% delas se declararam desempregadas, frente a 8% deles.
 
