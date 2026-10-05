@@ -56,9 +56,6 @@ remunera_corrigido <- Arqueo.RAIS.2022_2025 %>%
                                            | Vl.Rem.Dezembro.Nom == 0.00,
                                round(Vl.Rem.Dezembro.Nom, 2),
                                round(Vl.Rem.Dezembro.Nom / 100, 2))) |> 
-  mutate(Natureza.Jurídica = dplyr::recode(Natureza.Jurídica,
-                                      "{ñ class}" = "Não identificado", 
-                                      .missing = "Não identificado")) %>%
         dplyr::select(Ano, Faixa.Rem.Dez..SM, valor_SM_fx_maximo_2024, Vl.Rem.Dezembro.Nom, vl.rem.dez.nom.corrigido, Vl.Rem.Média.Nom, Faixa.Rem.Média..SM, Sexo)
 
 remunera_tabela <- remunera_corrigido %>% 

@@ -226,7 +226,7 @@ O IQR é também o que o boxplot desenha: a caixa vai de Q1 a Q3, e a linha dent
 
 **Responde:** por que a média e a mediana são diferentes, e qual delas usar?
 
-Numa distribuição equilibrada, a média e a mediana coincidem: o valor central é o mesmo que a média de todos os pontos. Nas distribuições salariais, porém, essa coincidência é exceção, não regra. O motivo está na estrutura do próprio mercado: os salários têm um piso - na prática, ninguém recebe abaixo do salário mínimo -, mas não possuem teto. Quando um pequeno número de profissionais recebe valores muito acima da maioria, esses poucos salários elevados puxam a média para cima. A mediana, por sua vez, permanece ancorada no meio da fila ordenada - ela não se altera pelo quão distantes estão os extremos, mas apenas pela posição do profissional central.
+Numa distribuição equilibrada, a média e a mediana coincidem: o valor central é o mesmo que a média de todos os pontos. Nas distribuições salariais, porém, essa coincidência é exceção, não regra. O motivo está na estrutura do próprio mercado: as remunerações têm um piso, mas não possuem teto. Quando um pequeno número de profissionais recebe valores muito acima da maioria, esses poucos salários elevados puxam a média para cima. A mediana, por sua vez, permanece ancorada no meio da fila ordenada - ela não se altera pelo quão distantes estão os extremos, mas apenas pela posição do profissional central.
 
 Esse desequilíbrio se chama **assimetria positiva**, e seu sinal é simples:
 
@@ -296,7 +296,7 @@ Os arquivos brutos tratados a partir dessas duas bases estão disponíveis em re
 
 Todo o processamento, os cálculos e as visualizações deste artigo foram feitos na linguagem **R**, dentro do sistema de publicação **Quarto**, que combina texto e código no mesmo arquivo - é o que permite que cada painel exiba o _script_ que o produziu.
 
-O botão “Mostrar código executado”, posicionado no canto de cada painel, revela o trecho de código responsável por aquele gráfico ou tabela específica. Contudo, esse botão exibe apenas o script do painel individual - não inclui o carregamento inicial dos pacotes, que ocorre uma única vez no cabeçalho do documento. Para suprir essa lacuna e permitir a reprodução integral, a tabela abaixo relaciona todos os pacotes utilizados, a função que cada um desempenhou no fluxo de trabalho e a versão efetivamente empregada na geração desta página.
+O botão “Mostrar código executado”, posicionado no canto de cada painel, revela o trecho de código responsável por aquele gráfico ou tabela específica. Contudo, esse botão exibe apenas o _script_ do painel individual - não inclui o carregamento inicial dos pacotes, que ocorre uma única vez no cabeçalho do documento. Para suprir essa lacuna e permitir a reprodução integral, a tabela abaixo relaciona todos os pacotes utilizados, a função que cada um desempenhou no fluxo de trabalho e a versão efetivamente empregada na geração desta página.
 
 ```{r ferramentas}
 #| label: tbl-ferramentas

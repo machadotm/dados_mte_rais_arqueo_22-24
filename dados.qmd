@@ -2,11 +2,11 @@
 
 {{< include _setup.qmd >}}
 
-Conforme mencionado anteriormente, os dados foram obtidos do repositório GitHub [@machado2026dados] e processados para gerar os gráficos e tabelas deste artigo. Para garantir transparência metodológica, cada visualização - gráfico ou tabela - inclui um botão no canto superior esquerdo rotulado "Mostrar código executado". Ao clicar, o leitor acessa diretamente o script R que produziu aquele resultado específico, permitindo verificação e reprodução dos procedimentos.
+Conforme mencionado anteriormente, os dados foram obtidos do repositório GitHub [@machado2026dados] e processados para gerar os gráficos e tabelas deste artigo. Para garantir transparência metodológica, cada visualização - gráfico ou tabela - inclui um botão no canto superior esquerdo rotulado "Mostrar código executado". Ao clicar nele, o leitor acessa diretamente o _script_ R que produziu aquele resultado específico, permitindo verificação e reprodução dos procedimentos.
 
 Todo o artigo foi produzido no [Quarto](https://quarto.org/ "Link para acesso ao Quarto"), uma ferramenta de publicação técnica de código aberto que integra código executável (R, Python, Julia e Observable) a documentos narrativos.
 
-As ferramentas empregadas - a linguagem R, o sistema Quarto e os pacotes usados em cada etapa - estão documentadas na @sec-nota-ferramentas, com as versões utilizadas.
+As ferramentas empregadas - a linguagem R, o sistema Quarto e os pacotes usados em cada etapa - estão documentadas na @sec-nota-ferramentas com as versões utilizadas.
 
 ```{r carregando dados}
 #| eval: false

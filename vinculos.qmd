@@ -526,7 +526,7 @@ A distribuição de escolaridade entre os vínculos ativos revela que os arqueó
 
 Para o ano-base 2022, identificou-se um volume atípico de declarações com campos de escolaridade preenchidos com níveis incompatíveis com o exercício profissional da arqueologia - variando de "analfabeto" a "superior incompleto". Essas declarações foram agrupadas na categoria *Registros inconsistentes*. A presença desse grupo distorceu a distribuição dos demais níveis de escolaridade naquele ano, sub-representando as categorias de graduados e pós-graduados.
 
-Uma hipótese plausível para essa anomalia é a transição do GD-RAIS para o eSocial, período em que estabelecimentos ainda se adaptavam ao novo formato de preenchimento. Erros de mapeamento entre os campos de escolaridade dos dois sistemas podem ter gerado registros com valores incorretos.
+Uma hipótese plausível para essa anomalia é a transição do GD-RAIS para o eSocial, período em que os estabelecimentos ainda se adaptavam ao novo formato de preenchimento. Erros de mapeamento entre os campos de escolaridade dos dois sistemas podem ter gerado registros com valores incorretos.
 
 ```{r escolaridade}
 #| label: fig-escolaridade
@@ -668,7 +668,7 @@ faixa.etaria %>%
 
 A maior parte dos arqueólogos trabalha entre 41 e 44 horas semanais, compatível com o regime padrão de escala 6×1 (seis dias de trabalho por um de descanso). Registros de jornadas acima de 44 horas persistem ao longo do período, indicando a existência de contratos com horas extras habituais ou regimes especiais.
 
-No extremo oposto, uma parcela dos profissionais possui jornadas inferiores a 30 horas semanais, sugerindo contratações em regime de tempo parcial, consultoria especializada ou condições especias mediadas por acordos com o empregador.
+No extremo oposto, uma parcela dos profissionais possui jornadas inferiores a 30 horas semanais, sugerindo contratações em regime de tempo parcial, consultoria especializada ou condições especiais mediadas por acordos com o empregador.
 
 ```{r faixa hora contratual}
 #| label: fig-hora
@@ -731,7 +731,7 @@ browsable(tagList(titulo_html, grafico))
 
 Um contingente significativo de arqueólogos acumula mais de cinco anos (+60 meses) no mesmo posto de trabalho, indicando relativa estabilidade e baixa rotatividade nesse segmento. Essa permanência indica a existência de empregadores que oferecem condições de retenção da mão de obra contratada.
 
-Os grupos com menos de cinco anos de vínculo apresentam maior variação anual, sugerindo rotatividade mais elevada. Esse padrão é consistente com a natureza dos projetos arqueológicos no escopo de licenciamento ambiental, tipicamente de duração limitada e com ciclos de contratação e desligamento mais frequentes.
+Os grupos com menos de cinco anos de vínculo apresentam maior variação anual, sugerindo rotatividade mais elevada. Esse padrão é consistente com a natureza dos projetos arqueológicos no escopo do licenciamento ambiental, tipicamente de duração limitada e com ciclos de contratação e desligamento mais frequentes.
 
 ```{r tempo emprego}
 #| label: fig-tempo

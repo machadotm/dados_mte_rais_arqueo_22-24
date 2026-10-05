@@ -446,7 +446,7 @@ div.csl-indent {
 <section id="sec-nota-assimetria" class="level2" data-number="11.9">
 <h2 data-number="11.9" class="anchored" data-anchor-id="sec-nota-assimetria"><span class="header-section-number">11.9</span> Assimetria positiva</h2>
 <p><strong>Responde:</strong> por que a média e a mediana são diferentes, e qual delas usar?</p>
-<p>Numa distribuição equilibrada, a média e a mediana coincidem: o valor central é o mesmo que a média de todos os pontos. Nas distribuições salariais, porém, essa coincidência é exceção, não regra. O motivo está na estrutura do próprio mercado: os salários têm um piso - na prática, ninguém recebe abaixo do salário mínimo -, mas não possuem teto. Quando um pequeno número de profissionais recebe valores muito acima da maioria, esses poucos salários elevados puxam a média para cima. A mediana, por sua vez, permanece ancorada no meio da fila ordenada - ela não se altera pelo quão distantes estão os extremos, mas apenas pela posição do profissional central.</p>
+<p>Numa distribuição equilibrada, a média e a mediana coincidem: o valor central é o mesmo que a média de todos os pontos. Nas distribuições salariais, porém, essa coincidência é exceção, não regra. O motivo está na estrutura do próprio mercado: as remunerações têm um piso, mas não possuem teto. Quando um pequeno número de profissionais recebe valores muito acima da maioria, esses poucos salários elevados puxam a média para cima. A mediana, por sua vez, permanece ancorada no meio da fila ordenada - ela não se altera pelo quão distantes estão os extremos, mas apenas pela posição do profissional central.</p>
 <p>Esse desequilíbrio se chama <strong>assimetria positiva</strong>, e seu sinal é simples:</p>
 <pre><code>quando a média é maior que a mediana → assimetria positiva</code></pre>
 <p><strong>Exemplo.</strong> Em 2025, a média das remunerações de dezembro foi de R$ 5.877,39 e a mediana, de R$ 4.941,78:</p>
@@ -488,7 +488,7 @@ div.csl-indent {
 <section id="sec-nota-ferramentas" class="level2" data-number="11.13">
 <h2 data-number="11.13" class="anchored" data-anchor-id="sec-nota-ferramentas"><span class="header-section-number">11.13</span> Ferramentas utilizadas</h2>
 <p>Todo o processamento, os cálculos e as visualizações deste artigo foram feitos na linguagem <strong>R</strong>, dentro do sistema de publicação <strong>Quarto</strong>, que combina texto e código no mesmo arquivo - é o que permite que cada painel exiba o <em>script</em> que o produziu.</p>
-<p>O botão “Mostrar código executado”, posicionado no canto de cada painel, revela o trecho de código responsável por aquele gráfico ou tabela específica. Contudo, esse botão exibe apenas o script do painel individual - não inclui o carregamento inicial dos pacotes, que ocorre uma única vez no cabeçalho do documento. Para suprir essa lacuna e permitir a reprodução integral, a tabela abaixo relaciona todos os pacotes utilizados, a função que cada um desempenhou no fluxo de trabalho e a versão efetivamente empregada na geração desta página.</p>
+<p>O botão “Mostrar código executado”, posicionado no canto de cada painel, revela o trecho de código responsável por aquele gráfico ou tabela específica. Contudo, esse botão exibe apenas o <em>script</em> do painel individual - não inclui o carregamento inicial dos pacotes, que ocorre uma única vez no cabeçalho do documento. Para suprir essa lacuna e permitir a reprodução integral, a tabela abaixo relaciona todos os pacotes utilizados, a função que cada um desempenhou no fluxo de trabalho e a versão efetivamente empregada na geração desta página.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Mostrar código executado</summary>
@@ -544,23 +544,23 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
 </figcaption>
 <div aria-describedby="tbl-ferramentas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="ehercdhnoq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ehercdhnoq table {
+<div id="fdesvfbnht" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fdesvfbnht table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ehercdhnoq thead, #ehercdhnoq tbody, #ehercdhnoq tfoot, #ehercdhnoq tr, #ehercdhnoq td, #ehercdhnoq th {
+#fdesvfbnht thead, #fdesvfbnht tbody, #fdesvfbnht tfoot, #fdesvfbnht tr, #fdesvfbnht td, #fdesvfbnht th {
   border-style: none;
 }
 
-#ehercdhnoq p {
+#fdesvfbnht p {
   margin: 0;
   padding: 0;
 }
 
-#ehercdhnoq .gt_table {
+#fdesvfbnht .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -586,12 +586,12 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-left-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_caption {
+#fdesvfbnht .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ehercdhnoq .gt_title {
+#fdesvfbnht .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -603,7 +603,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-bottom-width: 0;
 }
 
-#ehercdhnoq .gt_subtitle {
+#fdesvfbnht .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -615,7 +615,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-top-width: 0;
 }
 
-#ehercdhnoq .gt_heading {
+#fdesvfbnht .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -627,13 +627,13 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-right-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_bottom_border {
+#fdesvfbnht .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_col_headings {
+#fdesvfbnht .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -648,7 +648,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-right-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_col_heading {
+#fdesvfbnht .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -668,7 +668,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   overflow-x: hidden;
 }
 
-#ehercdhnoq .gt_column_spanner_outer {
+#fdesvfbnht .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -680,15 +680,15 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   padding-right: 4px;
 }
 
-#ehercdhnoq .gt_column_spanner_outer:first-child {
+#fdesvfbnht .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ehercdhnoq .gt_column_spanner_outer:last-child {
+#fdesvfbnht .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ehercdhnoq .gt_column_spanner {
+#fdesvfbnht .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -700,11 +700,11 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   width: 100%;
 }
 
-#ehercdhnoq .gt_spanner_row {
+#fdesvfbnht .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ehercdhnoq .gt_group_heading {
+#fdesvfbnht .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -730,7 +730,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   text-align: left;
 }
 
-#ehercdhnoq .gt_empty_group_heading {
+#fdesvfbnht .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -745,15 +745,15 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   vertical-align: middle;
 }
 
-#ehercdhnoq .gt_from_md > :first-child {
+#fdesvfbnht .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ehercdhnoq .gt_from_md > :last-child {
+#fdesvfbnht .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ehercdhnoq .gt_row {
+#fdesvfbnht .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -772,7 +772,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   overflow-x: hidden;
 }
 
-#ehercdhnoq .gt_stub {
+#fdesvfbnht .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -785,7 +785,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   padding-right: 5px;
 }
 
-#ehercdhnoq .gt_stub_row_group {
+#fdesvfbnht .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -799,15 +799,15 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   vertical-align: top;
 }
 
-#ehercdhnoq .gt_row_group_first td {
+#fdesvfbnht .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ehercdhnoq .gt_row_group_first th {
+#fdesvfbnht .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ehercdhnoq .gt_summary_row {
+#fdesvfbnht .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -817,16 +817,16 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   padding-right: 5px;
 }
 
-#ehercdhnoq .gt_first_summary_row {
+#fdesvfbnht .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_first_summary_row.thick {
+#fdesvfbnht .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ehercdhnoq .gt_last_summary_row {
+#fdesvfbnht .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -836,7 +836,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-bottom-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_grand_summary_row {
+#fdesvfbnht .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -846,7 +846,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   padding-right: 5px;
 }
 
-#ehercdhnoq .gt_first_grand_summary_row {
+#fdesvfbnht .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -856,7 +856,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-top-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_last_grand_summary_row_top {
+#fdesvfbnht .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -866,11 +866,11 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-bottom-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_striped {
+#fdesvfbnht .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ehercdhnoq .gt_table_body {
+#fdesvfbnht .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -879,7 +879,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-bottom-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_footnotes {
+#fdesvfbnht .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -893,7 +893,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-right-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_footnote {
+#fdesvfbnht .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -902,7 +902,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   padding-right: 5px;
 }
 
-#ehercdhnoq .gt_sourcenotes {
+#fdesvfbnht .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -916,7 +916,7 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   border-right-color: #D3D3D3;
 }
 
-#ehercdhnoq .gt_sourcenote {
+#fdesvfbnht .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -924,72 +924,72 @@ Tabela&nbsp;11.1: Pacotes de R utilizados na produção do artigo
   padding-right: 5px;
 }
 
-#ehercdhnoq .gt_left {
+#fdesvfbnht .gt_left {
   text-align: left;
 }
 
-#ehercdhnoq .gt_center {
+#fdesvfbnht .gt_center {
   text-align: center;
 }
 
-#ehercdhnoq .gt_right {
+#fdesvfbnht .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ehercdhnoq .gt_font_normal {
+#fdesvfbnht .gt_font_normal {
   font-weight: normal;
 }
 
-#ehercdhnoq .gt_font_bold {
+#fdesvfbnht .gt_font_bold {
   font-weight: bold;
 }
 
-#ehercdhnoq .gt_font_italic {
+#fdesvfbnht .gt_font_italic {
   font-style: italic;
 }
 
-#ehercdhnoq .gt_super {
+#fdesvfbnht .gt_super {
   font-size: 65%;
 }
 
-#ehercdhnoq .gt_footnote_marks {
+#fdesvfbnht .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ehercdhnoq .gt_asterisk {
+#fdesvfbnht .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ehercdhnoq .gt_indent_1 {
+#fdesvfbnht .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ehercdhnoq .gt_indent_2 {
+#fdesvfbnht .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ehercdhnoq .gt_indent_3 {
+#fdesvfbnht .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ehercdhnoq .gt_indent_4 {
+#fdesvfbnht .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ehercdhnoq .gt_indent_5 {
+#fdesvfbnht .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ehercdhnoq .katex-display {
+#fdesvfbnht .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ehercdhnoq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fdesvfbnht div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
